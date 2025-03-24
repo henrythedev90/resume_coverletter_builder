@@ -1,18 +1,72 @@
 import mongoose from "mongoose";
 
+// Define the CoverLetter Schema
 const CoverLetterSchema = new mongoose.Schema(
   {
-    userId: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    jobTitle: { type: String, required: true },
-    companyName: { type: String, required: true },
-    content: { type: String, required: true },
+    resume: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Resume",
+      required: true,
+    },
+    jobTitle: {
+      type: String,
+      required: true,
+    },
+    companyName: {
+      type: String,
+      required: true,
+    },
+    jobDescription: {
+      type: String, // Or you can use a reference to a Job model if needed
+      required: true,
+    },
+    companyMission: {
+      type: String,
+      required: true,
+    },
+    reasonForApplying: {
+      type: String, // Why the user wants the role or company
+      required: true,
+    },
+    keySkills: {
+      type: [String], // A list of key skills that the user wants to highlight
+      required: true,
+    },
+    personalTraits: {
+      type: [String], // Personal attributes the user wants to mention
+    },
+    achievements: {
+      type: [String], // Achievements that align with the job (optional, but helpful)
+    },
+    relevantExperience: {
+      type: [String], // Specific experience or projects that tie to the job
+    },
+    careerGoals: {
+      type: String, // A short description of the user's career goals
+    },
+    availability: {
+      type: String, // Availability for interviews or starting the job
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-export default mongoose.models.CoverLetter ||
-  mongoose.model("CoverLetter", CoverLetterSchema);
+// Create the CoverLetter model
+const CoverLetter = mongoose.model("CoverLetter", CoverLetterSchema);
+
+export default CoverLetter;
