@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import connectDB from "@/utils/db";
 import User from "@/models/User";
+import Resume from "@/models/Resume";
+import CoverLetter from "@/models/CoverLetter";
 
 interface DecodedToken {
   userId: string;
@@ -15,7 +17,6 @@ export default async function handler(
 ) {
   // Get token from Authorization header
   const authHeader = req.headers.authorization;
-  console.log(authHeader, "this is authHeader");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
       success: false,
@@ -84,8 +85,6 @@ export default async function handler(
             });
           }
 
-          // If email is attempted to be updated, inform the user it's not allowed
-
           // Create updates object with only allowed fields
           const updates = {
             ...(firstName && { firstName }),
@@ -115,7 +114,9 @@ export default async function handler(
         try {
           await User.findByIdAndDelete(userId);
 
-          // You might want to also delete associated data (resumes, cover letters, etc.)
+          await Resume.findByIdAndDelete(userId);
+
+          await CoverLetter.findByIdAndDelete(userId);
 
           return res.status(200).json({
             success: true,
