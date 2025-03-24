@@ -12,7 +12,9 @@ import {
   ResumeType,
 } from "@/types/resume";
 
-export async function generateResume(resume: ResumeType) {
+export async function generateResume(
+  resume: ResumeType & { userName?: string; userEmail?: string }
+) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   // Helper function to safely join array items or return "N/A"
@@ -20,6 +22,10 @@ export async function generateResume(resume: ResumeType) {
 
   const prompt = `
     You are a professional resume writer. Generate a well-structured, professional resume based on the following details:
+
+    Candidate Information:
+    ${resume.userName ? `Name: ${resume.userName}` : ""}
+    ${resume.userEmail ? `Email: ${resume.userEmail}` : ""}
 
     Career Objective: ${resume.careerObjective}
 
@@ -133,6 +139,8 @@ export async function generateResume(resume: ResumeType) {
     return {
       success: true,
       resume: generatedResume,
+      candidateName: resume.userName,
+      candidateEmail: resume.userEmail,
     };
   } catch (error) {
     console.error("Resume Generation Error:", error);

@@ -7,11 +7,7 @@ import mongoose from "mongoose";
 
 const genAIapiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(genAIapiKey);
-/**
- * Generates a cover letter using the Gemini AI model
- * @param {CoverLetterInput} coverLetterData - Data required to generate the cover letter
- * @returns {Promise<string>} Generated cover letter text
- */
+
 export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
