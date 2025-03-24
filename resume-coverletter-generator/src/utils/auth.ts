@@ -9,8 +9,8 @@ export const authOptions: NextAuthOptions = {
       clientSecret: (process.env.GOOGLE_CLIENT_SECRET as string) || "",
     }),
     LinkedIn({
-      clientId: (process.env.CLIENT_ID as string) || "",
-      clientSecret: (process.env.CLIENT_SECRET as string) || "",
+      clientId: (process.env.LINKEDIN_CLIENT_ID as string) || "",
+      clientSecret: (process.env.LINKEDIN_CLIENT_SECRET as string) || "",
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
@@ -39,3 +39,24 @@ export const authOptions: NextAuthOptions = {
     },
   },
 };
+
+export default NextAuth(authOptions);
+
+// Add these type declarations
+declare module "next-auth" {
+  interface Session {
+    user: {
+      _id: string;
+      accessToken: string;
+      name?: string;
+      email?: string;
+    };
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string;
+    accessToken?: string;
+  }
+}
