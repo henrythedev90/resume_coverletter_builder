@@ -4,12 +4,7 @@ import connectDB from "@/utils/db";
 import User from "@/models/User";
 import Resume from "@/models/Resume";
 import CoverLetter from "@/models/CoverLetter";
-
-interface DecodedToken {
-  userId: string;
-  iat: number;
-  exp: number;
-}
+import { DecodedToken } from "@/types/decodedToken";
 
 export default async function handler(
   req: NextApiRequest,

@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@huggingface/transformers": "^3.4.0",
+    "@google/generative-ai": "^0.24.0",
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",

@@ -69,7 +69,7 @@ export interface JobPreferences {
   preferredIndustry?: string[];
 }
 
-export interface Resume {
+export interface ResumeType {
   _id?: string;
   userId: Types.ObjectId;
   careerObjective?: string;
@@ -85,5 +85,5 @@ export interface Resume {
   jobPreferences?: JobPreferences;
 }
 
-export type CreateResumeInput = Omit<Resume, "_id">;
+export type CreateResumeInput = Omit<ResumeType, "_id">;
 export type UpdateResumeInput = Partial<CreateResumeInput>;
