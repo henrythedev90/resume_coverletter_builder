@@ -1,6 +1,6 @@
-import connectDB from "@/utils/db";
-import User from "@/models/User";
 import bcrypt from "bcrypt";
+import User from "@/models/User";
+import connectDB from "@/utils/db";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -8,7 +8,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== "POST") {
-    res.status(405).json({
+    return res.status(405).json({
       error: "Method Not Allowed",
       message: "Must use POST method",
     });
@@ -16,11 +16,26 @@ export default async function handler(
 
   const { email, password, firstName, lastName } = req.body;
 
-  await connectDB();
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
   try {
+    if (!email || !password || !firstName || !lastName) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide the required fields",
+      });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid email address",
+      });
+    }
+
+    await connectDB();
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = new User({
       email,
       firstName,
@@ -28,12 +43,12 @@ export default async function handler(
       password: hashedPassword,
     });
     await user.save();
-    res.status(200).json({
+    return res.status(200).json({
       message: "User registered successfully",
       userCreated: user,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       error: "User registration failed",
       message: "This is a network error",
     });
