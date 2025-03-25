@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 export interface CoverLetterInput {
-  user: mongoose.Types.ObjectId;
-  resume: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
+  resumeId: mongoose.Types.ObjectId;
   jobTitle: string;
   companyName: string;
   jobDescription: string;

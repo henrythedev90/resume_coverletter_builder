@@ -1,7 +1,4 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-const genAIapiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
-const genAI = new GoogleGenerativeAI(genAIapiKey);
-
 import {
   ProfessionalExperience,
   Education,
@@ -16,6 +13,8 @@ import User from "@/models/User";
 export async function generateResume(
   resume: ResumeType & { userName?: string; userEmail?: string }
 ) {
+  const genAIapiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+  const genAI = new GoogleGenerativeAI(genAIapiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   let userData;

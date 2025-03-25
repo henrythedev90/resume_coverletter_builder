@@ -3,10 +3,9 @@ import { CoverLetterInput } from "@/types/coverletter";
 import Resume from "@/models/Resume";
 import User from "@/models/User";
 
-const genAIapiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
-const genAI = new GoogleGenerativeAI(genAIapiKey);
-
 export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
+  const genAIapiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+  const genAI = new GoogleGenerativeAI(genAIapiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   // Validate input data
@@ -28,7 +27,7 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
   // Fetch user details
 
   // Fetch resume details
-  const resume = await Resume.findById(coverLetterData.resume);
+  const resume = await Resume.findById(coverLetterData.resumeId);
   if (!resume) {
     throw new Error("Resume not found");
   }

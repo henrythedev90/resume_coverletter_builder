@@ -87,8 +87,8 @@ export default async function handler(
       reasonForApplying,
       keySkills,
       jobPostingPlatform,
-      user: new mongoose.Types.ObjectId(userId),
-      resume: new mongoose.Types.ObjectId(resume._id),
+      userId: new mongoose.Types.ObjectId(userId),
+      resumeId: new mongoose.Types.ObjectId(resume._id),
     };
 
     const generatedCoverLetter = await generateCoverLetter(coverLetterData);
