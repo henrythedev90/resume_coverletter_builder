@@ -14,10 +14,10 @@ export default async function handler(
     });
   }
 
-  const { email, password, firstName, lastName } = req.body;
+  const { email, password, firstName, lastName, address } = req.body;
 
   try {
-    if (!email || !password || !firstName || !lastName) {
+    if (!email || !password || !firstName || !lastName || !address) {
       return res.status(400).json({
         success: false,
         message: "Please provide the required fields",
@@ -40,6 +40,7 @@ export default async function handler(
       email,
       firstName,
       lastName,
+      address,
       password: hashedPassword,
     });
     await user.save();

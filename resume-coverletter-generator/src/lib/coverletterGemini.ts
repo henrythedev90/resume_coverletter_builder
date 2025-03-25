@@ -158,58 +158,73 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
       .join("\n"),
   };
 
-  // Construct the prompt
   const prompt = `Generate a professional, tailored cover letter for ${userName}:
-
-Job Details:
-- Job Title: ${coverLetterData.jobTitle}
-- Company Name: ${coverLetterData.companyName}
-- Company Mission: ${coverLetterData.companyMission}
-
-Job Description:
-${coverLetterData.jobDescription}
-
-Candidate's Background:
-Career Objective: ${resumeSummary.careerObjective}
-
-Professional Experience:
-${resumeSummary.professionalExperience}
-
-Education:
-${resumeSummary.education}
-
-Skills:
-- Technical Skills: ${resumeSummary.skills.technical}
-- Soft Skills: ${resumeSummary.skills.soft}
-- Industry-Specific Skills: ${resumeSummary.skills.industrySpecific}
-
-Projects:
-${resumeSummary.projects}
-
-Reason for Applying:
-${coverLetterData.reasonForApplying}
-
-Key Skills to Highlight:
-${coverLetterData.keySkills.join(", ")}
-
-Saw job posting at ${coverLetterData.jobPostingPlatform}
-
-Writing Guidelines:
-- Craft a compelling narrative connecting the candidate's background to the job
-- Highlight 2-3 most relevant experiences that directly align with job requirements
-- Demonstrate understanding of the company's mission
-- Maintain a professional, engaging tone
-- Keep the letter concise (350-450 words)
-- Write in first-person perspective
-- Create a strong opening and closing paragraph
-- Omit Address and Phone number
-- User's full name is ${userName}
-- User's email is ${userInfo.email}
-
-Generate a cover letter that showcases ${userName}'s passion, expertise, and potential value to the company.`;
+  
+  Job Details:
+  - Job Title: ${coverLetterData.jobTitle}
+  - Company Name: ${coverLetterData.companyName}
+  - Company Mission: ${coverLetterData.companyMission}
+  
+  Candidate's Personal Profile:
+  - Personal Trait: ${coverLetterData.personalTrait || "Not specified"}
+  - Key Achievements: ${
+    coverLetterData.achievements || "No specific achievements noted"
+  }
+  - Relevant Skills: ${
+    coverLetterData.relevantSkills ||
+    resumeSummary.skills.technical + ", " + resumeSummary.skills.soft
+  }
+  - Career Goals: ${
+    coverLetterData.careerGoals || resumeSummary.careerObjective
+  }
+  - Availability: ${coverLetterData.avaliability || "Not specified"}
+  
+  Job Description:
+  ${coverLetterData.jobDescription}
+  
+  Candidate's Background:
+  Career Objective: ${resumeSummary.careerObjective}
+  
+  Professional Experience:
+  ${resumeSummary.professionalExperience}
+  
+  Education:
+  ${resumeSummary.education}
+  
+  Skills:
+  - Technical Skills: ${resumeSummary.skills.technical}
+  - Soft Skills: ${resumeSummary.skills.soft}
+  - Industry-Specific Skills: ${resumeSummary.skills.industrySpecific}
+  
+  Projects:
+  ${resumeSummary.projects}
+  
+  Reason for Applying:
+  ${coverLetterData.reasonForApplying}
+  
+  Key Skills to Highlight:
+  ${coverLetterData.keySkills.join(", ")}
+  
+  Saw job posting at ${coverLetterData.jobPostingPlatform}
+  
+  Writing Guidelines:
+  - Craft a compelling narrative connecting the candidate's background to the job
+  - Highlight 2-3 most relevant experiences that directly align with job requirements
+  - Demonstrate understanding of the company's mission
+  - Incorporate personal traits and career goals into the narrative
+  - Emphasize key achievements and their relevance to the role
+  - Discuss availability and readiness to contribute
+  - Maintain a professional, engaging tone
+  - Keep the letter concise (350-450 words)
+  - Write in first-person perspective
+  - Create a strong opening and closing paragraph
+  - Omit Address and Phone number
+  - User's full name is ${userName}
+  - User's email is ${userInfo.email}
+  
+  Generate a cover letter that showcases ${userName}'s passion, expertise, personal traits, and potential value to the company.`;
 
   try {
-    // Generate cover letter
     const result = await model.generateContent(prompt);
     const response = result.response;
     const coverLetterText = response.text();

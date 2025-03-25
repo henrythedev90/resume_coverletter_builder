@@ -21,7 +21,7 @@ export default async function handler(
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Please procide the required fields",
+        message: "Please add the required fields",
       });
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

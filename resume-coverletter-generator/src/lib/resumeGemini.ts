@@ -45,6 +45,7 @@ export async function generateResume(
     Candidate Information:
     ${userName ? `Name: ${userName}` : ""}
     ${userData.email ? `Email: ${userData.email}` : ""}
+    ${userData.address ? `Address: ${userData.address}` : ""}
 
     Career Objective: ${resume.careerObjective}
 

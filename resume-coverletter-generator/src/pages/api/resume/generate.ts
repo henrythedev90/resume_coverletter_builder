@@ -64,12 +64,12 @@ export default async function handler(
       professionalExperience,
       education,
       skills,
-      projects,
-      awards,
-      languages,
-      volunteerExperience,
-      hobbiesAndInterests,
-      jobPreferences,
+      ...(projects && { projects }),
+      ...(awards && { awards }),
+      ...(languages && { languages }),
+      ...(volunteerExperience && { volunteerExperience }),
+      ...(hobbiesAndInterests && { hobbiesAndInterests }),
+      ...(jobPreferences && { jobPreferences }),
     };
 
     const result = await generateResume({

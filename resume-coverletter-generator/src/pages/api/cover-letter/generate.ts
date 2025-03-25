@@ -28,6 +28,11 @@ export default async function handler(
       reasonForApplying,
       keySkills,
       jobPostingPlatform,
+      personalTrait,
+      achievements,
+      relevantSkills,
+      careerGoals,
+      avaliability,
     } = req.body;
 
     if (
@@ -87,6 +92,11 @@ export default async function handler(
       jobPostingPlatform,
       userId: new mongoose.Types.ObjectId(userId),
       resumeId: new mongoose.Types.ObjectId(resume._id as string),
+      ...(personalTrait && { personalTrait }),
+      ...(achievements && { achievements }),
+      ...(relevantSkills && { relevantSkills }),
+      ...(careerGoals && { careerGoals }),
+      ...(avaliability && { avaliability }),
     };
 
     const generatedCoverLetter = await generateCoverLetter(coverLetterData);

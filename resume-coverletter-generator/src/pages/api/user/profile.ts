@@ -59,7 +59,7 @@ export default async function handler(
 
       case "PUT":
         try {
-          const { firstName, lastName, email, ...otherUpdates } = req.body;
+          const { firstName, lastName, email, address } = req.body;
 
           if (email) {
             return res.status(400).json({
@@ -69,11 +69,7 @@ export default async function handler(
             });
           }
           // Validate that at least one valid field is being updated
-          if (
-            !firstName &&
-            !lastName &&
-            Object.keys(otherUpdates).length === 0
-          ) {
+          if (!firstName && !lastName && !address) {
             return res.status(400).json({
               success: false,
               message: "No valid fields provided for update",
@@ -84,6 +80,7 @@ export default async function handler(
           const updates = {
             ...(firstName && { firstName }),
             ...(lastName && { lastName }),
+            ...(address && { address }),
           };
 
           const updatedUser = await User.findByIdAndUpdate(
