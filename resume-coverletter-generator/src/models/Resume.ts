@@ -93,6 +93,10 @@ const ResumeSchema = new mongoose.Schema({
     employmentType: { type: String }, // e.g., "Full-time", "Part-time", "Contract"
     preferredIndustry: { type: [String] }, // Industries the user is interested in
   },
+  resume: {
+    type: String,
+    required: true,
+  },
 });
 const Resume = mongoose.models.Resume || mongoose.model("Resume", ResumeSchema);
 export default Resume;

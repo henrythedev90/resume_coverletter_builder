@@ -71,13 +71,14 @@ export default async function handler(
       hobbiesAndInterests,
       jobPreferences,
     };
-    const resume = new Resume({
-      userId: new mongoose.Types.ObjectId(userId),
-      ...resumeData,
-    });
 
     const result = await generateResume({
       userId: new mongoose.Types.ObjectId(userId),
+      ...resumeData,
+    });
+    const resume = new Resume({
+      userId: new mongoose.Types.ObjectId(userId),
+      resume: result.resume,
       ...resumeData,
     });
 

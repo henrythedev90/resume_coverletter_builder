@@ -86,14 +86,15 @@ export default async function handler(
       keySkills,
       jobPostingPlatform,
       userId: new mongoose.Types.ObjectId(userId),
-      resumeId: new mongoose.Types.ObjectId(resume._id),
+      resumeId: new mongoose.Types.ObjectId(resume._id as string),
     };
 
     const generatedCoverLetter = await generateCoverLetter(coverLetterData);
 
     const coverLetter = new CoverLetter({
-      ...coverLetterData,
       resume: resume._id,
+      coverLetter: generatedCoverLetter.coverLetter,
+      ...coverLetterData,
     });
 
     await coverLetter.save();

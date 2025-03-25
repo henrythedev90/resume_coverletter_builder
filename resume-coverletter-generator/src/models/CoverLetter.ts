@@ -18,6 +18,10 @@ const CoverLetterSchema = new mongoose.Schema(
       ref: "JobFitAnalysis",
       requred: true,
     },
+    coverLetter: {
+      type: String,
+      required: true,
+    },
     jobTitle: {
       type: String,
       required: true,
