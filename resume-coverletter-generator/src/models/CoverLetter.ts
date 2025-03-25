@@ -60,6 +60,9 @@ const CoverLetterSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    jobPostingPlatform: {
+      type: String,
+    },
   },
   {
     timestamps: true,

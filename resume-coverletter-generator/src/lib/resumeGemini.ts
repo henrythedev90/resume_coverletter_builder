@@ -11,11 +11,31 @@ import {
   VolunteerExperience,
   ResumeType,
 } from "@/types/resume";
+import User from "@/models/User";
 
 export async function generateResume(
   resume: ResumeType & { userName?: string; userEmail?: string }
 ) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+  let userData;
+  try {
+    userData = await User.findById(resume.userId);
+    if (!userData) {
+      throw new Error("User not found");
+    }
+  } catch (error) {
+    console.log("Error fetching user:", error);
+    return {
+      success: false,
+      error: "Unable to retrieve user details",
+    };
+  }
+  let userName = `${userData.firstName
+    .charAt(0)
+    .toUpperCase()}${userData.firstName.slice(1)} ${userData.lastName
+    .charAt(0)
+    .toUpperCase()}${userData.lastName.slice(1)}`;
 
   // Helper function to safely join array items or return "N/A"
   const safeJoin = (arr?: string[] | null) => arr?.join(", ") || "N/A";
@@ -24,8 +44,8 @@ export async function generateResume(
     You are a professional resume writer. Generate a well-structured, professional resume based on the following details:
 
     Candidate Information:
-    ${resume.userName ? `Name: ${resume.userName}` : ""}
-    ${resume.userEmail ? `Email: ${resume.userEmail}` : ""}
+    ${userName ? `Name: ${userName}` : ""}
+    ${userData.email ? `Email: ${userData.email}` : ""}
 
     Career Objective: ${resume.careerObjective}
 
@@ -139,8 +159,8 @@ export async function generateResume(
     return {
       success: true,
       resume: generatedResume,
-      candidateName: resume.userName,
-      candidateEmail: resume.userEmail,
+      candidateName: userName,
+      candidateEmail: userData.userEmail,
     };
   } catch (error) {
     console.error("Resume Generation Error:", error);

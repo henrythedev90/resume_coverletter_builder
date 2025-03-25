@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
+import Resume from "@/models/Resume";
+import User from "@/models/User";
+import connectDB from "@/utils/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { generateResume } from "../../../lib/resumeGemini";
 import { DecodedToken } from "@/types/decodedToken";
@@ -49,13 +52,15 @@ export default async function handler(
     }
 
     const decoded = jwt.verify(token, jwtSecret) as DecodedToken;
-    const userId = decoded.userId; // Assuming userId is passed in the request body
-    console.log(userId, "this is the userId");
+    const userId = decoded.userId;
+
     if (!userId) {
       return res.status(400).json({ error: "Missing required fields" });
     }
-    const result = await generateResume({
-      userId: new mongoose.Types.ObjectId(userId),
+
+    await connectDB();
+
+    const resumeData = {
       careerObjective,
       professionalExperience,
       education,
@@ -66,7 +71,22 @@ export default async function handler(
       volunteerExperience,
       hobbiesAndInterests,
       jobPreferences,
+    };
+    const resume = new Resume({
+      userId: new mongoose.Types.ObjectId(userId),
+      ...resumeData,
     });
+
+    await User.findByIdAndUpdate(resume.userId, {
+      $push: { resumes: resume._id },
+    });
+
+    const result = await generateResume({
+      userId: new mongoose.Types.ObjectId(userId),
+      ...resumeData,
+    });
+
+    await resume.save();
 
     if (result.success) {
       return res.status(200).json(result);

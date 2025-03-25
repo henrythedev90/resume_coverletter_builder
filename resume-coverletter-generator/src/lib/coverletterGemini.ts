@@ -1,9 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { CoverLetterInput } from "@/types/coverletter";
-import CoverLetter from "@/models/CoverLetter";
 import Resume from "@/models/Resume";
 import User from "@/models/User";
-import mongoose from "mongoose";
 
 const genAIapiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(genAIapiKey);
@@ -28,10 +26,6 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
   });
 
   // Fetch user details
-  const user = await User.findById(coverLetterData.user);
-  if (!user) {
-    throw new Error("User not found");
-  }
 
   // Fetch resume details
   const resume = await Resume.findById(coverLetterData.resume);
@@ -39,7 +33,18 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
     throw new Error("Resume not found");
   }
 
-  // Construct detailed resume summary
+  const userInfo = await User.findById(resume.userId);
+
+  if (!userInfo) {
+    throw new Error("User not found");
+  }
+
+  let userName = `${userInfo.firstName
+    .charAt(0)
+    .toUpperCase()}${userInfo.firstName.slice(1)} ${userInfo.lastName
+    .charAt(0)
+    .toUpperCase()}${userInfo.lastName.slice(1)}`;
+
   const resumeSummary = {
     careerObjective: resume.careerObjective || "",
     professionalExperience: (resume.professionalExperience || [])
@@ -144,9 +149,7 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
   };
 
   // Construct the prompt
-  const prompt = `Generate a professional, tailored cover letter for ${
-    user.firstName
-  } ${user.lastName}:
+  const prompt = `Generate a professional, tailored cover letter for ${userName}:
 
 Job Details:
 - Job Title: ${coverLetterData.jobTitle}
@@ -179,6 +182,8 @@ ${coverLetterData.reasonForApplying}
 Key Skills to Highlight:
 ${coverLetterData.keySkills.join(", ")}
 
+Saw job posting at ${coverLetterData.jobPostingPlatform}
+
 Writing Guidelines:
 - Craft a compelling narrative connecting the candidate's background to the job
 - Highlight 2-3 most relevant experiences that directly align with job requirements
@@ -187,57 +192,25 @@ Writing Guidelines:
 - Keep the letter concise (350-450 words)
 - Write in first-person perspective
 - Create a strong opening and closing paragraph
+- Omit Address and Phone number
+- User's full name is ${userName}
+- User's email is ${userInfo.email}
 
-Generate a cover letter that showcases ${
-    user.firstName
-  }'s passion, expertise, and potential value to the company.`;
+Generate a cover letter that showcases ${userName}'s passion, expertise, and potential value to the company.`;
 
   try {
     // Generate cover letter
     const result = await model.generateContent(prompt);
-    const response = await result.response;
+    const response = result.response;
     const coverLetterText = response.text();
 
-    // Save the generated cover letter to MongoDB
-    const newCoverLetter = new CoverLetter({
-      ...coverLetterData,
-      generatedLetter: coverLetterText,
-    });
-    await newCoverLetter.save();
-
-    // Update user's coverLetter array
-    await User.findByIdAndUpdate(coverLetterData.user, {
-      $push: { coverLetter: newCoverLetter._id },
-    });
-
-    return coverLetterText;
+    return {
+      success: true,
+      coverLetter: coverLetterText,
+      candidateName: userName,
+    };
   } catch (error) {
     console.error("Error generating cover letter:", error);
     throw new Error("Failed to generate cover letter");
   }
 }
-
-// Example usage function
-async function exampleUsage() {
-  try {
-    const coverLetterData: CoverLetterInput = {
-      user: new mongoose.Types.ObjectId(), // Existing User ID
-      resume: new mongoose.Types.ObjectId(), // Existing Resume ID
-      jobTitle: "Software Engineer",
-      companyName: "Tech Innovations Inc.",
-      jobDescription:
-        "Seeking a talented Software Engineer to join our dynamic team...",
-      companyMission: "Revolutionizing technology through innovative solutions",
-      reasonForApplying:
-        "Passionate about creating impactful software solutions",
-      keySkills: ["JavaScript", "React", "Node.js", "MongoDB"],
-    };
-
-    const generatedCoverLetter = await generateCoverLetter(coverLetterData);
-    console.log(generatedCoverLetter);
-  } catch (error) {
-    console.error("Cover letter generation failed:", error);
-  }
-}
-
-export default generateCoverLetter;
