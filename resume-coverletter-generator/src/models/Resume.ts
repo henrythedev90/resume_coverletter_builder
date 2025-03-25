@@ -94,5 +94,5 @@ const ResumeSchema = new mongoose.Schema({
     preferredIndustry: { type: [String] }, // Industries the user is interested in
   },
 });
-const Resume = mongoose.model("Resume", ResumeSchema);
+const Resume = mongoose.models.Resume || mongoose.model("Resume", ResumeSchema);
 export default Resume;

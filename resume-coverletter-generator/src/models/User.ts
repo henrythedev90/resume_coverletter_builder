@@ -7,8 +7,6 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    resumes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Resume" }],
-    coverLetter: [{ type: mongoose.Schema.Types.ObjectId, ref: "CoverLetter" }],
   },
   { timestamps: true }
 );

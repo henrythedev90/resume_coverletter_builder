@@ -70,6 +70,7 @@ const CoverLetterSchema = new mongoose.Schema(
 );
 
 // Create the CoverLetter model
-const CoverLetter = mongoose.model("CoverLetter", CoverLetterSchema);
-
+const CoverLetter =
+  mongoose.models.CoverLetter ||
+  mongoose.model("CoverLetter", CoverLetterSchema);
 export default CoverLetter;

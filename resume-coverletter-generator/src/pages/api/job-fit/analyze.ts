@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
-import Resume from "@/models/Resume";
 import { NextApiRequest, NextApiResponse } from "next";
 import { analyzeJobFit } from "@/lib/jobFitGemini";
 import { DecodedToken } from "@/types/decodedToken";

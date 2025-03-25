@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import Resume from "@/models/Resume";
-import User from "@/models/User";
 import CoverLetter from "@/models/CoverLetter";
 import connectDB from "@/utils/db";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -67,7 +66,6 @@ export default async function handler(
     if (!userId) {
       return res.status(400).json({ error: "Missing required fields" });
     }
-    console.log(userId, "this is userId");
     const resume = await Resume.findOne({
       userId: new mongoose.Types.ObjectId(userId),
     });
@@ -95,10 +93,7 @@ export default async function handler(
 
     const coverLetter = new CoverLetter({
       ...coverLetterData,
-    });
-
-    await User.findByIdAndUpdate(userId, {
-      $push: { coverLetter: coverLetter._id },
+      resume: resume._id,
     });
 
     await coverLetter.save();

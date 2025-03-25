@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import Resume from "@/models/Resume";
-import User from "@/models/User";
 import connectDB from "@/utils/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { generateResume } from "../../../lib/resumeGemini";
@@ -75,10 +74,6 @@ export default async function handler(
     const resume = new Resume({
       userId: new mongoose.Types.ObjectId(userId),
       ...resumeData,
-    });
-
-    await User.findByIdAndUpdate(resume.userId, {
-      $push: { resumes: resume._id },
     });
 
     const result = await generateResume({

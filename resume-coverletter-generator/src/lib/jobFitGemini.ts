@@ -1,5 +1,14 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { JobFitAnalysisInput } from "@/types/jobfitanalysis";
+import {
+  ProfessionalExperience,
+  Education,
+  Project,
+  Award,
+  Language,
+  VolunteerExperience,
+  ResumeType,
+} from "@/types/resume";
 import Resume from "@/models/Resume";
 import User from "@/models/User";
 
@@ -37,7 +46,7 @@ export async function analyzeJobFit(jobFitData: JobFitAnalysisInput) {
     careerObjective: resume.careerObjective || "",
     professionalExperience: (resume.professionalExperience || [])
       .map(
-        (exp) =>
+        (exp: ProfessionalExperience) =>
           `${exp.jobTitle || "N/A"} at ${exp.companyName || "N/A"}: 
        Responsibilities: ${
          (exp.responsibilities || []).join(", ") || "No responsibilities listed"
@@ -49,7 +58,7 @@ export async function analyzeJobFit(jobFitData: JobFitAnalysisInput) {
       .join("\n\n"),
     education: (resume.education || [])
       .map(
-        (edu) =>
+        (edu: Education) =>
           `${edu.degree || "Degree N/A"} in ${
             edu.fieldOfStudy || "Field N/A"
           } from ${edu.universityName || "University N/A"}`
@@ -66,7 +75,7 @@ export async function analyzeJobFit(jobFitData: JobFitAnalysisInput) {
     },
     projects: (resume.projects || [])
       .map(
-        (proj) =>
+        (proj: Project) =>
           `${proj.title || "Untitled Project"}: ${
             proj.description || "No description"
           } (Skills: ${

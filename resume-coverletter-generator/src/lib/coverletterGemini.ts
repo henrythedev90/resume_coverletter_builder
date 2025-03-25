@@ -1,5 +1,14 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { CoverLetterInput } from "@/types/coverletter";
+import {
+  ProfessionalExperience,
+  Education,
+  Project,
+  Award,
+  Language,
+  VolunteerExperience,
+  Website,
+} from "@/types/resume";
 import Resume from "@/models/Resume";
 import User from "@/models/User";
 
@@ -48,7 +57,7 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
     careerObjective: resume.careerObjective || "",
     professionalExperience: (resume.professionalExperience || [])
       .map(
-        (exp) =>
+        (exp: ProfessionalExperience) =>
           `${exp.jobTitle || "N/A"} at ${exp.companyName || "N/A"} (${
             exp.dates?.start
               ? new Date(exp.dates.start).toLocaleDateString()
@@ -68,7 +77,7 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
       .join("\n\n"),
     education: (resume.education || [])
       .map(
-        (edu) =>
+        (edu: Education) =>
           `${edu.degree || "Degree N/A"} in ${
             edu.fieldOfStudy || "Field N/A"
           } from ${edu.universityName || "University N/A"}, Graduated ${
@@ -87,7 +96,7 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
     },
     projects: (resume.projects || [])
       .map(
-        (proj) =>
+        (proj: Project) =>
           `${proj.title || "Untitled Project"}: ${
             proj.description || "No description"
           } (Skills: ${
@@ -97,7 +106,7 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
       .join("\n"),
     awards: (resume.awards || [])
       .map(
-        (award) =>
+        (award: Award) =>
           `${award.title || "Unnamed Award"} (${award.year || "Year N/A"}): ${
             award.description || "No description"
           }`
@@ -105,7 +114,7 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
       .join("\n"),
     volunteerExperience: (resume.volunteerExperience || [])
       .map(
-        (vol) =>
+        (vol: VolunteerExperience) =>
           `${vol.role || "Volunteer Role"} at ${
             vol.organization || "Organization N/A"
           } (${
@@ -123,7 +132,7 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
       .join("\n"),
     languages: (resume.languages || [])
       .map(
-        (lang) =>
+        (lang: Language) =>
           `${lang.language || "Language N/A"} (${
             lang.proficiency || "Proficiency N/A"
           })`
@@ -143,7 +152,9 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
       (resume.hobbiesAndInterests || []).join(", ") ||
       "No hobbies or interests listed",
     websites: (resume.websites || [])
-      .map((site) => `${site.platform || "Website"}: ${site.url || "N/A"}`)
+      .map(
+        (site: Website) => `${site.platform || "Website"}: ${site.url || "N/A"}`
+      )
       .join("\n"),
   };
 
