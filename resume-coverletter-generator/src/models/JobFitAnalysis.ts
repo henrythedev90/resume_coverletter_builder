@@ -12,10 +12,11 @@ const JobFitAnalysisSchema = new mongoose.Schema(
       ref: "Resume",
       required: true,
     },
+    companyName: { type: String, required: true },
     jobTitle: { type: String, required: true },
     jobDescription: { type: String, required: true },
     fitScore: { type: Number, required: true },
-    analysisFeedback: { type: String },
+    analysisFeedback: { type: String, required: true },
   },
   { timestamps: true }
 );

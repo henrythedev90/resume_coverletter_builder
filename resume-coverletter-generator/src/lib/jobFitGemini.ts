@@ -1,14 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { JobFitAnalysisInput } from "@/types/jobfitanalysis";
-import {
-  ProfessionalExperience,
-  Education,
-  Project,
-  Award,
-  Language,
-  VolunteerExperience,
-  ResumeType,
-} from "@/types/resume";
+import { ProfessionalExperience, Education, Project } from "@/types/resume";
 import Resume from "@/models/Resume";
 import User from "@/models/User";
 
@@ -22,6 +14,7 @@ export async function analyzeJobFit(jobFitData: JobFitAnalysisInput) {
     "resumeId",
     "jobTitle",
     "jobDescription",
+    "companyName",
   ];
 
   requiredFields.forEach((field) => {
@@ -90,8 +83,8 @@ export async function analyzeJobFit(jobFitData: JobFitAnalysisInput) {
 
 Job Details:
 - Job Title: ${jobFitData.jobTitle}
-- Job Description:
-${jobFitData.jobDescription}
+- Job Description: ${jobFitData.jobDescription}
+- Company Name: ${jobFitData.companyName}
 
 Candidate's Resume Summary:
 Career Objective: ${resumeSummary.careerObjective}
@@ -136,6 +129,7 @@ Provide a structured analysis with the following sections:
       success: true,
       analysis: jobFitAnalysis,
       recommendationScore: calculateRecommendationScore(jobFitAnalysis),
+      companyName: jobFitData.companyName,
     };
   } catch (error) {
     console.error("Job Fit Analysis Error:", error);
