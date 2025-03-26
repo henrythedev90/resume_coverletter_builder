@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { JobFitAnalysisInput } from "@/types/jobfitanalysis";
+import { JobFitAnalysisInput } from "@/types/jobFitAnalysis";
 import { ProfessionalExperience, Education, Project } from "@/types/resume";
 import Resume from "@/models/Resume";
 import User from "@/models/User";
