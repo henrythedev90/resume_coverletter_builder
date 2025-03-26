@@ -18,11 +18,11 @@ export default async function handler(
   }
 
   try {
-    // Extract resumeId from query parameters
-    const { resumeId } = req.query;
-
-    // Validate resumeId is provided
-    if (!resumeId) {
+    // Extract id from query parameters
+    const { id } = req.query;
+    console.log(id, "this is resume Id");
+    // Validate id is provided
+    if (!id) {
       return res.status(400).json({
         success: false,
         error: "Resume ID is required",
@@ -53,7 +53,7 @@ export default async function handler(
 
     // Find and delete the resume, ensuring it belongs to the authenticated user
     const result = await Resume.findOneAndDelete({
-      _id: new mongoose.Types.ObjectId(resumeId as string),
+      _id: new mongoose.Types.ObjectId(id as string),
       userId: new mongoose.Types.ObjectId(userId),
     });
 
