@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { ResumeType, ProfessionalExperience } from "@/types/resume";
 import DatePicker from "../DatePicker/DatePicker";
+import ProfessionalExperienceComponent from "../ProfessionalExperience/ProfessionalExperience";
 
 // Animation variants for smooth transitions
 const pageVariants = {
@@ -108,62 +109,6 @@ const ResumeGeneratorForm: React.FC = () => {
     }
   };
 
-  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedExperience = [...formData.professionalExperience];
-    if (updatedExperience[experienceIndex]) {
-      updatedExperience[experienceIndex].location = {
-        ...updatedExperience[experienceIndex].location,
-        city: e.target.value,
-      };
-      setFormData({
-        ...formData,
-        professionalExperience: updatedExperience,
-      });
-    }
-  };
-
-  const handleStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedExperience = [...formData.professionalExperience];
-    if (updatedExperience[experienceIndex]) {
-      updatedExperience[experienceIndex].location = {
-        ...updatedExperience[experienceIndex].location,
-        state: e.target.value,
-      };
-      setFormData({
-        ...formData,
-        professionalExperience: updatedExperience,
-      });
-    }
-  };
-
-  const handleStartDateChange = (date: Date | undefined) => {
-    const updatedExperience = [...formData.professionalExperience];
-    if (updatedExperience[experienceIndex]) {
-      updatedExperience[experienceIndex].dates = {
-        ...updatedExperience[experienceIndex].dates,
-        start: date,
-      };
-      setFormData({
-        ...formData,
-        professionalExperience: updatedExperience,
-      });
-    }
-  };
-
-  const handleEndDateChange = (date: Date | undefined) => {
-    const updatedExperience = [...formData.professionalExperience];
-    if (updatedExperience[experienceIndex]) {
-      updatedExperience[experienceIndex].dates = {
-        ...updatedExperience[experienceIndex].dates,
-        end: date,
-      };
-      setFormData({
-        ...formData,
-        professionalExperience: updatedExperience,
-      });
-    }
-  };
-
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 0:
@@ -177,92 +122,7 @@ const ResumeGeneratorForm: React.FC = () => {
             transition={pageTransition}
             className="space-y-4"
           >
-            <h2 className="text-2xl font-bold">Professional Experience</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Company</Label>
-                <Input
-                  placeholder="Company Name" // Corrected placeholder
-                  value={
-                    formData.professionalExperience?.[experienceIndex]
-                      ?.companyName
-                  }
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const updatedExperience = [
-                      ...formData.professionalExperience,
-                    ];
-                    if (updatedExperience[experienceIndex]) {
-                      updatedExperience[experienceIndex].companyName =
-                        e.target.value; // Corrected property
-                      setFormData({
-                        ...formData,
-                        professionalExperience: updatedExperience,
-                      });
-                    }
-                  }}
-                />
-              </div>
-              <div>
-                <Label>Job Title</Label>
-                <Input
-                  placeholder="Job Title" // Corrected placeholder
-                  value={
-                    formData.professionalExperience?.[experienceIndex]?.jobTitle
-                  }
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const updatedExperience = [
-                      ...formData.professionalExperience,
-                    ];
-                    if (updatedExperience[experienceIndex]) {
-                      updatedExperience[experienceIndex].jobTitle =
-                        e.target.value; // Corrected property
-                      setFormData({
-                        ...formData,
-                        professionalExperience: updatedExperience,
-                      });
-                    }
-                  }}
-                />
-              </div>
-              <div>
-                <Input
-                  placeholder="City"
-                  value={
-                    formData.professionalExperience?.[experienceIndex]?.location
-                      ?.city
-                  }
-                  onChange={handleCityChange}
-                />
-
-                <Input
-                  placeholder="State"
-                  value={
-                    formData.professionalExperience?.[experienceIndex]?.location
-                      ?.state
-                  }
-                  onChange={handleStateChange}
-                />
-              </div>
-              <div>
-                <DatePicker
-                  date={
-                    formData.professionalExperience?.[experienceIndex]?.dates
-                      ?.start
-                  }
-                  setDate={handleStartDateChange}
-                  placeholder="Start Date"
-                />
-
-                <DatePicker
-                  date={
-                    formData.professionalExperience?.[experienceIndex]?.dates
-                      ?.end
-                  }
-                  setDate={handleEndDateChange}
-                  placeholder="End Date"
-                />
-              </div>
-            </div>
+            <ProfessionalExperienceComponent />
           </motion.div>
         );
       //   case 1:
@@ -312,54 +172,53 @@ const ResumeGeneratorForm: React.FC = () => {
   };
 
   return (
-    <div>hello</div>
-    // <div className="max-w-4xl mx-auto p-8">
-    //   <div className="mb-8">
-    //     <h1 className="text-3xl font-bold mb-4">Resume Generator</h1>
-    //     <div className="flex items-center space-x-4">
-    //       {steps.map((step, index) => (
-    //         <React.Fragment key={step}>
-    //           <div
-    //             className={`
-    //               w-8 h-8 rounded-full flex items-center justify-center
-    //               ${
-    //                 index <= currentStep
-    //                   ? "bg-blue-500 text-white"
-    //                   : "bg-gray-200 text-gray-500"
-    //               }
-    //             `}
-    //           >
-    //             {index + 1}
-    //           </div>
-    //           {index < steps.length - 1 && (
-    //             <Separator
-    //               orientation="horizontal"
-    //               className={`flex-grow ${
-    //                 index < currentStep ? "bg-blue-500" : "bg-gray-200"
-    //               }`}
-    //             />
-    //           )}
-    //         </React.Fragment>
-    //       ))}
-    //     </div>
-    //   </div>
+    <div className="max-w-4xl mx-auto p-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-4">Resume Generator</h1>
+        <div className="flex items-center space-x-4">
+          {steps.map((step, index) => (
+            <React.Fragment key={step}>
+              <div
+                className={`
+                  w-8 h-8 rounded-full flex items-center justify-center
+                  ${
+                    index <= currentStep
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-500"
+                  }
+                `}
+              >
+                {index + 1}
+              </div>
+              {index < steps.length - 1 && (
+                <Separator
+                  orientation="horizontal"
+                  className={`flex-grow ${
+                    index < currentStep ? "bg-blue-500" : "bg-gray-200"
+                  }`}
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
 
-    //   <AnimatePresence mode="wait">{renderCurrentStep()}</AnimatePresence>
+      <AnimatePresence mode="wait">{renderCurrentStep()}</AnimatePresence>
 
-    //   <div className="mt-8 flex justify-between">
-    //     {currentStep > 0 && (
-    //       <Button variant="outline" onClick={prevStep}>
-    //         Previous
-    //       </Button>
-    //     )}
-    //     {currentStep < steps.length - 1 && (
-    //       <Button onClick={nextStep}>Next</Button>
-    //     )}
-    //     {currentStep === steps.length - 1 && (
-    //       <Button variant="default">Submit Resume</Button>
-    //     )}
-    //   </div>
-    // </div>
+      <div className="mt-8 flex justify-between">
+        {currentStep > 0 && (
+          <Button variant="outline" onClick={prevStep}>
+            Previous
+          </Button>
+        )}
+        {currentStep < steps.length - 1 && (
+          <Button onClick={nextStep}>Next</Button>
+        )}
+        {currentStep === steps.length - 1 && (
+          <Button variant="default">Submit Resume</Button>
+        )}
+      </div>
+    </div>
   );
 };
 
