@@ -79,7 +79,7 @@ const ResumeSchema = new mongoose.Schema({
         start: { type: Date },
         end: { type: Date },
       },
-      contributions: { type: [String] },
+      description: { type: String },
     },
   ],
 

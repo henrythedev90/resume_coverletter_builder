@@ -1,14 +1,18 @@
 "use client";
 import React, { useState } from "react";
-import { Types } from "mongoose";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ResumeType } from "@/types/resume";
 import EducationComponent from "../Education/Education";
 import ProfessionalExperienceComponent from "../ProfessionalExperience/ProfessionalExperience";
 import SkillsComponent from "../Skills/Skills";
 import ProjectsComponents from "../ProjectsComponent/ProjectsComponent";
+import AwardComponent from "../Awards/Awards";
+import LanguageComponent from "../Language/Language";
+import VolunteerComponent from "../VolunteerExperience/VolunteerExperience";
+import WebsiteComponent from "../Website/Website";
+import JobPreferencesComponent from "../JobPreferences/JobPreferences";
+import HobbiesAndInterestComponent from "../Hobbies/Hobbies";
 
 // Animation variants for smooth transitions
 const pageVariants = {
@@ -25,61 +29,6 @@ const pageTransition = {
 
 const ResumeGeneratorForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState<ResumeType>({
-    userId: new Types.ObjectId(),
-    professionalExperience: [
-      {
-        companyName: "",
-        jobTitle: "",
-        location: { city: "", state: "" },
-        dates: { start: undefined, end: undefined },
-        responsibilities: [],
-        accomplishments: [],
-        skillsUsed: [],
-      },
-    ],
-    education: [
-      {
-        degree: "",
-        fieldOfStudy: "",
-        universityName: "",
-        graduationYear: undefined,
-        certifications: [],
-      },
-    ],
-    skills: {
-      technical: [],
-      soft: [],
-      industrySpecific: [],
-    },
-    projects: [
-      {
-        title: "",
-        description: "",
-        role: "",
-        skillsUsed: [],
-        portfolioLink: "",
-      },
-    ],
-    awards: [{ title: "", year: 1900, description: "" }],
-    languages: [{ language: "", proficiency: "" }],
-    volunteerExperience: [
-      {
-        organization: "",
-        role: "",
-        contributions: [],
-        dates: { start: new Date(), end: new Date() },
-      },
-    ],
-    hobbiesAndInterests: [],
-    websites: [{ platform: "", url: "" }],
-    jobPreferences: {
-      desiredJobTitles: [], // Desired positions or job titles
-      preferredLocation: "", // Preferred location for work
-      employmentType: "", // e.g., "Full-time", "Part-time", "Contract"
-      preferredIndustry: [], // Industries the user is interested in
-    },
-  });
 
   const steps = [
     "Professional Experience",
@@ -162,6 +111,90 @@ const ResumeGeneratorForm: React.FC = () => {
             className="space-y-4"
           >
             <ProjectsComponents />
+          </motion.div>
+        );
+      case 4:
+        return (
+          <motion.div
+            key="Award"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+            className="space-y-4"
+          >
+            <AwardComponent />
+          </motion.div>
+        );
+      case 5:
+        return (
+          <motion.div
+            key="Language"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+            className="space-y-4"
+          >
+            <LanguageComponent />
+          </motion.div>
+        );
+      case 6:
+        return (
+          <motion.div
+            key="Volunteer-Experience"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+            className="space-y-4"
+          >
+            <VolunteerComponent />
+          </motion.div>
+        );
+      case 7:
+        return (
+          <motion.div
+            key="website"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+            className="space-y-4"
+          >
+            <WebsiteComponent />
+          </motion.div>
+        );
+      case 8:
+        return (
+          <motion.div
+            key="Hobbies & Interest"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+            className="space-y-4"
+          >
+            <JobPreferencesComponent />
+          </motion.div>
+        );
+      case 9:
+        return (
+          <motion.div
+            key="Job Preferences"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+            className="space-y-4"
+          >
+            <HobbiesAndInterestComponent />
           </motion.div>
         );
       // Add similar cases for other steps...

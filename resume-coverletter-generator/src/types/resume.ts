@@ -56,7 +56,7 @@ export interface VolunteerExperience {
     start?: Date;
     end?: Date;
   };
-  contributions?: string[];
+  description?: string;
 }
 
 export interface Website {
@@ -71,6 +71,10 @@ export interface JobPreferences {
   preferredIndustry?: string[];
 }
 
+export interface HobbiesAndInterests {
+  event: [];
+}
+
 export interface ResumeType {
   _id?: string;
   userId: Types.ObjectId;
@@ -82,7 +86,7 @@ export interface ResumeType {
   awards?: Award[];
   languages?: Language[];
   volunteerExperience?: VolunteerExperience[];
-  hobbiesAndInterests?: string[];
+  hobbiesAndInterests?: HobbiesAndInterests[];
   websites?: Website[];
   jobPreferences?: JobPreferences;
 }

@@ -4,6 +4,7 @@ import { Project } from "@/types/resume";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
+import { Textarea } from "../ui/textarea";
 
 const ProjectsComponents: React.FC = () => {
   const [formData, setFormData] = useState<Project>({
@@ -43,7 +44,7 @@ const ProjectsComponents: React.FC = () => {
         </div>
         <div className="space-y-2">
           <Label>Description</Label>
-          <Input
+          <Textarea
             placeholder="Description"
             value={formData.description}
             onChange={(e) => handleChange("description", e.target.value)}
