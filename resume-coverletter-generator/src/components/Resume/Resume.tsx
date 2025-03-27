@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { ResumeType, ProfessionalExperience } from "@/types/resume";
+import DatePicker from "../DatePicker/DatePicker";
 
 // Animation variants for smooth transitions
 const pageVariants = {
@@ -24,14 +25,15 @@ const pageTransition = {
 
 const ResumeGeneratorForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [experienceIndex, setExperienceIndex] = React.useState(0);
   const [formData, setFormData] = useState<ResumeType>({
     userId: new Types.ObjectId(),
     professionalExperience: [
       {
         companyName: "",
         jobTitle: "",
-        location: "",
-        dates: { start: new Date(), end: new Date() },
+        location: { city: "", state: "" },
+        dates: { start: undefined, end: undefined },
         responsibilities: [],
         accomplishments: [],
         skillsUsed: [],
@@ -106,103 +108,208 @@ const ResumeGeneratorForm: React.FC = () => {
     }
   };
 
-  //   const renderCurrentStep = () => {
-  //     switch (currentStep) {
-  //       case 0:
-  //         return (
-  //           <motion.div
-  //             key="professional-experience"
-  //             initial="initial"
-  //             animate="in"
-  //             exit="out"
-  //             variants={pageVariants}
-  //             transition={pageTransition}
-  //             className="space-y-4"
-  //           >
-  //             <h2 className="text-2xl font-bold">Professional Experience</h2>
-  //             <div className="grid grid-cols-2 gap-4">
-  //               <div>
-  //                 <Label>Company</Label>
-  //                 <Input
-  //                   placeholder="Company Name"
-  //                   value={formData.professionalExperience[0].company}
-  //                   onChange={(e) => {
-  //                     const updatedExperience = [
-  //                       ...formData.professionalExperience,
-  //                     ];
-  //                     updatedExperience[0].company = e.target.value;
-  //                     setFormData({
-  //                       ...formData,
-  //                       professionalExperience: updatedExperience,
-  //                     });
-  //                   }}
-  //                 />
-  //               </div>
-  //               <div>
-  //                 <Label>Role</Label>
-  //                 <Input
-  //                   placeholder="Job Title"
-  //                   value={formData.professionalExperience[0].role}
-  //                   onChange={(e) => {
-  //                     const updatedExperience = [
-  //                       ...formData.professionalExperience,
-  //                     ];
-  //                     updatedExperience[0].role = e.target.value;
-  //                     setFormData({
-  //                       ...formData,
-  //                       professionalExperience: updatedExperience,
-  //                     });
-  //                   }}
-  //                 />
-  //               </div>
-  //             </div>
-  //           </motion.div>
-  //         );
-  //       case 1:
-  //         return (
-  //           <motion.div
-  //             key="education"
-  //             initial="initial"
-  //             animate="in"
-  //             exit="out"
-  //             variants={pageVariants}
-  //             transition={pageTransition}
-  //             className="space-y-4"
-  //           >
-  //             <h2 className="text-2xl font-bold">Education</h2>
-  //             <div className="grid grid-cols-2 gap-4">
-  //               <div>
-  //                 <Label>Institution</Label>
-  //                 <Input
-  //                   placeholder="University Name"
-  //                   value={formData.education[0].institution}
-  //                   onChange={(e) => {
-  //                     const updatedEducation = [...formData.education];
-  //                     updatedEducation[0].institution = e.target.value;
-  //                     setFormData({ ...formData, education: updatedEducation });
-  //                   }}
-  //                 />
-  //               </div>
-  //               <div>
-  //                 <Label>Degree</Label>
-  //                 <Input
-  //                   placeholder="Degree Earned"
-  //                   value={formData.education[0].degree}
-  //                   onChange={(e) => {
-  //                     const updatedEducation = [...formData.education];
-  //                     updatedEducation[0].degree = e.target.value;
-  //                     setFormData({ ...formData, education: updatedEducation });
-  //                   }}
-  //                 />
-  //               </div>
-  //             </div>
-  //           </motion.div>
-  //         );
-  //       // Add similar cases for other steps...
-  //       default:
-  //         return null;
-  //     }
-  //   };
+  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedExperience = [...formData.professionalExperience];
+    if (updatedExperience[experienceIndex]) {
+      updatedExperience[experienceIndex].location = {
+        ...updatedExperience[experienceIndex].location,
+        city: e.target.value,
+      };
+      setFormData({
+        ...formData,
+        professionalExperience: updatedExperience,
+      });
+    }
+  };
+
+  const handleStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedExperience = [...formData.professionalExperience];
+    if (updatedExperience[experienceIndex]) {
+      updatedExperience[experienceIndex].location = {
+        ...updatedExperience[experienceIndex].location,
+        state: e.target.value,
+      };
+      setFormData({
+        ...formData,
+        professionalExperience: updatedExperience,
+      });
+    }
+  };
+
+  const handleStartDateChange = (date: Date | undefined) => {
+    const updatedExperience = [...formData.professionalExperience];
+    if (updatedExperience[experienceIndex]) {
+      updatedExperience[experienceIndex].dates = {
+        ...updatedExperience[experienceIndex].dates,
+        start: date,
+      };
+      setFormData({
+        ...formData,
+        professionalExperience: updatedExperience,
+      });
+    }
+  };
+
+  const handleEndDateChange = (date: Date | undefined) => {
+    const updatedExperience = [...formData.professionalExperience];
+    if (updatedExperience[experienceIndex]) {
+      updatedExperience[experienceIndex].dates = {
+        ...updatedExperience[experienceIndex].dates,
+        end: date,
+      };
+      setFormData({
+        ...formData,
+        professionalExperience: updatedExperience,
+      });
+    }
+  };
+
+  const renderCurrentStep = () => {
+    switch (currentStep) {
+      case 0:
+        return (
+          <motion.div
+            key="professional-experience"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+            className="space-y-4"
+          >
+            <h2 className="text-2xl font-bold">Professional Experience</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Company</Label>
+                <Input
+                  placeholder="Company Name" // Corrected placeholder
+                  value={
+                    formData.professionalExperience?.[experienceIndex]
+                      ?.companyName
+                  }
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const updatedExperience = [
+                      ...formData.professionalExperience,
+                    ];
+                    if (updatedExperience[experienceIndex]) {
+                      updatedExperience[experienceIndex].companyName =
+                        e.target.value; // Corrected property
+                      setFormData({
+                        ...formData,
+                        professionalExperience: updatedExperience,
+                      });
+                    }
+                  }}
+                />
+              </div>
+              <div>
+                <Label>Job Title</Label>
+                <Input
+                  placeholder="Job Title" // Corrected placeholder
+                  value={
+                    formData.professionalExperience?.[experienceIndex]?.jobTitle
+                  }
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const updatedExperience = [
+                      ...formData.professionalExperience,
+                    ];
+                    if (updatedExperience[experienceIndex]) {
+                      updatedExperience[experienceIndex].jobTitle =
+                        e.target.value; // Corrected property
+                      setFormData({
+                        ...formData,
+                        professionalExperience: updatedExperience,
+                      });
+                    }
+                  }}
+                />
+              </div>
+              <div>
+                <Input
+                  placeholder="City"
+                  value={
+                    formData.professionalExperience?.[experienceIndex]?.location
+                      ?.city
+                  }
+                  onChange={handleCityChange}
+                />
+
+                <Input
+                  placeholder="State"
+                  value={
+                    formData.professionalExperience?.[experienceIndex]?.location
+                      ?.state
+                  }
+                  onChange={handleStateChange}
+                />
+              </div>
+              <div>
+                <DatePicker
+                  date={
+                    formData.professionalExperience?.[experienceIndex]?.dates
+                      ?.start
+                  }
+                  setDate={handleStartDateChange}
+                  placeholder="Start Date"
+                />
+
+                <DatePicker
+                  date={
+                    formData.professionalExperience?.[experienceIndex]?.dates
+                      ?.end
+                  }
+                  setDate={handleEndDateChange}
+                  placeholder="End Date"
+                />
+              </div>
+            </div>
+          </motion.div>
+        );
+      //   case 1:
+      //     return (
+      //       <motion.div
+      //         key="education"
+      //         initial="initial"
+      //         animate="in"
+      //         exit="out"
+      //         variants={pageVariants}
+      //         transition={pageTransition}
+      //         className="space-y-4"
+      //       >
+      //         <h2 className="text-2xl font-bold">Education</h2>
+      //         <div className="grid grid-cols-2 gap-4">
+      //           <div>
+      //             <Label>Institution</Label>
+      //             <Input
+      //               placeholder="University Name"
+      //               value={formData.education[0].institution}
+      //               onChange={(e) => {
+      //                 const updatedEducation = [...formData.education];
+      //                 updatedEducation[0].institution = e.target.value;
+      //                 setFormData({ ...formData, education: updatedEducation });
+      //               }}
+      //             />
+      //           </div>
+      //           <div>
+      //             <Label>Degree</Label>
+      //             <Input
+      //               placeholder="Degree Earned"
+      //               value={formData.education[0].degree}
+      //               onChange={(e) => {
+      //                 const updatedEducation = [...formData.education];
+      //                 updatedEducation[0].degree = e.target.value;
+      //                 setFormData({ ...formData, education: updatedEducation });
+      //               }}
+      //             />
+      //           </div>
+      //         </div>
+      //       </motion.div>
+      //     );
+      // Add similar cases for other steps...
+      default:
+        return null;
+    }
+  };
 
   return (
     <div>hello</div>

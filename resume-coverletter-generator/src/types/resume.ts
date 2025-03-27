@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 export interface ProfessionalExperience {
   jobTitle: string;
   companyName: string;
-  location: string;
+  location: { city: string; state: string };
   dates: {
     start?: Date;
     end?: Date;
@@ -73,7 +73,7 @@ export interface ResumeType {
   _id?: string;
   userId: Types.ObjectId;
   careerObjective?: string;
-  professionalExperience?: ProfessionalExperience[];
+  professionalExperience: ProfessionalExperience[];
   education?: Education[];
   skills?: Skills;
   projects?: Project[];

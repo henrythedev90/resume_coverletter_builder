@@ -13,7 +13,10 @@ const ResumeSchema = new mongoose.Schema({
     {
       jobTitle: { type: String, required: true },
       companyName: { type: String, required: true },
-      location: { type: String, required: true },
+      location: {
+        city: { type: String },
+        state: { type: String },
+      },
       dates: {
         start: { type: Date },
         end: { type: Date },
