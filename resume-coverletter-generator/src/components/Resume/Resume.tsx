@@ -1,15 +1,14 @@
 "use client";
-
 import React, { useState } from "react";
-import mongoose, { ObjectId, Types } from "mongoose";
+import { Types } from "mongoose";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { ResumeType, ProfessionalExperience } from "@/types/resume";
-import DatePicker from "../DatePicker/DatePicker";
+import { ResumeType } from "@/types/resume";
+import EducationComponent from "../Education/Education";
 import ProfessionalExperienceComponent from "../ProfessionalExperience/ProfessionalExperience";
+import SkillsComponent from "../Skills/Skills";
+import ProjectsComponents from "../ProjectsComponent/ProjectsComponent";
 
 // Animation variants for smooth transitions
 const pageVariants = {
@@ -26,7 +25,6 @@ const pageTransition = {
 
 const ResumeGeneratorForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [experienceIndex, setExperienceIndex] = React.useState(0);
   const [formData, setFormData] = useState<ResumeType>({
     userId: new Types.ObjectId(),
     professionalExperience: [
@@ -45,7 +43,7 @@ const ResumeGeneratorForm: React.FC = () => {
         degree: "",
         fieldOfStudy: "",
         universityName: "",
-        graduationYear: 0,
+        graduationYear: undefined,
         certifications: [],
       },
     ],
@@ -60,7 +58,6 @@ const ResumeGeneratorForm: React.FC = () => {
         description: "",
         role: "",
         skillsUsed: [],
-        results: "",
         portfolioLink: "",
       },
     ],
@@ -125,46 +122,48 @@ const ResumeGeneratorForm: React.FC = () => {
             <ProfessionalExperienceComponent />
           </motion.div>
         );
-      //   case 1:
-      //     return (
-      //       <motion.div
-      //         key="education"
-      //         initial="initial"
-      //         animate="in"
-      //         exit="out"
-      //         variants={pageVariants}
-      //         transition={pageTransition}
-      //         className="space-y-4"
-      //       >
-      //         <h2 className="text-2xl font-bold">Education</h2>
-      //         <div className="grid grid-cols-2 gap-4">
-      //           <div>
-      //             <Label>Institution</Label>
-      //             <Input
-      //               placeholder="University Name"
-      //               value={formData.education[0].institution}
-      //               onChange={(e) => {
-      //                 const updatedEducation = [...formData.education];
-      //                 updatedEducation[0].institution = e.target.value;
-      //                 setFormData({ ...formData, education: updatedEducation });
-      //               }}
-      //             />
-      //           </div>
-      //           <div>
-      //             <Label>Degree</Label>
-      //             <Input
-      //               placeholder="Degree Earned"
-      //               value={formData.education[0].degree}
-      //               onChange={(e) => {
-      //                 const updatedEducation = [...formData.education];
-      //                 updatedEducation[0].degree = e.target.value;
-      //                 setFormData({ ...formData, education: updatedEducation });
-      //               }}
-      //             />
-      //           </div>
-      //         </div>
-      //       </motion.div>
-      //     );
+      case 1:
+        return (
+          <motion.div
+            key="education"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+            className="space-y-4"
+          >
+            <EducationComponent />
+          </motion.div>
+        );
+      case 2:
+        return (
+          <motion.div
+            key="skills"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+            className="space-y-4"
+          >
+            <SkillsComponent />
+          </motion.div>
+        );
+      case 3:
+        return (
+          <motion.div
+            key="projects"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+            className="space-y-4"
+          >
+            <ProjectsComponents />
+          </motion.div>
+        );
       // Add similar cases for other steps...
       default:
         return null;

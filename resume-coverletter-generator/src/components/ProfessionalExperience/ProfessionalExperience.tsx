@@ -1,19 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { ProfessionalExperience } from "@/types/resume";
-import DatePicker from "../DatePicker/DatePicker";
+import DatePicker from "../ui/DatePicker/DatePicker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import StringArrayInput from "../StringArrayInput/StringArrayInput";
+import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
 
-interface ProfessionalExperienceProps {
-  initialData?: Partial<ProfessionalExperience>;
-  onUpdate?: (professionalExperience: ProfessionalExperience) => void;
-}
-
-const ProfessionalExperienceComponent: React.FC<
-  ProfessionalExperienceProps
-> = () => {
+const ProfessionalExperienceComponent: React.FC = () => {
   const [formData, setFormData] = useState<ProfessionalExperience>({
     companyName: "",
     jobTitle: "",
@@ -97,7 +90,7 @@ const ProfessionalExperienceComponent: React.FC<
             placeholder="End Date"
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <StringArrayInput
             label="Responsibilities"
             items={formData.responsibilities as string[]}
@@ -106,7 +99,7 @@ const ProfessionalExperienceComponent: React.FC<
             }
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <StringArrayInput
             label="Accomplishments"
             items={formData.accomplishments as string[]}
@@ -115,7 +108,7 @@ const ProfessionalExperienceComponent: React.FC<
             }
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <StringArrayInput
             label="Skills Used"
             items={formData.skillsUsed as string[]}

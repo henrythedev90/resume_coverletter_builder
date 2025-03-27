@@ -32,7 +32,10 @@ const ResumeSchema = new mongoose.Schema({
       degree: { type: String, required: true }, // e.g., "Bachelors", "Masters"
       fieldOfStudy: { type: String, required: true },
       universityName: { type: String, required: true },
-      graduationYear: { type: Number },
+      graduationYear: {
+        start: { type: Date },
+        end: { type: Date },
+      },
       certifications: { type: [String] }, // Optional: List of certifications
     },
   ],
@@ -49,7 +52,6 @@ const ResumeSchema = new mongoose.Schema({
       description: { type: String },
       role: { type: String },
       skillsUsed: { type: [String] },
-      results: { type: String }, // Outcome or results of the project
       portfolioLink: { type: String }, // Link to portfolio or GitHub repo
     },
   ],

@@ -17,7 +17,10 @@ export interface Education {
   degree: string;
   fieldOfStudy: string;
   universityName: string;
-  graduationYear?: number;
+  graduationYear?: {
+    start?: Date;
+    end?: Date;
+  };
   certifications?: string[];
 }
 
@@ -32,7 +35,6 @@ export interface Project {
   description?: string;
   role?: string;
   skillsUsed?: string[];
-  results?: string;
   portfolioLink?: string;
 }
 
