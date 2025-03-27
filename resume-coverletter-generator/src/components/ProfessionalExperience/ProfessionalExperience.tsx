@@ -4,6 +4,7 @@ import { ProfessionalExperience } from "@/types/resume";
 import DatePicker from "../DatePicker/DatePicker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import StringArrayInput from "../StringArrayInput/StringArrayInput";
 
 interface ProfessionalExperienceProps {
   initialData?: Partial<ProfessionalExperience>;
@@ -94,6 +95,33 @@ const ProfessionalExperienceComponent: React.FC<
             date={formData.dates.end}
             setDate={(date) => handleDateChange("end", date)}
             placeholder="End Date"
+          />
+        </div>
+        <div>
+          <StringArrayInput
+            label="Responsibilities"
+            items={formData.responsibilities as string[]}
+            setItems={(items) =>
+              setFormData((prev) => ({ ...prev, responsibilities: items }))
+            }
+          />
+        </div>
+        <div>
+          <StringArrayInput
+            label="Accomplishments"
+            items={formData.accomplishments as string[]}
+            setItems={(items) =>
+              setFormData((prev) => ({ ...prev, accomplishments: items }))
+            }
+          />
+        </div>
+        <div>
+          <StringArrayInput
+            label="Skills Used"
+            items={formData.skillsUsed as string[]}
+            setItems={(items) =>
+              setFormData((prev) => ({ ...prev, skillsUsed: items }))
+            }
           />
         </div>
       </div>
