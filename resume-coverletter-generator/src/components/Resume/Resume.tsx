@@ -33,16 +33,66 @@ const ResumeGeneratorForm: React.FC = () => {
   const [formData, setFormData] = useState<CreateResumeInput>({
     userId: "your-user-id" as any, // Replace with actual user ID
     careerObjective: "",
-    professionalExperience: [],
-    education: [],
-    skills: {},
-    projects: [],
+    professionalExperience: [
+      {
+        jobTitle: "",
+        companyName: "",
+        location: { city: "", state: "" },
+        dates: { start: undefined, end: undefined },
+        responsibilities: [],
+        accomplishments: [],
+        skillsUsed: [],
+      },
+    ],
+    education: [
+      {
+        degree: "",
+        fieldOfStudy: "",
+        universityName: "",
+        graduationYear: { start: undefined, end: undefined },
+        certifications: [],
+      },
+    ],
+    skills: {
+      technical: [],
+      soft: [],
+      industrySpecific: [],
+    },
+    projects: [
+      {
+        title: "",
+        description: "",
+        role: "",
+        skillsUsed: [],
+        portfolioLink: "",
+      },
+    ],
     awards: [{ title: "", year: undefined, description: "" }],
-    languages: [],
-    volunteerExperience: [],
+    languages: [
+      {
+        language: "",
+        proficiency: "",
+      },
+    ],
+    volunteerExperience: [
+      {
+        organization: "",
+        role: "",
+        dates: {
+          start: undefined,
+          end: undefined,
+        },
+        description: "",
+      },
+    ],
+    websites: [{ platform: "", url: "" }],
     hobbiesAndInterests: [{ event: [] }],
-    websites: [],
-    jobPreferences: {},
+    jobPreferences: {
+      desiredJobTitles: [],
+      preferredIndustry: [],
+      preferredLocation: "",
+      employmentType: "",
+    },
   });
 
   const steps = [
