@@ -1,10 +1,10 @@
 import React from "react";
-import Resume from "@/components/Resume/Resume";
+import ResumeGeneratorForm from "@/components/Resume/Resume";
 
 export default function Dashboard() {
   return (
     <div>
-      <Resume />
+      <ResumeGeneratorForm />
     </div>
   );
 }

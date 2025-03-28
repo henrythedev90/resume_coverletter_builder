@@ -21,7 +21,7 @@ const AwardComponent: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="bg-background text-foreground space-y-4">
       <h2 className="text-2xl font-bold">Awards</h2>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -43,6 +43,7 @@ const AwardComponent: React.FC = () => {
         <div className="space-y-2">
           <Label>Year</Label>
           <Input
+            type="number"
             placeholder="year"
             value={formData.year}
             onChange={(e) => handleChange("year", e.target.value)}

@@ -44,14 +44,20 @@ const ResumeGeneratorForm: React.FC = () => {
   ];
 
   const nextStep = () => {
+    console.log("Before nextStep:", currentStep);
     if (currentStep < steps.length - 1) {
+      console.log("Setting currentStep to:", currentStep + 1);
       setCurrentStep(currentStep + 1);
+      console.log("After nextStep:", currentStep);
     }
   };
 
   const prevStep = () => {
+    console.log("Before prevStep:", currentStep);
     if (currentStep > 0) {
+      console.log("Setting currentStep to:", currentStep - 1);
       setCurrentStep(currentStep - 1);
+      console.log("After prevStep:", currentStep);
     }
   };
 
@@ -60,13 +66,13 @@ const ResumeGeneratorForm: React.FC = () => {
       case 0:
         return (
           <motion.div
-            key="professional-experience"
+            key="Professional-Experience"
             initial="initial"
             animate="in"
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
-            className="space-y-4"
+            className="space-y-4 bg-background text-foreground"
           >
             <ProfessionalExperienceComponent />
           </motion.div>
@@ -74,13 +80,13 @@ const ResumeGeneratorForm: React.FC = () => {
       case 1:
         return (
           <motion.div
-            key="education"
+            key="Education"
             initial="initial"
             animate="in"
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
-            className="space-y-4"
+            className="space-y-4 bg-background text-foreground"
           >
             <EducationComponent />
           </motion.div>
@@ -88,13 +94,13 @@ const ResumeGeneratorForm: React.FC = () => {
       case 2:
         return (
           <motion.div
-            key="skills"
+            key="Skills"
             initial="initial"
             animate="in"
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
-            className="space-y-4"
+            className="space-y-4 bg-background text-foreground"
           >
             <SkillsComponent />
           </motion.div>
@@ -102,13 +108,13 @@ const ResumeGeneratorForm: React.FC = () => {
       case 3:
         return (
           <motion.div
-            key="projects"
+            key="Projects"
             initial="initial"
             animate="in"
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
-            className="space-y-4"
+            className="space-y-4 bg-background text-foreground"
           >
             <ProjectsComponents />
           </motion.div>
@@ -122,7 +128,7 @@ const ResumeGeneratorForm: React.FC = () => {
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
-            className="space-y-4"
+            className="space-y-4 bg-background text-foreground"
           >
             <AwardComponent />
           </motion.div>
@@ -136,7 +142,7 @@ const ResumeGeneratorForm: React.FC = () => {
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
-            className="space-y-4"
+            className="space-y-4 bg-background text-foreground"
           >
             <LanguageComponent />
           </motion.div>
@@ -150,7 +156,7 @@ const ResumeGeneratorForm: React.FC = () => {
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
-            className="space-y-4"
+            className="space-y-4 bg-background text-foreground"
           >
             <VolunteerComponent />
           </motion.div>
@@ -164,7 +170,7 @@ const ResumeGeneratorForm: React.FC = () => {
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
-            className="space-y-4"
+            className="space-y-4 bg-background text-foreground"
           >
             <WebsiteComponent />
           </motion.div>
@@ -178,7 +184,7 @@ const ResumeGeneratorForm: React.FC = () => {
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
-            className="space-y-4"
+            className="space-y-4 bg-background text-foreground"
           >
             <JobPreferencesComponent />
           </motion.div>
@@ -192,62 +198,73 @@ const ResumeGeneratorForm: React.FC = () => {
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
-            className="space-y-4"
+            className="space-y-4 bg-background text-foreground"
           >
             <HobbiesAndInterestComponent />
           </motion.div>
         );
-      // Add similar cases for other steps...
       default:
         return null;
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
+    <div className="max-w-4xl mx-auto p-8 bg-background text-foreground">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-4">Resume Generator</h1>
-        <div className="flex items-center space-x-4">
-          {steps.map((step, index) => (
-            <React.Fragment key={step}>
-              <div
-                className={`
-                  w-8 h-8 rounded-full flex items-center justify-center
-                  ${
-                    index <= currentStep
-                      ? "bg-blue-500 text-white"
+        <div className="max-w-screen-md mx-auto">
+          <div className="flex items-center justify-center space-x-2 sm:space-x-3 md:space-x-4">
+            {steps.map((step, index) => (
+              <React.Fragment key={step}>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    index === currentStep
+                      ? "bg-primary text-primary-foreground"
                       : "bg-gray-200 text-gray-500"
-                  }
-                `}
-              >
-                {index + 1}
-              </div>
-              {index < steps.length - 1 && (
-                <Separator
-                  orientation="horizontal"
-                  className={`flex-grow ${
-                    index < currentStep ? "bg-blue-500" : "bg-gray-200"
                   }`}
-                />
-              )}
-            </React.Fragment>
-          ))}
+                >
+                  {index + 1}
+                </div>
+                {index < steps.length - 1 && (
+                  <Separator
+                    orientation="horizontal"
+                    className="w-4 sm:w-6 md:w-8 bg-gray-200"
+                  />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
       </div>
-
-      <AnimatePresence mode="wait">{renderCurrentStep()}</AnimatePresence>
+      <div className="min-h-[200px] sm:min-h-[300px] md:min-h-[400px]">
+        <AnimatePresence mode="wait">{renderCurrentStep()}</AnimatePresence>
+      </div>
 
       <div className="mt-8 flex justify-between">
         {currentStep > 0 && (
-          <Button variant="outline" onClick={prevStep}>
+          <Button
+            variant="outline"
+            className="bg-secondary text-secondary-foreground"
+            onClick={prevStep}
+          >
             Previous
           </Button>
         )}
         {currentStep < steps.length - 1 && (
-          <Button onClick={nextStep}>Next</Button>
+          <Button
+            className="bg-primary text-primary-foreground"
+            onClick={nextStep}
+          >
+            Next
+          </Button>
         )}
         {currentStep === steps.length - 1 && (
-          <Button variant="default">Submit Resume</Button>
+          <Button
+            variant="default"
+            className="bg-accent text-accent-foreground"
+          >
+            Submit Resume
+          </Button>
         )}
       </div>
     </div>

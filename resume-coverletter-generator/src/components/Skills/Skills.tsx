@@ -11,7 +11,7 @@ const SkillsComponent: React.FC = () => {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="bg-background text-foreground space-y-4">
       <h2 className="text-2xl font-bold">Skills</h2>
       <div className="grid grid-cols-2 gap-4">
         <div>
@@ -19,7 +19,7 @@ const SkillsComponent: React.FC = () => {
             label="Technical"
             items={formData.technical as string[]}
             setItems={(items) =>
-              setFormData((prev) => ({ ...prev, responsibilities: items }))
+              setFormData((prev) => ({ ...prev, technical: items }))
             }
           />
         </div>

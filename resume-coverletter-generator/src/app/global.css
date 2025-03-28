@@ -90,3 +90,23 @@ button:hover {
     @apply bg-background text-foreground;
   }
 }
+
+.bg-primary-theme {
+  background-color: var(--primary);
+}
+
+.bg-accent-theme {
+  background-color: var(--accent);
+}
+
+.text-primary-foreground-theme {
+  color: var(--primary-foreground);
+}
+
+.text-muted-foreground-theme {
+  color: var(--muted-foreground);
+}
+
+.bg-muted-theme {
+  background-color: var(--muted);
+}

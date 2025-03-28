@@ -72,7 +72,7 @@ export interface JobPreferences {
 }
 
 export interface HobbiesAndInterests {
-  event: [];
+  event: string[];
 }
 
 export interface ResumeType {

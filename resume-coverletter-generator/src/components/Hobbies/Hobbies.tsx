@@ -9,15 +9,15 @@ const HobbiesAndInterestComponent: React.FC = () => {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="bg-background text-foreground space-y-4">
       <h2 className="text-2xl font-bold">Hobbies and Interest</h2>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <StringArrayInput
             label="Skills Used"
-            items={formData.event as string[]}
+            items={formData.event}
             setItems={(items) =>
-              setFormData((prev) => ({ ...prev, skillsUsed: items }))
+              setFormData((prev) => ({ ...prev, event: items }))
             }
           />
         </div>
