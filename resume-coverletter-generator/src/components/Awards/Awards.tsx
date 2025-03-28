@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useTime } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "../ui/textarea";
-import { addItem, removeItem } from "../Resume/Resume";
+import { addItem, removeItem } from "../../lib/addAndRemoveItems";
 
 interface AwardComponentProps {
   formData: Award[];

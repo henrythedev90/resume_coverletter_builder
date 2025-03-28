@@ -13,7 +13,7 @@ import VolunteerComponent from "../VolunteerExperience/VolunteerExperience";
 import WebsiteComponent from "../Website/Website";
 import JobPreferencesComponent from "../JobPreferences/JobPreferences";
 import HobbiesAndInterestComponent from "../Hobbies/Hobbies";
-import { CreateResumeInput, HobbiesAndInterests, Award } from "@/types/resume";
+import { CreateResumeInput } from "@/types/resume";
 
 // Animation variants for smooth transitions
 const pageVariants = {
@@ -26,34 +26,6 @@ const pageTransition = {
   type: "tween",
   ease: "anticipate",
   duration: 0.5,
-};
-
-export const addItem = <T extends keyof CreateResumeInput>(
-  propertyName: T,
-  newItem: CreateResumeInput[T] extends Array<infer U> ? U : any,
-  setFormData: Dispatch<SetStateAction<CreateResumeInput>>
-) => {
-  setFormData((prev) => {
-    const currentItems = (prev[propertyName] || []) as CreateResumeInput[T];
-    return {
-      ...prev,
-      [propertyName]: [...(currentItems as any[]), newItem],
-    };
-  });
-};
-
-export const removeItem = <T extends keyof CreateResumeInput>(
-  propertyName: T,
-  index: number,
-  setFormData: Dispatch<SetStateAction<CreateResumeInput>>
-) => {
-  setFormData((prev) => {
-    const currentItems = (prev[propertyName] || []) as CreateResumeInput[T];
-    return {
-      ...prev,
-      [propertyName]: (currentItems as any[]).filter((_, i) => i !== index),
-    };
-  });
 };
 
 const ResumeGeneratorForm: React.FC = () => {
@@ -118,6 +90,7 @@ const ResumeGeneratorForm: React.FC = () => {
             className="space-y-4 bg-background text-foreground"
           >
             <ProfessionalExperienceComponent />
+            <div>hello world</div>
           </motion.div>
         );
       case 1:
