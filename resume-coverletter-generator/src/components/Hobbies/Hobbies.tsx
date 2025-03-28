@@ -3,11 +3,15 @@ import React, { useState } from "react";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
 import { HobbiesAndInterests } from "@/types/resume";
 
-const HobbiesAndInterestComponent: React.FC = () => {
-  const [formData, setFormData] = useState<HobbiesAndInterests>({
-    event: [],
-  });
+export interface HobbiesAndInterestsProps {
+  formData: HobbiesAndInterests[];
+  setFormData: (data: HobbiesAndInterests[]) => void;
+}
 
+const HobbiesAndInterestComponent: React.FC<HobbiesAndInterestsProps> = ({
+  formData,
+  setFormData,
+}) => {
   return (
     <div className="bg-background text-foreground space-y-4">
       <h2 className="text-2xl font-bold">Hobbies and Interest</h2>
@@ -15,10 +19,8 @@ const HobbiesAndInterestComponent: React.FC = () => {
         <div className="space-y-2">
           <StringArrayInput
             label="Skills Used"
-            items={formData.event}
-            setItems={(items) =>
-              setFormData((prev) => ({ ...prev, event: items }))
-            }
+            items={formData[0]?.event || []}
+            setItems={(items) => setFormData([{ event: items }])}
           />
         </div>
       </div>

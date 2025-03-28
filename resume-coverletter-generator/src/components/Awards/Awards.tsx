@@ -6,10 +6,15 @@ import { useTime } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "../ui/textarea";
 
+interface AwardComponentProps {
+  formData: Award;
+  setFormData: (data: Award) => void;
+}
+
 const AwardComponent: React.FC = () => {
-  const [formData, setFormData] = useState<Award>({
+  const [formData, setFormData] = useState<AwardComponentProps>({
     title: "",
-    year: 0,
+    year: undefined,
     description: "",
   });
 

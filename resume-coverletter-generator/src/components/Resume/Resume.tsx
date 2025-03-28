@@ -13,6 +13,7 @@ import VolunteerComponent from "../VolunteerExperience/VolunteerExperience";
 import WebsiteComponent from "../Website/Website";
 import JobPreferencesComponent from "../JobPreferences/JobPreferences";
 import HobbiesAndInterestComponent from "../Hobbies/Hobbies";
+import { CreateResumeInput, HobbiesAndInterests } from "@/types/resume";
 
 // Animation variants for smooth transitions
 const pageVariants = {
@@ -29,6 +30,19 @@ const pageTransition = {
 
 const ResumeGeneratorForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [formData, setFormData] = useState<CreateResumeInput>({
+    userId: "your-user-id" as any, // Replace with actual user ID
+    professionalExperience: [],
+    education: [],
+    skills: {},
+    projects: [],
+    awards: [],
+    languages: [],
+    volunteerExperience: [],
+    hobbiesAndInterests: [{ event: [] }],
+    websites: [],
+    jobPreferences: {},
+  });
 
   const steps = [
     "Professional Experience",
@@ -200,7 +214,15 @@ const ResumeGeneratorForm: React.FC = () => {
             transition={pageTransition}
             className="space-y-4 bg-background text-foreground"
           >
-            <HobbiesAndInterestComponent />
+            <HobbiesAndInterestComponent
+              formData={formData.hobbiesAndInterests || [{ event: [] }]}
+              setFormData={(data) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  hobbiesAndInterests: data,
+                }))
+              }
+            />
           </motion.div>
         );
       default:
@@ -263,7 +285,7 @@ const ResumeGeneratorForm: React.FC = () => {
             variant="default"
             className="bg-accent text-accent-foreground"
           >
-            Submit Resume
+            Generate Resume
           </Button>
         )}
       </div>
