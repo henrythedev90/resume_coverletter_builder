@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { SetStateAction, Dispatch, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -13,7 +13,7 @@ import VolunteerComponent from "../VolunteerExperience/VolunteerExperience";
 import WebsiteComponent from "../Website/Website";
 import JobPreferencesComponent from "../JobPreferences/JobPreferences";
 import HobbiesAndInterestComponent from "../Hobbies/Hobbies";
-import { CreateResumeInput, HobbiesAndInterests } from "@/types/resume";
+import { CreateResumeInput, HobbiesAndInterests, Award } from "@/types/resume";
 
 // Animation variants for smooth transitions
 const pageVariants = {
@@ -28,15 +28,44 @@ const pageTransition = {
   duration: 0.5,
 };
 
+export const addItem = <T extends keyof CreateResumeInput>(
+  propertyName: T,
+  newItem: CreateResumeInput[T] extends Array<infer U> ? U : any,
+  setFormData: Dispatch<SetStateAction<CreateResumeInput>>
+) => {
+  setFormData((prev) => {
+    const currentItems = (prev[propertyName] || []) as CreateResumeInput[T];
+    return {
+      ...prev,
+      [propertyName]: [...(currentItems as any[]), newItem],
+    };
+  });
+};
+
+export const removeItem = <T extends keyof CreateResumeInput>(
+  propertyName: T,
+  index: number,
+  setFormData: Dispatch<SetStateAction<CreateResumeInput>>
+) => {
+  setFormData((prev) => {
+    const currentItems = (prev[propertyName] || []) as CreateResumeInput[T];
+    return {
+      ...prev,
+      [propertyName]: (currentItems as any[]).filter((_, i) => i !== index),
+    };
+  });
+};
+
 const ResumeGeneratorForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<CreateResumeInput>({
     userId: "your-user-id" as any, // Replace with actual user ID
+    careerObjective: "",
     professionalExperience: [],
     education: [],
     skills: {},
     projects: [],
-    awards: [],
+    awards: [{ title: "", year: undefined, description: "" }],
     languages: [],
     volunteerExperience: [],
     hobbiesAndInterests: [{ event: [] }],
@@ -144,7 +173,10 @@ const ResumeGeneratorForm: React.FC = () => {
             transition={pageTransition}
             className="space-y-4 bg-background text-foreground"
           >
-            <AwardComponent />
+            <AwardComponent
+              formData={formData.awards || []}
+              setFormData={setFormData}
+            />
           </motion.div>
         );
       case 5:

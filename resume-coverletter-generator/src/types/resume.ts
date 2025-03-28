@@ -78,10 +78,10 @@ export interface HobbiesAndInterests {
 export interface ResumeType {
   _id?: string;
   userId: Types.ObjectId;
-  careerObjective?: string;
+  careerObjective: string;
   professionalExperience: ProfessionalExperience[];
-  education?: Education[];
-  skills?: Skills;
+  education: Education[];
+  skills: Skills;
   projects?: Project[];
   awards?: Award[];
   languages?: Language[];
