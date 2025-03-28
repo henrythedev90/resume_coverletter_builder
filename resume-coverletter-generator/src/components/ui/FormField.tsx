@@ -10,6 +10,7 @@ export const FormField = ({
   placeholder,
   value,
   onChange,
+  onKeyDown,
 }: FormFieldProps) => {
   const handleFieldChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -26,6 +27,7 @@ export const FormField = ({
           value={value}
           placeholder={placeholder}
           onChange={handleFieldChange}
+          onKeyDown={onKeyDown}
         />
       ) : (
         <Input
@@ -34,6 +36,7 @@ export const FormField = ({
           value={value}
           placeholder={placeholder}
           onChange={handleFieldChange}
+          onKeyDown={onKeyDown}
         />
       )}
     </div>
