@@ -99,12 +99,12 @@ const ResumeGeneratorForm: React.FC = () => {
           <EducationComponent formData={formData} setFormData={setFormData} />
         ),
       },
-      // {
-      //   name: "Skills",
-      //   component: (
-      //     <SkillsComponent formData={formData} setFormData={setFormData} />
-      //   ),
-      // },
+      {
+        name: "Skills",
+        component: (
+          <SkillsComponent formData={formData} setFormData={setFormData} />
+        ),
+      },
       {
         name: "Projects",
         component: (
@@ -117,33 +117,33 @@ const ResumeGeneratorForm: React.FC = () => {
           <AwardComponent formData={formData} setFormData={setFormData} />
         ),
       },
-      // {
-      //   name: "Languages",
-      //   component: (
-      //     <LanguageComponent formData={formData} setFormData={setFormData} />
-      //   ),
-      // },
+      {
+        name: "Languages",
+        component: (
+          <LanguageComponent formData={formData} setFormData={setFormData} />
+        ),
+      },
       {
         name: "Volunteer Experience",
         component: (
           <VolunteerComponent formData={formData} setFormData={setFormData} />
         ),
       },
-      // {
-      //   name: "Websites",
-      //   component: (
-      //     <WebsiteComponent formData={formData} setFormData={setFormData} />
-      //   ),
-      // },
-      // {
-      //   name: "Job Preferences",
-      //   component: (
-      //     <JobPreferencesComponent
-      //       formData={formData}
-      //       setFormData={setFormData}
-      //     />
-      //   ),
-      // },
+      {
+        name: "Websites",
+        component: (
+          <WebsiteComponent formData={formData} setFormData={setFormData} />
+        ),
+      },
+      {
+        name: "Job Preferences",
+        component: (
+          <JobPreferencesComponent
+            formData={formData}
+            setFormData={setFormData}
+          />
+        ),
+      },
       {
         name: "Hobbies & Interests",
         component: (

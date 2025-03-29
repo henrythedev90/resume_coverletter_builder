@@ -94,12 +94,13 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
           onChange={(name, value) => handleEducationChange("degree", value)}
         />
         <div className="space-y-2">
-          <label>Date Range</label>
+          <label>Start</label>
           <DatePicker
             date={currentEducation.graduationYear?.start}
             setDate={(date) => handleDateChange("start", date)}
             placeholder="Start Date"
           />
+          <label>End</label>
           <DatePicker
             date={currentEducation.graduationYear?.end}
             setDate={(date) => handleDateChange("end", date)}
@@ -118,30 +119,42 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
         Add Education
       </Button>
       {formData.education &&
-        formData.education.length > 0 &&
-        formData.education.map((education, index) => (
-          <div
-            key={`education-${index}`}
-            className="space-y-2 border p-4 rounded"
-          >
-            <p>
-              <strong>School Name:</strong> {education.universityName}
-            </p>
-            <p>
-              <strong>Field of Study:</strong> {education.fieldOfStudy}
-            </p>
-            <p>
-              <strong>Degree:</strong> {education.degree}
-            </p>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => handleRemoveEducation(index)}
-            >
-              Remove Education
-            </Button>
+        formData.education.some(
+          (education) =>
+            education.universityName &&
+            education.fieldOfStudy &&
+            education.degree
+        ) && (
+          <div>
+            {formData.education.map((education, index) => (
+              <div
+                key={`education-${index}`}
+                className="space-y-2 border p-4 rounded"
+              >
+                <p>
+                  <strong>School Name:</strong> {education.universityName}
+                </p>
+                <p>
+                  <strong>Field of Study:</strong> {education.fieldOfStudy}
+                </p>
+                <p>
+                  <strong>Degree:</strong> {education.degree}
+                </p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleRemoveEducation(index)}
+                >
+                  Remove Education
+                </Button>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
+      {!formData.education ||
+        (formData.education.length === 0 && <p>No education entries yet.</p>)}
+      {!formData.education ||
+        (formData.education.length === 0 && <p>No education entries yet.</p>)}
     </div>
   );
 };
