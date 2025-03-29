@@ -105,12 +105,12 @@ const ResumeGeneratorForm: React.FC = () => {
       //     <SkillsComponent formData={formData} setFormData={setFormData} />
       //   ),
       // },
-      // {
-      //   name: "Projects",
-      //   component: (
-      //     <ProjectsComponents formData={formData} setFormData={setFormData} />
-      //   ),
-      // },
+      {
+        name: "Projects",
+        component: (
+          <ProjectsComponents formData={formData} setFormData={setFormData} />
+        ),
+      },
       {
         name: "Awards",
         component: (
