@@ -9,6 +9,7 @@ import {
   ResumeType,
 } from "@/types/resume";
 import User from "@/models/User";
+import { resumeTemplate } from "@/types/resumeTemplate";
 
 export async function generateResume(
   resume: ResumeType & { userName?: string; userEmail?: string }
@@ -41,6 +42,8 @@ export async function generateResume(
 
   const prompt = `
     You are a professional resume writer. Generate a well-structured, professional resume based on the following details:
+
+    Template:${resumeTemplate}
 
     Candidate Information:
     ${userName ? `Name: ${userName}` : ""}
@@ -125,21 +128,23 @@ export async function generateResume(
         : "N/A"
     }
 
-    Volunteer Experience:
+Volunteer Experience:
     ${
       resume.volunteerExperience?.length
         ? resume.volunteerExperience
             .map(
               (vol: VolunteerExperience) => `
     • ${vol.role} at ${vol.organization}
-      - Contributions: ${safeJoin(vol.contributions)}
+      - Description: ${vol.description || "No description provided"}
     `
             )
             .join("\n")
         : "N/A"
     }
 
-    Hobbies and Interests: ${safeJoin(resume.hobbiesAndInterests)}
+    Hobbies and Interests: ${
+      resume.hobbiesAndInterests ? resume.hobbiesAndInterests.join(", ") : "N/A"
+    }
 
     Job Preferences:
     • Desired Job Titles: ${safeJoin(resume.jobPreferences?.desiredJobTitles)}

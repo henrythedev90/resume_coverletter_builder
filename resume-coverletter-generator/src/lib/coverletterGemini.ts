@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { CoverLetterInput } from "@/types/coverletter";
+import { CoverLetterInput } from "../types/coverletter";
+import { coverLetterTemplate } from "../types/coverLetterTemplate";
 import {
   ProfessionalExperience,
   Education,
@@ -125,9 +126,7 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
             vol.dates?.end
               ? new Date(vol.dates.end).toLocaleDateString()
               : "Present"
-          }): ${
-            (vol.contributions || []).join(", ") || "No contributions listed"
-          }`
+          })`
       )
       .join("\n"),
     languages: (resume.languages || [])
@@ -159,6 +158,8 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
   };
 
   const prompt = `Generate a professional, tailored cover letter for ${userName}:
+
+  Template: ${coverLetterTemplate}
   
   Job Details:
   - Job Title: ${coverLetterData.jobTitle}

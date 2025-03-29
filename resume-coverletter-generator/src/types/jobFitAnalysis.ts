@@ -3,4 +3,5 @@ export interface JobFitAnalysisInput {
   jobTitle: string;
   jobDescription: string;
   companyName: string;
+  companyMission: string;
 }

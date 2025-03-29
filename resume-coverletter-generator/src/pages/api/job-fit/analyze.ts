@@ -13,9 +13,21 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     try {
-      const { resumeId, jobTitle, jobDescription, companyName } = req.body;
+      const {
+        resumeId,
+        jobTitle,
+        jobDescription,
+        companyName,
+        companyMission,
+      } = req.body;
 
-      if (!resumeId || !jobTitle || !jobDescription || !companyName) {
+      if (
+        !resumeId ||
+        !jobTitle ||
+        !jobDescription ||
+        !companyName ||
+        !companyMission
+      ) {
         return res.status(400).json({
           error: "Missing required fileds",
         });
@@ -62,19 +74,20 @@ export default async function handler(
         jobTitle,
         jobDescription,
         companyName,
+        companyMission,
       });
 
       const jobFitResult = {
         resumeId,
         jobTitle,
         jobDescription,
+        companyMission,
       };
 
       const newJobFitAnalysis = new JobFitAnalysis({
         userId: new mongoose.Types.ObjectId(userId),
         fitScore: result.recommendationScore,
         analysisFeedback: result.analysis,
-        companyName: result.companyName,
         ...jobFitResult,
       });
 

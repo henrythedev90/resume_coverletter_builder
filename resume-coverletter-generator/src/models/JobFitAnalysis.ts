@@ -13,6 +13,7 @@ const JobFitAnalysisSchema = new mongoose.Schema(
       required: true,
     },
     companyName: { type: String, required: true },
+    companyMission: { type: String, required: true },
     jobTitle: { type: String, required: true },
     jobDescription: { type: String, required: true },
     fitScore: { type: Number, required: true },

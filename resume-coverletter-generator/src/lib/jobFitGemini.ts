@@ -3,6 +3,7 @@ import { JobFitAnalysisInput } from "@/types/jobFitAnalysis";
 import { ProfessionalExperience, Education, Project } from "@/types/resume";
 import Resume from "@/models/Resume";
 import User from "@/models/User";
+import { jobFitAnalysisTemplate } from "@/types/jobFitTemplate";
 
 export async function analyzeJobFit(jobFitData: JobFitAnalysisInput) {
   const genAIapiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
@@ -15,6 +16,7 @@ export async function analyzeJobFit(jobFitData: JobFitAnalysisInput) {
     "jobTitle",
     "jobDescription",
     "companyName",
+    "companyMission",
   ];
 
   requiredFields.forEach((field) => {
@@ -80,6 +82,8 @@ export async function analyzeJobFit(jobFitData: JobFitAnalysisInput) {
 
   // Construct the prompt for job fit analysis
   const prompt = `Perform a comprehensive job fit analysis:
+
+Template: ${jobFitAnalysisTemplate}
 
 Job Details:
 - Job Title: ${jobFitData.jobTitle}
