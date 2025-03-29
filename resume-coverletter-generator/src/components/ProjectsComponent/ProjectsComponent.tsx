@@ -1,10 +1,8 @@
 "use client";
 import React, { useState, Dispatch, SetStateAction } from "react";
 import { Project, CreateResumeInput } from "@/types/resume";
-import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-label";
+import { FormField } from "@/components/ui/FormField";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
-import { Textarea } from "../ui/textarea";
 import { Button } from "@/components/ui/button";
 
 interface ProjectsComponentsProps {
@@ -59,40 +57,35 @@ const ProjectsComponents: React.FC<ProjectsComponentsProps> = ({
     <div className="bg-background text-foreground space-y-4">
       <h2 className="text-2xl font-bold">Projects</h2>
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>Title</Label>
-          <Input
-            placeholder="Job Title"
-            value={currentProject.title}
-            onChange={(e) => handleProjectChange("title", e.target.value)}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Role</Label>
-          <Input
-            placeholder="Role"
-            value={currentProject.role}
-            onChange={(e) => handleProjectChange("role", e.target.value)}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Description</Label>
-          <Textarea
-            placeholder="Description"
-            value={currentProject.description}
-            onChange={(e) => handleProjectChange("description", e.target.value)}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Portfolio Link</Label>
-          <Input
-            placeholder="Portfolio Link"
-            value={currentProject.portfolioLink}
-            onChange={(e) =>
-              handleProjectChange("portfolioLink", e.target.value)
-            }
-          />
-        </div>
+        <FormField
+          label="Title"
+          name="title"
+          placeholder="Job Title"
+          value={currentProject.title}
+          onChange={(_, value) => handleProjectChange("title", value)}
+        />
+        <FormField
+          label="Role"
+          name="role"
+          placeholder="Role"
+          value={currentProject.role}
+          onChange={(_, value) => handleProjectChange("role", value)}
+        />
+        <FormField
+          label="Description"
+          name="description"
+          placeholder="Description"
+          type="textarea"
+          value={currentProject.description}
+          onChange={(_, value) => handleProjectChange("description", value)}
+        />
+        <FormField
+          label="Portfolio Link"
+          name="portfolioLink"
+          placeholder="Portfolio Link"
+          value={currentProject.portfolioLink}
+          onChange={(_, value) => handleProjectChange("portfolioLink", value)}
+        />
         <div className="space-y-2">
           <StringArrayInput
             label="Skills Used"

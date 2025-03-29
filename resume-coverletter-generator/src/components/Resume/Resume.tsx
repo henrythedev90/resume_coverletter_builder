@@ -123,12 +123,12 @@ const ResumeGeneratorForm: React.FC = () => {
       //     <LanguageComponent formData={formData} setFormData={setFormData} />
       //   ),
       // },
-      // {
-      //   name: "Volunteer Experience",
-      //   component: (
-      //     <VolunteerComponent formData={formData} setFormData={setFormData} />
-      //   ),
-      // },
+      {
+        name: "Volunteer Experience",
+        component: (
+          <VolunteerComponent formData={formData} setFormData={setFormData} />
+        ),
+      },
       // {
       //   name: "Websites",
       //   component: (

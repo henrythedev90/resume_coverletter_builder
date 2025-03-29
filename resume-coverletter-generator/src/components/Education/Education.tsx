@@ -1,8 +1,7 @@
 "use client";
 import React, { useState, Dispatch, SetStateAction } from "react";
 import { Education, CreateResumeInput } from "@/types/resume";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FormField } from "@/components/ui/FormField";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
 import DatePicker from "../ui/DatePicker/DatePicker";
 import { Button } from "@/components/ui/button";
@@ -69,36 +68,33 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
     <div className="bg-background text-foreground space-y-4">
       <h2 className="text-2xl font-bold">Education</h2>
       <div className="grid grid-cols-2 gap-4">
+        <FormField
+          label="School Name"
+          name="universityName"
+          placeholder="School Name"
+          value={currentEducation.universityName}
+          onChange={(name, value) =>
+            handleEducationChange("universityName", value)
+          }
+        />
+        <FormField
+          label="Field of Study"
+          name="fieldOfStudy"
+          placeholder="Field of Study"
+          value={currentEducation.fieldOfStudy}
+          onChange={(name, value) =>
+            handleEducationChange("fieldOfStudy", value)
+          }
+        />
+        <FormField
+          label="Degree"
+          name="degree"
+          placeholder="Degree"
+          value={currentEducation.degree}
+          onChange={(name, value) => handleEducationChange("degree", value)}
+        />
         <div className="space-y-2">
-          <Label>School Name</Label>
-          <Input
-            placeholder="School Name"
-            value={currentEducation.universityName}
-            onChange={(e) =>
-              handleEducationChange("universityName", e.target.value)
-            }
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Field of Study</Label>
-          <Input
-            placeholder="Field of Study"
-            value={currentEducation.fieldOfStudy}
-            onChange={(e) =>
-              handleEducationChange("fieldOfStudy", e.target.value)
-            }
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Degree</Label>
-          <Input
-            placeholder="Degree"
-            value={currentEducation.degree}
-            onChange={(e) => handleEducationChange("degree", e.target.value)}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Date Range</Label>
+          <label>Date Range</label>
           <DatePicker
             date={currentEducation.graduationYear?.start}
             setDate={(date) => handleDateChange("start", date)}

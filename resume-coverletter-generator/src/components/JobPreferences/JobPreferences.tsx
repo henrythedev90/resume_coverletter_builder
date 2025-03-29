@@ -1,22 +1,38 @@
 "use client";
-import React, { useState } from "react";
-import { JobPreferences } from "@/types/resume";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import React, { useState, Dispatch, SetStateAction } from "react";
+import { JobPreferences, CreateResumeInput } from "@/types/resume";
+import { FormField } from "@/components/ui/FormField";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
 
-const JobPreferencesComponent: React.FC = () => {
-  const [formData, setFormData] = useState<JobPreferences>({
-    desiredJobTitles: [],
-    preferredIndustry: [],
-    employmentType: "",
-    preferredLocation: "",
-  });
+interface JobPreferencesComponentProps {
+  formData: CreateResumeInput;
+  setFormData: Dispatch<SetStateAction<CreateResumeInput>>;
+}
 
-  const handleChange = (key: keyof JobPreferences, value: any) => {
-    setFormData((prev) => ({
+const JobPreferencesComponent: React.FC<JobPreferencesComponentProps> = ({
+  formData,
+  setFormData,
+}) => {
+  const [currentJobPreference, setCurrentJobPreference] =
+    useState<JobPreferences>(
+      formData.jobPreferences
+        ? formData.jobPreferences
+        : {
+            desiredJobTitles: [],
+            preferredIndustry: [],
+            employmentType: "",
+            preferredLocation: "",
+          }
+    );
+
+  const handleJobPreferenceChange = (key: keyof JobPreferences, value: any) => {
+    setCurrentJobPreference((prev) => ({
       ...prev,
       [key]: value,
+    }));
+    setFormData((prev) => ({
+      ...prev,
+      jobPreferences: { ...prev.jobPreferences, [key]: value },
     }));
   };
 
@@ -24,37 +40,39 @@ const JobPreferencesComponent: React.FC = () => {
     <div className="bg-background text-foreground space-y-4">
       <h2 className="text-2xl font-bold">Job Preferences</h2>
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>Preferred Location</Label>
-          <Input
-            placeholder="Preferred Location"
-            value={formData.preferredLocation}
-            onChange={(e) => handleChange("preferredLocation", e.target.value)}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Employment Type</Label>
-          <Input
-            placeholder="Employment Type"
-            value={formData.employmentType}
-            onChange={(e) => handleChange("employmentType", e.target.value)}
-          />
-        </div>
+        <FormField
+          label="Preferred Location"
+          name="preferredLocation"
+          placeholder="Preferred Location"
+          value={currentJobPreference.preferredLocation}
+          onChange={(_, value) =>
+            handleJobPreferenceChange("preferredLocation", value)
+          }
+        />
+        <FormField
+          label="Employment Type"
+          name="employmentType"
+          placeholder="Employment Type"
+          value={currentJobPreference.employmentType}
+          onChange={(_, value) =>
+            handleJobPreferenceChange("employmentType", value)
+          }
+        />
         <div className="space-y-2">
           <StringArrayInput
             label="Desired Job Titles"
-            items={formData.desiredJobTitles as string[]}
+            items={currentJobPreference.desiredJobTitles || []}
             setItems={(items) =>
-              setFormData((prev) => ({ ...prev, desiredJobTitles: items }))
+              handleJobPreferenceChange("desiredJobTitles", items)
             }
           />
         </div>
         <div className="space-y-2">
           <StringArrayInput
             label="Preferred Industry"
-            items={formData.preferredIndustry as string[]}
+            items={currentJobPreference.preferredIndustry || []}
             setItems={(items) =>
-              setFormData((prev) => ({ ...prev, preferredIndustry: items }))
+              handleJobPreferenceChange("preferredIndustry", items)
             }
           />
         </div>
@@ -62,4 +80,5 @@ const JobPreferencesComponent: React.FC = () => {
     </div>
   );
 };
+
 export default JobPreferencesComponent;
