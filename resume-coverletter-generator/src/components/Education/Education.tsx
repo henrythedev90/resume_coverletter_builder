@@ -1,34 +1,67 @@
 "use client";
-import React, { useState } from "react";
-import { Education } from "@/types/resume";
+import React, { useState, Dispatch, SetStateAction } from "react";
+import { Education, CreateResumeInput } from "@/types/resume";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
 import DatePicker from "../ui/DatePicker/DatePicker";
+import { Button } from "@/components/ui/button";
 
-const EducationComponent: React.FC = () => {
-  const [formData, setFormData] = useState<Education>({
+interface EducationComponentProps {
+  formData: CreateResumeInput;
+  setFormData: Dispatch<SetStateAction<CreateResumeInput>>;
+}
+
+const EducationComponent: React.FC<EducationComponentProps> = ({
+  formData,
+  setFormData,
+}) => {
+  const [currentEducation, setCurrentEducation] = useState<Education>({
     degree: "",
     fieldOfStudy: "",
     universityName: "",
-    graduationYear: undefined,
+    graduationYear: { start: undefined, end: undefined },
     certifications: [],
   });
 
-  const handleChange = (key: keyof Education, value: any) => {
-    setFormData((prev) => ({
+  const handleEducationChange = (key: keyof Education, value: any) => {
+    setCurrentEducation((prev) => ({
       ...prev,
       [key]: value,
     }));
   };
 
   const handleDateChange = (key: "start" | "end", value: Date | undefined) => {
-    setFormData((prev) => ({
+    setCurrentEducation((prev) => ({
       ...prev,
       graduationYear: {
         ...prev.graduationYear,
         [key]: value,
       },
+    }));
+  };
+
+  const handleAddEducation = () => {
+    const updatedEducations = [...(formData.education || []), currentEducation];
+    setFormData((prev) => ({
+      ...prev,
+      education: updatedEducations,
+    }));
+    setCurrentEducation({
+      degree: "",
+      fieldOfStudy: "",
+      universityName: "",
+      graduationYear: { start: undefined, end: undefined },
+      certifications: [],
+    });
+  };
+
+  const handleRemoveEducation = (index: number) => {
+    const updatedEducations = [...(formData.education || [])];
+    updatedEducations.splice(index, 1);
+    setFormData((prev) => ({
+      ...prev,
+      education: updatedEducations,
     }));
   };
 
@@ -40,49 +73,79 @@ const EducationComponent: React.FC = () => {
           <Label>School Name</Label>
           <Input
             placeholder="School Name"
-            value={formData.universityName}
-            onChange={(e) => handleChange("universityName", e.target.value)}
+            value={currentEducation.universityName}
+            onChange={(e) =>
+              handleEducationChange("universityName", e.target.value)
+            }
           />
         </div>
         <div className="space-y-2">
           <Label>Field of Study</Label>
           <Input
             placeholder="Field of Study"
-            value={formData.fieldOfStudy}
-            onChange={(e) => handleChange("fieldOfStudy", e.target.value)}
+            value={currentEducation.fieldOfStudy}
+            onChange={(e) =>
+              handleEducationChange("fieldOfStudy", e.target.value)
+            }
           />
         </div>
         <div className="space-y-2">
           <Label>Degree</Label>
           <Input
             placeholder="Degree"
-            value={formData.degree}
-            onChange={(e) => handleChange("degree", e.target.value)}
+            value={currentEducation.degree}
+            onChange={(e) => handleEducationChange("degree", e.target.value)}
           />
         </div>
         <div className="space-y-2">
           <Label>Date Range</Label>
           <DatePicker
-            date={formData.graduationYear?.start}
+            date={currentEducation.graduationYear?.start}
             setDate={(date) => handleDateChange("start", date)}
             placeholder="Start Date"
           />
           <DatePicker
-            date={formData.graduationYear?.end}
+            date={currentEducation.graduationYear?.end}
             setDate={(date) => handleDateChange("end", date)}
             placeholder="End Date"
           />
         </div>
         <div>
           <StringArrayInput
-            label="Certications"
-            items={formData.certifications as string[]}
-            setItems={(items) =>
-              setFormData((prev) => ({ ...prev, certifications: items }))
-            }
+            label="Certifications"
+            items={currentEducation.certifications || []}
+            setItems={(items) => handleEducationChange("certifications", items)}
           />
         </div>
       </div>
+      <Button onClick={handleAddEducation} className="mt-2">
+        Add Education
+      </Button>
+      {formData.education &&
+        formData.education.length > 0 &&
+        formData.education.map((education, index) => (
+          <div
+            key={`education-${index}`}
+            className="space-y-2 border p-4 rounded"
+          >
+            <p>
+              <strong>School Name:</strong> {education.universityName}
+            </p>
+            <p>
+              <strong>Field of Study:</strong> {education.fieldOfStudy}
+            </p>
+            <p>
+              <strong>Degree:</strong> {education.degree}
+            </p>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => handleRemoveEducation(index)}
+            >
+              Remove Education
+            </Button>
+          </div>
+        ))}
     </div>
   );
 };

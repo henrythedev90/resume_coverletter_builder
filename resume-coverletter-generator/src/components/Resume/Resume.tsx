@@ -93,12 +93,12 @@ const ResumeGeneratorForm: React.FC = () => {
           />
         ),
       },
-      // {
-      //   name: "Education",
-      //   component: (
-      //     <EducationComponent formData={formData} setFormData={setFormData} />
-      //   ),
-      // },
+      {
+        name: "Education",
+        component: (
+          <EducationComponent formData={formData} setFormData={setFormData} />
+        ),
+      },
       // {
       //   name: "Skills",
       //   component: (
