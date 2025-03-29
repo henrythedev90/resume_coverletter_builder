@@ -1,101 +1,90 @@
 "use client";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { ProfessionalExperience, CreateResumeInput } from "@/types/resume";
 import DatePicker from "../ui/DatePicker/DatePicker";
 import { FormField } from "@/components/ui/FormField";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
+import { Button } from "@/components/ui/button";
 
 interface ProfessionalExperienceComponentProps {
   formData: CreateResumeInput;
-  setFormData: React.Dispatch<React.SetStateAction<CreateResumeInput>>;
+  setFormData: Dispatch<SetStateAction<CreateResumeInput>>;
 }
-
-type LocationKeys = "city" | "state";
 
 const ProfessionalExperienceComponent: React.FC<
   ProfessionalExperienceComponentProps
 > = ({ formData, setFormData }) => {
-  const [localExperience, setLocalExperience] =
-    useState<ProfessionalExperience>(
-      formData.professionalExperience &&
-        formData.professionalExperience.length > 0
-        ? formData.professionalExperience[0]
-        : {
-            companyName: "",
-            jobTitle: "",
-            location: { city: "", state: "" },
-            dates: { start: undefined, end: undefined },
-            responsibilities: [],
-            accomplishments: [],
-            skillsUsed: [],
-          }
-    );
+  const [currentExperience, setCurrentExperience] =
+    useState<ProfessionalExperience>({
+      companyName: "",
+      jobTitle: "",
+      location: { city: "", state: "" },
+      dates: { start: undefined, end: undefined },
+      responsibilities: [],
+      accomplishments: [],
+      skillsUsed: [],
+    });
 
-  const handleChange = (
+  const handleCurrentExperienceChange = (
     name: string | keyof ProfessionalExperience,
     value: any
   ) => {
     if (name === "city" || name === "state") {
-      handleLocationChange(name as LocationKeys, value as string);
+      setCurrentExperience((prev) => ({
+        ...prev,
+        location: { ...prev.location, [name]: value as string },
+      }));
+    } else if (name === "start" || name === "end") {
+      setCurrentExperience((prev) => ({
+        ...prev,
+        dates: { ...prev.dates, [name]: value as Date | undefined },
+      }));
     } else {
-      setLocalExperience((prev) => ({
+      setCurrentExperience((prev) => ({
         ...prev,
         [name as keyof ProfessionalExperience]: value,
-      }));
-      setFormData((prev) => ({
-        ...prev,
-        professionalExperience: [
-          {
-            ...prev.professionalExperience[0],
-            [name as keyof ProfessionalExperience]: value,
-          },
-        ],
       }));
     }
   };
 
-  const handleLocationChange = (name: LocationKeys, value: string) => {
-    setLocalExperience((prev) => ({
-      ...prev,
-      location: {
-        ...prev.location,
-        [name]: value,
-      },
-    }));
+  const handleAddExperience = () => {
+    if (currentExperience.companyName && currentExperience.jobTitle) {
+      const updatedExperiences = [
+        ...(formData.professionalExperience || []),
+        currentExperience,
+      ];
+      setFormData((prev) => ({
+        ...prev,
+        professionalExperience: updatedExperiences,
+      }));
+      setCurrentExperience({
+        companyName: "",
+        jobTitle: "",
+        location: { city: "", state: "" },
+        dates: { start: undefined, end: undefined },
+        responsibilities: [],
+        accomplishments: [],
+        skillsUsed: [],
+      });
+    }
+  };
+
+  const handleRemoveExperience = (index: number) => {
+    const updatedExperiences = [...(formData.professionalExperience || [])];
+    updatedExperiences.splice(index, 1);
     setFormData((prev) => ({
       ...prev,
-      professionalExperience: [
-        {
-          ...prev.professionalExperience[0],
-          location: {
-            ...prev.professionalExperience[0].location,
-            [name]: value,
-          },
-        },
-      ],
+      professionalExperience: updatedExperiences,
     }));
   };
 
-  const handleDateChange = (name: "start" | "end", value: Date | undefined) => {
-    setLocalExperience((prev) => ({
-      ...prev,
-      dates: {
-        ...prev.dates,
-        [name]: value,
-      },
-    }));
-    setFormData((prev) => ({
-      ...prev,
-      professionalExperience: [
-        {
-          ...prev.professionalExperience[0],
-          dates: {
-            ...prev.professionalExperience[0].dates,
-            [name]: value,
-          },
-        },
-      ],
-    }));
+  const handleKeyPress = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddExperience();
+    }
   };
 
   return (
@@ -105,62 +94,119 @@ const ProfessionalExperienceComponent: React.FC<
         <FormField
           label="Company"
           name="companyName"
-          value={localExperience.companyName}
-          onChange={handleChange}
+          value={currentExperience.companyName}
+          onChange={(name, value) => handleCurrentExperienceChange(name, value)}
+          onKeyDown={handleKeyPress}
         />
         <FormField
           label="Job Title"
           name="jobTitle"
-          value={localExperience.jobTitle}
-          onChange={handleChange}
+          value={currentExperience.jobTitle}
+          onChange={(name, value) => handleCurrentExperienceChange(name, value)}
+          onKeyDown={handleKeyPress}
         />
         <FormField
           label="City"
           name="city"
-          value={localExperience.location.city}
-          onChange={handleChange}
+          value={currentExperience.location.city}
+          onChange={(name, value) => handleCurrentExperienceChange(name, value)}
+          onKeyDown={handleKeyPress}
         />
         <FormField
           label="State"
           name="state"
-          value={localExperience.location.state}
-          onChange={handleChange}
+          value={currentExperience.location.state}
+          onChange={(name, value) => handleCurrentExperienceChange(name, value)}
+          onKeyDown={handleKeyPress}
         />
         <div className="space-y-2">
           <label>Date Range</label>
           <DatePicker
-            date={localExperience.dates.start}
-            setDate={(date) => handleDateChange("start", date)}
+            date={currentExperience.dates.start}
+            setDate={(date) => handleCurrentExperienceChange("start", date)}
             placeholder="Start Date"
           />
           <DatePicker
-            date={localExperience.dates.end}
-            setDate={(date) => handleDateChange("end", date)}
+            date={currentExperience.dates.end}
+            setDate={(date) => handleCurrentExperienceChange("end", date)}
             placeholder="End Date"
           />
         </div>
         <div className="space-y-2">
           <StringArrayInput
             label="Responsibilities"
-            items={localExperience.responsibilities as string[]}
-            setItems={(items) => handleChange("responsibilities", items)}
+            items={currentExperience.responsibilities as string[]}
+            setItems={(items) =>
+              handleCurrentExperienceChange("responsibilities", items)
+            }
           />
         </div>
         <div className="space-y-2">
           <StringArrayInput
             label="Accomplishments"
-            items={localExperience.accomplishments as string[]}
-            setItems={(items) => handleChange("accomplishments", items)}
+            items={currentExperience.accomplishments as string[]}
+            setItems={(items) =>
+              handleCurrentExperienceChange("accomplishments", items)
+            }
           />
         </div>
         <div className="space-y-2">
           <StringArrayInput
             label="Skills Used"
-            items={localExperience.skillsUsed as string[]}
-            setItems={(items) => handleChange("skillsUsed", items)}
+            items={currentExperience.skillsUsed as string[]}
+            setItems={(items) =>
+              handleCurrentExperienceChange("skillsUsed", items)
+            }
           />
         </div>
       </div>
+      <Button
+        onClick={handleAddExperience}
+        disabled={
+          !currentExperience.companyName ||
+          !currentExperience.jobTitle ||
+          !currentExperience.location.city ||
+          !currentExperience.location.state ||
+          !currentExperience.dates.start ||
+          !currentExperience.dates.end
+        }
+        className="mt-2"
+      >
+        Add Experience
+      </Button>
+
+      {formData.professionalExperience &&
+        formData.professionalExperience.length > 0 &&
+        formData.professionalExperience.some(
+          (exp) => exp.companyName && exp.jobTitle
+        ) && (
+          <div className="space-y-4 mt-6">
+            {formData.professionalExperience.map(
+              (exp, index) =>
+                exp.companyName &&
+                exp.jobTitle && (
+                  <div
+                    key={`exp-${index}`}
+                    className="space-y-2 border p-4 rounded"
+                  >
+                    <p>
+                      <strong>Company:</strong> {exp.companyName}
+                    </p>
+                    <p>
+                      <strong>Job Title:</strong> {exp.jobTitle}
+                    </p>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleRemoveExperience(index)}
+                    >
+                      Remove Experience
+                    </Button>
+                  </div>
+                )
+            )}
+          </div>
+        )}
     </div>
   );
 };
