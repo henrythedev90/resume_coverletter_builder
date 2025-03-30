@@ -12,10 +12,7 @@ const HobbiesAndInterestComponent: React.FC<
   HobbiesAndInterestComponentProps
 > = ({ formData, setFormData }) => {
   const [localHobbies, setLocalHobbies] = useState<string[]>(
-    formData.hobbiesAndInterests?.length &&
-      formData.hobbiesAndInterests[0]?.event?.length
-      ? formData.hobbiesAndInterests[0].event
-      : []
+    formData.hobbiesAndInterests || [] // Correct initialization
   );
 
   const handleHobbiesChange = (items: string[]) => {
@@ -25,7 +22,7 @@ const HobbiesAndInterestComponent: React.FC<
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      hobbiesAndInterests: [{ event: localHobbies }], // Keep structure for consistency
+      hobbiesAndInterests: localHobbies, // Correct structure
     }));
   }, [localHobbies, setFormData]);
 

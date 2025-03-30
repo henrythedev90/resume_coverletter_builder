@@ -1,4 +1,5 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+"use client";
+import React, { useState, Dispatch, SetStateAction } from "react";
 import { Award, CreateResumeInput } from "@/types/resume";
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/button";
@@ -18,23 +19,22 @@ const AwardComponent: React.FC<AwardComponentProps> = ({
     description: "",
   });
 
-  const handleCurrentAwardChange = (name: string, value: string) => {
-    if (name in currentAward) {
-      setCurrentAward((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const handleYearChange = (value: string) => {
-    const yearNum = parseInt(value, 10);
+  const handleCurrentAwardChange = (name: string | keyof Award, value: any) => {
     setCurrentAward((prev) => ({
       ...prev,
-      year: !isNaN(yearNum) ? yearNum : undefined,
+      [name as keyof Award]: value,
     }));
   };
 
   const handleAddAward = () => {
     if (currentAward.title && currentAward.description && currentAward.year) {
-      const updatedAwards = [...(formData.awards || []), currentAward].sort(
+      const newAward: Award = {
+        title: currentAward.title,
+        description: currentAward.description,
+        year: currentAward.year,
+      };
+
+      const updatedAwards = [...(formData.awards || []), newAward].sort(
         (a, b) => (b.year || 0) - (a.year || 0)
       );
       setFormData((prev) => ({ ...prev, awards: updatedAwards }));
@@ -43,42 +43,38 @@ const AwardComponent: React.FC<AwardComponentProps> = ({
   };
 
   const handleRemoveAward = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      awards: prev.awards?.filter((_, i) => i !== index) || [],
-    }));
+    const updatedAwards = [...(formData.awards || [])];
+    updatedAwards.splice(index, 1);
+    setFormData((prev) => ({ ...prev, awards: updatedAwards }));
   };
 
   return (
     <div className="bg-background text-foreground space-y-4">
       <h2 className="text-2xl font-bold">Awards</h2>
-
       <div className="grid grid-cols-2 gap-4">
         <FormField
           label="Title"
           name="title"
+          placeholder="Title"
           value={currentAward.title}
-          onChange={handleCurrentAwardChange}
-          placeholder="Enter award title"
-        />
-        <FormField
-          label="Description"
-          name="description"
-          type="textarea"
-          value={currentAward.description}
-          onChange={handleCurrentAwardChange}
-          placeholder="Describe the award"
+          onChange={(name, value) => handleCurrentAwardChange(name, value)}
         />
         <FormField
           label="Year"
           name="year"
           type="number"
-          value={currentAward.year ? currentAward.year.toString() : ""}
-          onChange={(_, value) => handleYearChange(value)}
-          placeholder="Year received"
+          placeholder="Year"
+          value={currentAward.year}
+          onChange={(name, value) => handleCurrentAwardChange(name, value)}
+        />
+        <FormField
+          label="Description"
+          name="description"
+          placeholder="Description"
+          value={currentAward.description}
+          onChange={(name, value) => handleCurrentAwardChange(name, value)}
         />
       </div>
-
       <Button
         onClick={handleAddAward}
         disabled={
@@ -89,31 +85,33 @@ const AwardComponent: React.FC<AwardComponentProps> = ({
         Add Award
       </Button>
 
-      {formData.awards?.length > 0 && (
+      {formData.awards && formData.awards.length > 0 && (
         <div className="space-y-4 mt-6">
-          {formData.awards.map((award, index) => (
-            <div
-              key={`award-${index}`}
-              className="space-y-2 border p-4 rounded"
-            >
-              <p>
-                <strong>Title:</strong> {award.title}
-              </p>
-              <p>
-                <strong>Description:</strong> {award.description}
-              </p>
-              <p>
-                <strong>Year:</strong> {award.year}
-              </p>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => handleRemoveAward(index)}
+          {formData.awards
+            .filter((award) => award.title && award.description && award.year)
+            .map((award, index) => (
+              <div
+                key={`award-${index}`}
+                className="space-y-2 border p-4 rounded"
               >
-                Remove Award
-              </Button>
-            </div>
-          ))}
+                <p>
+                  <strong>Title:</strong> {award.title}
+                </p>
+                <p>
+                  <strong>Year:</strong> {award.year}
+                </p>
+                <p>
+                  <strong>Description:</strong> {award.description}
+                </p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleRemoveAward(index)}
+                >
+                  Remove Award
+                </Button>
+              </div>
+            ))}
         </div>
       )}
     </div>

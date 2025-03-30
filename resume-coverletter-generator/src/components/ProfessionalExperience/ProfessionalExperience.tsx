@@ -57,11 +57,14 @@ const ProfessionalExperienceComponent: React.FC<
 
   const handleAddExperience = () => {
     if (
-      currentExperience.jobTitle &&
-      currentExperience.companyName &&
-      currentExperience.location &&
+      currentExperience.jobTitle.trim() &&
+      currentExperience.companyName.trim() &&
+      currentExperience.location.city.trim() &&
+      currentExperience.location.state.trim() &&
       currentExperience.dates.start &&
-      currentExperience.dates.end
+      currentExperience.dates.end &&
+      currentExperience.responsibilities.length > 0 &&
+      currentExperience.accomplishments.length > 0
     ) {
       const updatedExperiences = [
         ...(formData.professionalExperience || []),

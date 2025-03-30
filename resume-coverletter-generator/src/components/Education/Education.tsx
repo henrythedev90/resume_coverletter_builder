@@ -19,7 +19,7 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
     degree: "",
     fieldOfStudy: "",
     universityName: "",
-    graduationYear: { start: undefined, end: undefined },
+    graduationYear: undefined,
     certifications: [],
   });
 
@@ -27,20 +27,10 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
     name: string | keyof Education,
     value: any
   ) => {
-    if (name === "start" || name === "end") {
-      setCurrentEducation((prev) => ({
-        ...prev,
-        graduationYear: {
-          ...prev.graduationYear,
-          [name]: value as Date | undefined,
-        },
-      }));
-    } else {
-      setCurrentEducation((prev) => ({
-        ...prev,
-        [name as keyof Education]: value,
-      }));
-    }
+    setCurrentEducation((prev) => ({
+      ...prev,
+      [name as keyof Education]: value,
+    }));
   };
 
   const handleAddEducation = () => {
@@ -49,19 +39,15 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
       currentEducation.fieldOfStudy &&
       currentEducation.degree
     ) {
-      const updatedEducations = [
-        ...(formData.education || []),
-        currentEducation,
-      ];
       setFormData((prev) => ({
         ...prev,
-        education: updatedEducations,
+        education: [...prev.education, currentEducation],
       }));
       setCurrentEducation({
         degree: "",
         fieldOfStudy: "",
         universityName: "",
-        graduationYear: { start: undefined, end: undefined },
+        graduationYear: undefined,
         certifications: [],
       });
     }
@@ -101,20 +87,15 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
           value={currentEducation.degree}
           onChange={(name, value) => handleCurrentEducationChange(name, value)}
         />
-        <div className="space-y-2">
-          <label>Start</label>
-          <DatePicker
-            date={currentEducation.graduationYear?.start}
-            setDate={(date) => handleCurrentEducationChange("start", date)}
-            placeholder="Start Date"
-          />
-          <label>End</label>
-          <DatePicker
-            date={currentEducation.graduationYear?.end}
-            setDate={(date) => handleCurrentEducationChange("end", date)}
-            placeholder="End Date"
-          />
-        </div>
+        <FormField
+          label="Graduation Year"
+          name="graduationYear"
+          type="number" // Only this line was changed
+          placeholder="Graduation Year"
+          value={currentEducation.graduationYear}
+          onChange={(name, value) => handleCurrentEducationChange(name, value)}
+        />
+
         <div>
           <StringArrayInput
             label="Certifications"
@@ -163,15 +144,12 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
                     <p>
                       <strong>Degree:</strong> {education.degree}
                     </p>
-                    {education.graduationYear && (
-                      <p>
-                        <strong>Graduation Year:</strong>
-                        {education.graduationYear.start &&
-                          ` ${education.graduationYear.start.getFullYear()} -`}
-                        {education.graduationYear.end &&
-                          ` ${education.graduationYear.end.getFullYear()}`}
-                      </p>
-                    )}
+
+                    <p>
+                      <strong>Graduation Year:</strong>{" "}
+                      {education.graduationYear}
+                    </p>
+
                     {education.certifications &&
                       education.certifications.length > 0 && (
                         <p>

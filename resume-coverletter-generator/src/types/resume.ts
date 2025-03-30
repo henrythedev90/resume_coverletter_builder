@@ -17,10 +17,7 @@ export interface Education {
   degree: string;
   fieldOfStudy: string;
   universityName: string;
-  graduationYear?: {
-    start?: Date;
-    end?: Date;
-  };
+  graduationYear?: number | undefined;
   certifications?: string[];
 }
 
@@ -71,10 +68,6 @@ export interface JobPreferences {
   preferredIndustry: string[];
 }
 
-export interface HobbiesAndInterests {
-  event: string[];
-}
-
 export interface ResumeType {
   _id?: string;
   userId: Types.ObjectId;
@@ -86,7 +79,7 @@ export interface ResumeType {
   awards: Award[];
   languages: Language[];
   volunteerExperience: VolunteerExperience[];
-  hobbiesAndInterests: HobbiesAndInterests[];
+  hobbiesAndInterests: string[];
   websites: Website[];
   jobPreferences: JobPreferences;
 }

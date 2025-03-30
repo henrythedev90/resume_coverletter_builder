@@ -35,42 +35,15 @@ const pageTransition = {
 const createInitialState = (): CreateResumeInput => ({
   userId: "" as any,
   careerObjective: "",
-  professionalExperience: [
-    {
-      jobTitle: "",
-      companyName: "",
-      location: { city: "", state: "" },
-      dates: { start: new Date(), end: new Date() },
-      responsibilities: [],
-      accomplishments: [],
-      skillsUsed: [],
-    },
-  ],
-  education: [
-    {
-      degree: "",
-      fieldOfStudy: "",
-      universityName: "",
-      graduationYear: { start: new Date(), end: new Date() },
-      certifications: [],
-    },
-  ],
+  professionalExperience: [],
+  education: [],
   skills: { technical: [], soft: [], industrySpecific: [] },
-  projects: [
-    { title: "", description: "", role: "", skillsUsed: [], portfolioLink: "" },
-  ],
-  awards: [{ title: "", year: undefined, description: "" }],
-  languages: [{ language: "", proficiency: "" }],
-  volunteerExperience: [
-    {
-      organization: "",
-      role: "",
-      dates: { start: new Date(), end: new Date() },
-      description: "",
-    },
-  ],
-  websites: [{ platform: "", url: "" }],
-  hobbiesAndInterests: [{ event: [] }],
+  projects: [],
+  awards: [],
+  languages: [],
+  volunteerExperience: [],
+  websites: [],
+  hobbiesAndInterests: [],
   jobPreferences: {
     desiredJobTitles: [],
     preferredIndustry: [],
@@ -184,7 +157,9 @@ const ResumeGeneratorForm: React.FC = () => {
             setFormData={setFormData}
           />
         ),
-        validate: () => formData.hobbiesAndInterests[0].event.length > 0,
+        validate: () =>
+          formData.hobbiesAndInterests.length > 0 &&
+          formData.hobbiesAndInterests[0].length > 0,
       },
     ],
     [formData]
@@ -229,12 +204,35 @@ const ResumeGeneratorForm: React.FC = () => {
         router.push("/login");
         return;
       }
+
+      const filteredFormData = {
+        ...formData,
+        professionalExperience: formData.professionalExperience.filter(
+          (exp) => exp.jobTitle && exp.companyName
+        ),
+        education: formData.education.filter(
+          (edu) => edu.degree && edu.fieldOfStudy && edu.universityName
+        ),
+        awards: formData.awards.filter((award) => award.title),
+        languages: formData.languages.filter((lang) => lang.language),
+        projects: formData.projects.filter((project) => project.title),
+        volunteerExperience: formData.volunteerExperience.filter(
+          (volunteer) => volunteer.organization
+        ),
+        websites: formData.websites.filter((website) => website.url),
+      };
+
+      console.log(filteredFormData, formData);
       debugger;
-      const response = await axios.post("/api/resume/generate", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.post(
+        "/api/resume/generate",
+        filteredFormData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       console.log("Resume generated:", response.data);
       router.push("/dashboard");
