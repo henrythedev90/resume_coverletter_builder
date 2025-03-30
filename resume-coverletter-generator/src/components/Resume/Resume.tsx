@@ -215,7 +215,7 @@ const ResumeGeneratorForm: React.FC = () => {
     }
   };
 
-  return (
+  return session ? (
     <div className="max-w-4xl mx-auto p-8 bg-background text-foreground">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-4">Resume Generator</h1>
@@ -276,7 +276,7 @@ const ResumeGeneratorForm: React.FC = () => {
         )}
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default ResumeGeneratorForm;

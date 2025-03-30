@@ -1,15 +1,13 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import classes from "./Header.module.css";
-import { useRouter } from "next/navigation";
 
 const Header = () => {
   const headerRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
-  const router = useRouter();
 
   useEffect(() => {
     const headerFunc = () => {
