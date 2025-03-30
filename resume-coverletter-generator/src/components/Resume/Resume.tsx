@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useCallback, useMemo } from "react";
+import { Types } from "mongoose";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -33,7 +34,7 @@ const pageTransition = {
 };
 
 const createInitialState = (): CreateResumeInput => ({
-  userId: "" as any,
+  userId: new Types.ObjectId(),
   careerObjective: "",
   professionalExperience: [],
   education: [],
@@ -207,6 +208,7 @@ const ResumeGeneratorForm: React.FC = () => {
 
       const filteredFormData = {
         ...formData,
+        userId: session?.user._id,
         professionalExperience: formData.professionalExperience.filter(
           (exp) => exp.jobTitle && exp.companyName
         ),
@@ -222,7 +224,7 @@ const ResumeGeneratorForm: React.FC = () => {
         websites: formData.websites.filter((website) => website.url),
       };
 
-      console.log(filteredFormData, formData);
+      console.log(filteredFormData.websites);
       debugger;
       const response = await axios.post(
         "/api/resume/generate",

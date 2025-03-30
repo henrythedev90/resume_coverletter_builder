@@ -86,6 +86,7 @@ const ResumeSchema = new mongoose.Schema({
     {
       platform: { type: String }, // e.g., "LinkedIn", "GitHub", "Personal Website"
       url: { type: String, required: true }, // URL of the website
+      _id: false,
     },
   ],
 

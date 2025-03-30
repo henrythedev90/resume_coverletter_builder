@@ -29,6 +29,7 @@ export default async function handler(
       volunteerExperience,
       hobbiesAndInterests,
       jobPreferences,
+      websites,
     } = req.body;
 
     if (!careerObjective || !professionalExperience || !education || !skills) {
@@ -69,6 +70,7 @@ export default async function handler(
       ...(languages && { languages }),
       ...(volunteerExperience && { volunteerExperience }),
       ...(hobbiesAndInterests && { hobbiesAndInterests }),
+      ...(websites && { websites }),
       ...(jobPreferences && { jobPreferences }),
     };
 

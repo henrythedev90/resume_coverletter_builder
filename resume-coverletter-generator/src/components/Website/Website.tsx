@@ -26,15 +26,17 @@ const WebsiteComponent: React.FC<WebsiteComponentProps> = ({
   };
 
   const handleAddWebsite = () => {
-    const updatedWebsites = [...(formData.websites || []), currentWebsite];
-    setFormData((prev) => ({
-      ...prev,
-      websites: updatedWebsites,
-    }));
-    setCurrentWebsite({
-      platform: "",
-      url: "",
-    });
+    if (currentWebsite.platform && currentWebsite.url) {
+      const updatedWebsites = [...(formData.websites || []), currentWebsite];
+      setFormData((prev) => ({
+        ...prev,
+        websites: updatedWebsites,
+      }));
+      setCurrentWebsite({
+        platform: "",
+        url: "",
+      });
+    }
   };
 
   const handleRemoveWebsite = (index: number) => {
