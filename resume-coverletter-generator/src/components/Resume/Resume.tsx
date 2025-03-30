@@ -209,7 +209,7 @@ const ResumeGeneratorForm: React.FC = () => {
       });
 
       console.log("Resume generated:", response.data);
-      router.push("/dashboard/");
+      router.push("/dashboard");
     } catch (error) {
       console.error("Error generating resume:", error);
     }

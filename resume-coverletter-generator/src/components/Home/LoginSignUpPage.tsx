@@ -49,6 +49,7 @@ export default function LoginSignUpPage() {
           });
 
           if (response.data.token) {
+            console.log(response.data.token, "this token");
             signIn("credentials", {
               email: formData.email,
               password: formData.password,
