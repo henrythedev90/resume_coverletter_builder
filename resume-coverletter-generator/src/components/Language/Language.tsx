@@ -18,7 +18,7 @@ const LanguageComponent: React.FC<LanguageComponentProps> = ({
     proficiency: "",
   });
 
-  const handleLanguageChange = (key: keyof Language, value: any) => {
+  const handleCurrentLanguageChange = (key: keyof Language, value: any) => {
     setCurrentLanguage((prev) => ({
       ...prev,
       [key]: value,
@@ -26,15 +26,17 @@ const LanguageComponent: React.FC<LanguageComponentProps> = ({
   };
 
   const handleAddLanguage = () => {
-    const updatedLanguages = [...(formData.languages || []), currentLanguage];
-    setFormData((prev) => ({
-      ...prev,
-      languages: updatedLanguages,
-    }));
-    setCurrentLanguage({
-      language: "",
-      proficiency: "",
-    });
+    if (currentLanguage.language && currentLanguage.proficiency) {
+      const updatedLanguages = [...(formData.languages || []), currentLanguage];
+      setFormData((prev) => ({
+        ...prev,
+        languages: updatedLanguages,
+      }));
+      setCurrentLanguage({
+        language: "",
+        proficiency: "",
+      });
+    }
   };
 
   const handleRemoveLanguage = (index: number) => {
@@ -55,41 +57,55 @@ const LanguageComponent: React.FC<LanguageComponentProps> = ({
           name="language"
           placeholder="Language"
           value={currentLanguage.language}
-          onChange={(_, value) => handleLanguageChange("language", value)}
+          onChange={(name, value) =>
+            handleCurrentLanguageChange("language", value)
+          }
         />
         <FormField
           label="Proficiency"
           name="proficiency"
           placeholder="Proficiency"
           value={currentLanguage.proficiency}
-          onChange={(_, value) => handleLanguageChange("proficiency", value)}
+          onChange={(name, value) =>
+            handleCurrentLanguageChange("proficiency", value)
+          }
         />
       </div>
-      <Button onClick={handleAddLanguage} className="mt-2">
+      <Button
+        onClick={handleAddLanguage}
+        disabled={!currentLanguage.language || !currentLanguage.proficiency}
+        className="mt-2"
+      >
         Add Language
       </Button>
       {formData.languages &&
         formData.languages.length > 0 &&
-        formData.languages.map((language, index) => (
-          <div
-            key={`language-${index}`}
-            className="space-y-2 border p-4 rounded"
-          >
-            <p>
-              <strong>Language:</strong> {language.language}
-            </p>
-            <p>
-              <strong>Proficiency:</strong> {language.proficiency}
-            </p>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => handleRemoveLanguage(index)}
-            >
-              Remove Language
-            </Button>
+        formData.languages.some(
+          (language) => language.language && language.proficiency
+        ) && (
+          <div className="space-y-4 mt-6">
+            {formData.languages.map((language, index) => (
+              <div
+                key={`language-${index}`}
+                className="space-y-2 border p-4 rounded"
+              >
+                <p>
+                  <strong>Language:</strong> {language.language}
+                </p>
+                <p>
+                  <strong>Proficiency:</strong> {language.proficiency}
+                </p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleRemoveLanguage(index)}
+                >
+                  Remove Language
+                </Button>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
     </div>
   );
 };

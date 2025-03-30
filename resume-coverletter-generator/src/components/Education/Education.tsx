@@ -23,36 +23,48 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
     certifications: [],
   });
 
-  const handleEducationChange = (key: keyof Education, value: any) => {
-    setCurrentEducation((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
-
-  const handleDateChange = (key: "start" | "end", value: Date | undefined) => {
-    setCurrentEducation((prev) => ({
-      ...prev,
-      graduationYear: {
-        ...prev.graduationYear,
-        [key]: value,
-      },
-    }));
+  const handleCurrentEducationChange = (
+    name: string | keyof Education,
+    value: any
+  ) => {
+    if (name === "start" || name === "end") {
+      setCurrentEducation((prev) => ({
+        ...prev,
+        graduationYear: {
+          ...prev.graduationYear,
+          [name]: value as Date | undefined,
+        },
+      }));
+    } else {
+      setCurrentEducation((prev) => ({
+        ...prev,
+        [name as keyof Education]: value,
+      }));
+    }
   };
 
   const handleAddEducation = () => {
-    const updatedEducations = [...(formData.education || []), currentEducation];
-    setFormData((prev) => ({
-      ...prev,
-      education: updatedEducations,
-    }));
-    setCurrentEducation({
-      degree: "",
-      fieldOfStudy: "",
-      universityName: "",
-      graduationYear: { start: undefined, end: undefined },
-      certifications: [],
-    });
+    if (
+      currentEducation.universityName &&
+      currentEducation.fieldOfStudy &&
+      currentEducation.degree
+    ) {
+      const updatedEducations = [
+        ...(formData.education || []),
+        currentEducation,
+      ];
+      setFormData((prev) => ({
+        ...prev,
+        education: updatedEducations,
+      }));
+      setCurrentEducation({
+        degree: "",
+        fieldOfStudy: "",
+        universityName: "",
+        graduationYear: { start: undefined, end: undefined },
+        certifications: [],
+      });
+    }
   };
 
   const handleRemoveEducation = (index: number) => {
@@ -73,37 +85,33 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
           name="universityName"
           placeholder="School Name"
           value={currentEducation.universityName}
-          onChange={(name, value) =>
-            handleEducationChange("universityName", value)
-          }
+          onChange={(name, value) => handleCurrentEducationChange(name, value)}
         />
         <FormField
           label="Field of Study"
           name="fieldOfStudy"
           placeholder="Field of Study"
           value={currentEducation.fieldOfStudy}
-          onChange={(name, value) =>
-            handleEducationChange("fieldOfStudy", value)
-          }
+          onChange={(name, value) => handleCurrentEducationChange(name, value)}
         />
         <FormField
           label="Degree"
           name="degree"
           placeholder="Degree"
           value={currentEducation.degree}
-          onChange={(name, value) => handleEducationChange("degree", value)}
+          onChange={(name, value) => handleCurrentEducationChange(name, value)}
         />
         <div className="space-y-2">
           <label>Start</label>
           <DatePicker
             date={currentEducation.graduationYear?.start}
-            setDate={(date) => handleDateChange("start", date)}
+            setDate={(date) => handleCurrentEducationChange("start", date)}
             placeholder="Start Date"
           />
           <label>End</label>
           <DatePicker
             date={currentEducation.graduationYear?.end}
-            setDate={(date) => handleDateChange("end", date)}
+            setDate={(date) => handleCurrentEducationChange("end", date)}
             placeholder="End Date"
           />
         </div>
@@ -111,14 +119,26 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
           <StringArrayInput
             label="Certifications"
             items={currentEducation.certifications || []}
-            setItems={(items) => handleEducationChange("certifications", items)}
+            setItems={(items) =>
+              handleCurrentEducationChange("certifications", items)
+            }
           />
         </div>
       </div>
-      <Button onClick={handleAddEducation} className="mt-2">
+      <Button
+        onClick={handleAddEducation}
+        disabled={
+          !currentEducation.universityName ||
+          !currentEducation.fieldOfStudy ||
+          !currentEducation.degree
+        }
+        className="mt-2"
+      >
         Add Education
       </Button>
+
       {formData.education &&
+        formData.education.length > 0 &&
         formData.education.some(
           (education) =>
             education.universityName &&
@@ -151,10 +171,6 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
             ))}
           </div>
         )}
-      {!formData.education ||
-        (formData.education.length === 0 && <p>No education entries yet.</p>)}
-      {!formData.education ||
-        (formData.education.length === 0 && <p>No education entries yet.</p>)}
     </div>
   );
 };

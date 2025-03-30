@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { JobPreferences, CreateResumeInput } from "@/types/resume";
 import { FormField } from "@/components/ui/FormField";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
@@ -15,24 +15,36 @@ const JobPreferencesComponent: React.FC<JobPreferencesComponentProps> = ({
 }) => {
   const [currentJobPreference, setCurrentJobPreference] =
     useState<JobPreferences>(
-      formData.jobPreferences
-        ? formData.jobPreferences
-        : {
-            desiredJobTitles: [],
-            preferredIndustry: [],
-            employmentType: "",
-            preferredLocation: "",
-          }
+      formData.jobPreferences || {
+        desiredJobTitles: [],
+        preferredIndustry: [],
+        employmentType: "",
+        preferredLocation: "",
+      }
     );
+
+  useEffect(() => {
+    setCurrentJobPreference(
+      formData.jobPreferences || {
+        desiredJobTitles: [],
+        preferredIndustry: [],
+        employmentType: "",
+        preferredLocation: "",
+      }
+    );
+  }, [formData.jobPreferences]);
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      jobPreferences: currentJobPreference,
+    }));
+  }, [currentJobPreference, setFormData]);
 
   const handleJobPreferenceChange = (key: keyof JobPreferences, value: any) => {
     setCurrentJobPreference((prev) => ({
       ...prev,
       [key]: value,
-    }));
-    setFormData((prev) => ({
-      ...prev,
-      jobPreferences: { ...prev.jobPreferences, [key]: value },
     }));
   };
 

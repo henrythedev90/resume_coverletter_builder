@@ -22,7 +22,7 @@ const ProjectsComponents: React.FC<ProjectsComponentsProps> = ({
     skillsUsed: [],
   });
 
-  const handleProjectChange = (key: keyof Project, value: any) => {
+  const handleCurrentProjectChange = (key: keyof Project, value: any) => {
     setCurrentProject((prev) => ({
       ...prev,
       [key]: value,
@@ -30,18 +30,24 @@ const ProjectsComponents: React.FC<ProjectsComponentsProps> = ({
   };
 
   const handleAddProject = () => {
-    const updatedProjects = [...(formData.projects || []), currentProject];
-    setFormData((prev) => ({
-      ...prev,
-      projects: updatedProjects,
-    }));
-    setCurrentProject({
-      title: "",
-      description: "",
-      role: "",
-      portfolioLink: "",
-      skillsUsed: [],
-    });
+    if (
+      currentProject.title &&
+      currentProject.role &&
+      currentProject.description
+    ) {
+      const updatedProjects = [...(formData.projects || []), currentProject];
+      setFormData((prev) => ({
+        ...prev,
+        projects: updatedProjects,
+      }));
+      setCurrentProject({
+        title: "",
+        description: "",
+        role: "",
+        portfolioLink: "",
+        skillsUsed: [],
+      });
+    }
   };
 
   const handleRemoveProject = (index: number) => {
@@ -60,16 +66,16 @@ const ProjectsComponents: React.FC<ProjectsComponentsProps> = ({
         <FormField
           label="Title"
           name="title"
-          placeholder="Job Title"
+          placeholder="Project Title"
           value={currentProject.title}
-          onChange={(_, value) => handleProjectChange("title", value)}
+          onChange={(name, value) => handleCurrentProjectChange("title", value)}
         />
         <FormField
           label="Role"
           name="role"
           placeholder="Role"
           value={currentProject.role}
-          onChange={(_, value) => handleProjectChange("role", value)}
+          onChange={(name, value) => handleCurrentProjectChange("role", value)}
         />
         <FormField
           label="Description"
@@ -77,48 +83,68 @@ const ProjectsComponents: React.FC<ProjectsComponentsProps> = ({
           placeholder="Description"
           type="textarea"
           value={currentProject.description}
-          onChange={(_, value) => handleProjectChange("description", value)}
+          onChange={(name, value) =>
+            handleCurrentProjectChange("description", value)
+          }
         />
         <FormField
           label="Portfolio Link"
           name="portfolioLink"
           placeholder="Portfolio Link"
           value={currentProject.portfolioLink}
-          onChange={(_, value) => handleProjectChange("portfolioLink", value)}
+          onChange={(name, value) =>
+            handleCurrentProjectChange("portfolioLink", value)
+          }
         />
         <div className="space-y-2">
           <StringArrayInput
             label="Skills Used"
             items={currentProject.skillsUsed || []}
-            setItems={(items) => handleProjectChange("skillsUsed", items)}
+            setItems={(items) =>
+              handleCurrentProjectChange("skillsUsed", items)
+            }
           />
         </div>
       </div>
-      <Button onClick={handleAddProject} className="mt-2">
+      <Button
+        onClick={handleAddProject}
+        disabled={
+          !currentProject.title ||
+          !currentProject.role ||
+          !currentProject.description
+        }
+        className="mt-2"
+      >
         Add Project
       </Button>
       {formData.projects &&
         formData.projects.length > 0 &&
-        formData.projects.map((project, index) => (
-          <div
-            key={`project-${index}`}
-            className="space-y-2 border p-4 rounded"
-          >
-            <p>
-              <strong>Title:</strong> {project.title}
-            </p>
-            <p>
-              <strong>Role:</strong> {project.role}
-            </p>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => handleRemoveProject(index)}
-            >
-              Remove Project
-            </Button>
+        formData.projects.some(
+          (project) => project.title && project.role && project.description
+        ) && (
+          <div className="space-y-4 mt-6">
+            {formData.projects.map((project, index) => (
+              <div
+                key={`project-${index}`}
+                className="space-y-2 border p-4 rounded"
+              >
+                <p>
+                  <strong>Title:</strong> {project.title}
+                </p>
+                <p>
+                  <strong>Role:</strong> {project.role}
+                </p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleRemoveProject(index)}
+                >
+                  Remove Project
+                </Button>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
     </div>
   );
 };

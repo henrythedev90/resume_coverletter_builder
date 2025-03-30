@@ -70,6 +70,9 @@ const WebsiteComponent: React.FC<WebsiteComponentProps> = ({
       </Button>
       {formData.websites &&
         formData.websites.length > 0 &&
+        formData.websites.some(
+          (website) => website && (website.platform || website.url)
+        ) &&
         formData.websites.map((website, index) => (
           <div
             key={`website-${index}`}

@@ -19,45 +19,71 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
       organization: "",
       role: "",
       description: "",
-      dates: { start: undefined, end: undefined },
+      dates: { start: new Date(), end: new Date() },
     }
   );
 
-  const handleVolunteerChange = (
+  const handleCurrentVolunteerChange = (
     key: keyof VolunteerExperience,
     value: any
   ) => {
-    setCurrentVolunteer((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
-
-  const handleDateChange = (key: "start" | "end", value: Date | undefined) => {
-    setCurrentVolunteer((prev) => ({
-      ...prev,
-      dates: {
-        ...prev.dates,
-        [key]: value,
-      },
-    }));
+    setCurrentVolunteer((prev) => {
+      if (
+        key === "dates" &&
+        (value as { start: Date | undefined; end: Date | undefined }).start
+      ) {
+        return {
+          ...prev,
+          dates: {
+            ...prev.dates,
+            start: (value as { start: Date | undefined; end: Date | undefined })
+              .start as Date,
+          },
+        };
+      } else if (
+        key === "dates" &&
+        (value as { start: Date | undefined; end: Date | undefined }).end
+      ) {
+        return {
+          ...prev,
+          dates: {
+            ...prev.dates,
+            end: (value as { start: Date | undefined; end: Date | undefined })
+              .end as Date,
+          },
+        };
+      } else {
+        return {
+          ...prev,
+          [key]: value,
+        };
+      }
+    });
   };
 
   const handleAddVolunteer = () => {
-    const updatedVolunteers = [
-      ...(formData.volunteerExperience || []),
-      currentVolunteer,
-    ];
-    setFormData((prev) => ({
-      ...prev,
-      volunteerExperience: updatedVolunteers,
-    }));
-    setCurrentVolunteer({
-      organization: "",
-      role: "",
-      description: "",
-      dates: { start: undefined, end: undefined },
-    });
+    if (
+      currentVolunteer.organization &&
+      currentVolunteer.role &&
+      currentVolunteer.description &&
+      currentVolunteer.dates.start &&
+      currentVolunteer.dates.end
+    ) {
+      const updatedVolunteers = [
+        ...(formData.volunteerExperience || []),
+        currentVolunteer,
+      ];
+      setFormData((prev) => ({
+        ...prev,
+        volunteerExperience: updatedVolunteers,
+      }));
+      setCurrentVolunteer({
+        organization: "",
+        role: "",
+        description: "",
+        dates: { start: new Date(), end: new Date() },
+      });
+    }
   };
 
   const handleRemoveVolunteer = (index: number) => {
@@ -79,7 +105,7 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
           placeholder="Organization"
           value={currentVolunteer.organization}
           onChange={(name, value) =>
-            handleVolunteerChange("organization", value)
+            handleCurrentVolunteerChange("organization", value)
           }
         />
         <FormField
@@ -87,7 +113,9 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
           name="role"
           placeholder="Role"
           value={currentVolunteer.role}
-          onChange={(name, value) => handleVolunteerChange("role", value)}
+          onChange={(name, value) =>
+            handleCurrentVolunteerChange("role", value)
+          }
         />
         <FormField
           label="Description"
@@ -96,32 +124,56 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
           type="textarea"
           value={currentVolunteer.description}
           onChange={(name, value) =>
-            handleVolunteerChange("description", value)
+            handleCurrentVolunteerChange("description", value)
           }
         />
         <div className="space-y-2">
           <label>Date Range</label>
           <DatePicker
             date={currentVolunteer.dates?.start}
-            setDate={(date) => handleDateChange("start", date)}
+            setDate={(date) =>
+              handleCurrentVolunteerChange("dates", {
+                ...currentVolunteer.dates,
+                start: date,
+              })
+            }
             placeholder="Start Date"
           />
           <DatePicker
             date={currentVolunteer.dates?.end}
-            setDate={(date) => handleDateChange("end", date)}
+            setDate={(date) =>
+              handleCurrentVolunteerChange("dates", {
+                ...currentVolunteer.dates,
+                end: date,
+              })
+            }
             placeholder="End Date"
           />
         </div>
       </div>
-      <Button onClick={handleAddVolunteer} className="mt-2">
+      <Button
+        onClick={handleAddVolunteer}
+        disabled={
+          !currentVolunteer.organization ||
+          !currentVolunteer.role ||
+          !currentVolunteer.description ||
+          !currentVolunteer.dates.start ||
+          !currentVolunteer.dates.end
+        }
+        className="mt-2"
+      >
         Add Volunteer Experience
       </Button>
       {formData.volunteerExperience &&
         formData.volunteerExperience.length > 0 &&
+        formData.volunteerExperience.some(
+          (volunteer) =>
+            volunteer.organization && volunteer.role && volunteer.description
+        ) &&
         formData.volunteerExperience.map((volunteer, index) => (
           <div
             key={`volunteer-${index}`}
-            className="space-y-2 border p-4 rounded"
+            className="space-y-2 border p-4 rounded mt-6"
           >
             <p>
               <strong>Organization:</strong> {volunteer.organization}

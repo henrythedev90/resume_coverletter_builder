@@ -219,7 +219,8 @@ const ResumeGeneratorForm: React.FC = () => {
   }, [currentStep, steps]);
 
   const handleGenerateResume = async () => {
-    if (!session?.user?.id) {
+    debugger;
+    if (!session?.user?._id) {
       console.error("User not authenticated");
       return;
     }
@@ -227,7 +228,7 @@ const ResumeGeneratorForm: React.FC = () => {
     try {
       const response = await axios.post("/api/resume/generate", formData, {
         headers: {
-          Authorization: `Bearer ${session.user.id}`,
+          Authorization: `Bearer ${session.user._id}`,
         },
       });
       console.log("Resume generated:", response.data);

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { Skills, CreateResumeInput } from "@/types/resume";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
 import { Button } from "@/components/ui/button";
@@ -13,11 +13,32 @@ const SkillsComponent: React.FC<SkillsComponentProps> = ({
   formData,
   setFormData,
 }) => {
-  const [currentSkills, setCurrentSkills] = useState<Skills>({
-    technical: [],
-    soft: [],
-    industrySpecific: [],
-  });
+  const [currentSkills, setCurrentSkills] = useState<Skills>(
+    formData.skills || {
+      technical: [],
+      soft: [],
+      industrySpecific: [],
+    }
+  );
+
+  useEffect(() => {
+    // Update local state when formData.skills changes
+    setCurrentSkills(
+      formData.skills || {
+        technical: [],
+        soft: [],
+        industrySpecific: [],
+      }
+    );
+  }, [formData.skills]);
+
+  useEffect(() => {
+    // Update formData when currentSkills changes
+    setFormData((prev) => ({
+      ...prev,
+      skills: currentSkills,
+    }));
+  }, [currentSkills, setFormData]);
 
   const handleSkillsChange = (key: keyof Skills, value: string[]) => {
     setCurrentSkills((prev) => ({
@@ -26,22 +47,7 @@ const SkillsComponent: React.FC<SkillsComponentProps> = ({
     }));
   };
 
-  const handleAddSkills = () => {
-    setFormData((prev) => ({
-      ...prev,
-      skills: currentSkills,
-    }));
-  };
-
-  const handleRemoveSkills = () => {
-    setFormData((prev) => ({
-      ...prev,
-      skills: {
-        technical: [],
-        soft: [],
-        industrySpecific: [],
-      },
-    }));
+  const handleClearSkills = () => {
     setCurrentSkills({
       technical: [],
       soft: [],
@@ -75,11 +81,8 @@ const SkillsComponent: React.FC<SkillsComponentProps> = ({
           />
         </div>
       </div>
-      <Button onClick={handleAddSkills} className="mt-2">
-        Update Skills
-      </Button>
       <Button
-        onClick={handleRemoveSkills}
+        onClick={handleClearSkills}
         className="mt-2"
         variant="destructive"
       >
