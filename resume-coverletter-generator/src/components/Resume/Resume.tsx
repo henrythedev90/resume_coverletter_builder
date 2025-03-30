@@ -219,22 +219,28 @@ const ResumeGeneratorForm: React.FC = () => {
   }, [currentStep, steps]);
 
   const handleGenerateResume = async () => {
-    debugger;
-    if (!session?.user?._id) {
-      console.error("User not authenticated");
-      return;
-    }
-
     try {
+      // Get the stored JWT token from localStorage
+      const token = localStorage.getItem("authToken");
+
+      if (!token) {
+        console.error("Authentication token not found");
+        alert("You need to log in again. Redirecting to login page...");
+        router.push("/login");
+        return;
+      }
+      debugger;
       const response = await axios.post("/api/resume/generate", formData, {
         headers: {
-          Authorization: `Bearer ${session.user._id}`,
+          Authorization: `Bearer ${token}`,
         },
       });
+
       console.log("Resume generated:", response.data);
       router.push("/dashboard");
     } catch (error) {
       console.error("Error generating resume:", error);
+      alert("Failed to generate resume. Please try again.");
     }
   };
 

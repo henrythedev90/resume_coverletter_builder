@@ -68,31 +68,32 @@ const WebsiteComponent: React.FC<WebsiteComponentProps> = ({
       <Button onClick={handleAddWebsite} className="mt-2">
         Add Website
       </Button>
-      {formData.websites &&
-        formData.websites.length > 0 &&
-        formData.websites.some(
-          (website) => website && (website.platform || website.url)
-        ) &&
-        formData.websites.map((website, index) => (
-          <div
-            key={`website-${index}`}
-            className="space-y-2 border p-4 rounded"
-          >
-            <p>
-              <strong>Platform:</strong> {website.platform}
-            </p>
-            <p>
-              <strong>URL:</strong> {website.url}
-            </p>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => handleRemoveWebsite(index)}
-            >
-              Remove Website
-            </Button>
-          </div>
-        ))}
+      {formData.websites && formData.websites.length > 0 && (
+        <div className="space-y-4 mt-6">
+          {formData.websites
+            .filter((website) => website && (website.platform || website.url))
+            .map((website, index) => (
+              <div
+                key={`website-${index}`}
+                className="space-y-2 border p-4 rounded"
+              >
+                <p>
+                  <strong>Platform:</strong> {website.platform}
+                </p>
+                <p>
+                  <strong>URL:</strong> {website.url}
+                </p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleRemoveWebsite(index)}
+                >
+                  Remove Website
+                </Button>
+              </div>
+            ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,8 +1,8 @@
 "use client";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState, Dispatch, SetStateAction } from "react";
 import { ProfessionalExperience, CreateResumeInput } from "@/types/resume";
-import DatePicker from "../ui/DatePicker/DatePicker";
 import { FormField } from "@/components/ui/FormField";
+import DatePicker from "../ui/DatePicker/DatePicker";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
 import { Button } from "@/components/ui/button";
 
@@ -16,8 +16,8 @@ const ProfessionalExperienceComponent: React.FC<
 > = ({ formData, setFormData }) => {
   const [currentExperience, setCurrentExperience] =
     useState<ProfessionalExperience>({
-      companyName: "",
       jobTitle: "",
+      companyName: "",
       location: { city: "", state: "" },
       dates: { start: new Date(), end: new Date() },
       responsibilities: [],
@@ -26,29 +26,56 @@ const ProfessionalExperienceComponent: React.FC<
     });
 
   const handleCurrentExperienceChange = (
-    name: string | keyof ProfessionalExperience,
+    key: keyof ProfessionalExperience,
     value: any
   ) => {
-    if (name === "city" || name === "state") {
-      setCurrentExperience((prev) => ({
-        ...prev,
-        location: { ...prev.location, [name]: value as string },
-      }));
-    } else if (name === "start" || name === "end") {
-      setCurrentExperience((prev) => ({
-        ...prev,
-        dates: { ...prev.dates, [name]: value as Date | undefined },
-      }));
-    } else {
-      setCurrentExperience((prev) => ({
-        ...prev,
-        [name as keyof ProfessionalExperience]: value,
-      }));
-    }
+    setCurrentExperience((prev) => {
+      if (
+        key === "dates" &&
+        (value as { start: Date | undefined; end: Date | undefined }).start
+      ) {
+        return {
+          ...prev,
+          dates: {
+            ...prev.dates,
+            start: (value as { start: Date | undefined; end: Date | undefined })
+              .start as Date,
+          },
+        };
+      } else if (
+        key === "dates" &&
+        (value as { start: Date | undefined; end: Date | undefined }).end
+      ) {
+        return {
+          ...prev,
+          dates: {
+            ...prev.dates,
+            end: (value as { start: Date | undefined; end: Date | undefined })
+              .end as Date,
+          },
+        };
+      } else if (key === "location") {
+        return {
+          ...prev,
+          location: value,
+        };
+      } else {
+        return {
+          ...prev,
+          [key]: value,
+        };
+      }
+    });
   };
 
   const handleAddExperience = () => {
-    if (currentExperience.companyName && currentExperience.jobTitle) {
+    if (
+      currentExperience.jobTitle &&
+      currentExperience.companyName &&
+      currentExperience.location &&
+      currentExperience.dates.start &&
+      currentExperience.dates.end
+    ) {
       const updatedExperiences = [
         ...(formData.professionalExperience || []),
         currentExperience,
@@ -58,14 +85,16 @@ const ProfessionalExperienceComponent: React.FC<
         professionalExperience: updatedExperiences,
       }));
       setCurrentExperience({
-        companyName: "",
         jobTitle: "",
+        companyName: "",
         location: { city: "", state: "" },
         dates: { start: new Date(), end: new Date() },
         responsibilities: [],
         accomplishments: [],
         skillsUsed: [],
       });
+    } else {
+      alert("Job Title, Company Name, and Location are required.");
     }
   };
 
@@ -78,133 +107,146 @@ const ProfessionalExperienceComponent: React.FC<
     }));
   };
 
-  const handleKeyPress = (
-    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleAddExperience();
-    }
-  };
-
   return (
     <div className="bg-background text-foreground space-y-4">
       <h2 className="text-2xl font-bold">Professional Experience</h2>
       <div className="grid grid-cols-2 gap-4">
         <FormField
-          label="Company"
-          name="companyName"
-          value={currentExperience.companyName}
-          onChange={(name, value) => handleCurrentExperienceChange(name, value)}
-          onKeyDown={handleKeyPress}
-        />
-        <FormField
           label="Job Title"
           name="jobTitle"
+          placeholder="Job Title"
           value={currentExperience.jobTitle}
-          onChange={(name, value) => handleCurrentExperienceChange(name, value)}
-          onKeyDown={handleKeyPress}
+          onChange={(value) => handleCurrentExperienceChange("jobTitle", value)}
         />
         <FormField
-          label="City"
-          name="city"
-          value={currentExperience.location.city}
-          onChange={(name, value) => handleCurrentExperienceChange(name, value)}
-          onKeyDown={handleKeyPress}
+          label="Company Name"
+          name="companyName"
+          placeholder="Company Name"
+          value={currentExperience.companyName}
+          onChange={(value) =>
+            handleCurrentExperienceChange("companyName", value)
+          }
         />
-        <FormField
-          label="State"
-          name="state"
-          value={currentExperience.location.state}
-          onChange={(name, value) => handleCurrentExperienceChange(name, value)}
-          onKeyDown={handleKeyPress}
-        />
+        <div className="grid grid-cols-2 gap-2">
+          <FormField
+            label="City"
+            name="city"
+            placeholder="City"
+            value={currentExperience.location.city}
+            onChange={(value) =>
+              handleCurrentExperienceChange("location", {
+                ...currentExperience.location,
+                city: value,
+              })
+            }
+          />
+          <FormField
+            label="State"
+            name="state"
+            placeholder="State"
+            value={currentExperience.location.state}
+            onChange={(value) =>
+              handleCurrentExperienceChange("location", {
+                ...currentExperience.location,
+                state: value,
+              })
+            }
+          />
+        </div>
         <div className="space-y-2">
           <label>Date Range</label>
           <DatePicker
-            date={currentExperience.dates.start}
-            setDate={(date) => handleCurrentExperienceChange("start", date)}
+            date={currentExperience.dates?.start}
+            setDate={(date) =>
+              handleCurrentExperienceChange("dates", {
+                ...currentExperience.dates,
+                start: date,
+              })
+            }
             placeholder="Start Date"
           />
           <DatePicker
-            date={currentExperience.dates.end}
-            setDate={(date) => handleCurrentExperienceChange("end", date)}
+            date={currentExperience.dates?.end}
+            setDate={(date) =>
+              handleCurrentExperienceChange("dates", {
+                ...currentExperience.dates,
+                end: date,
+              })
+            }
             placeholder="End Date"
           />
         </div>
-        <div className="space-y-2">
-          <StringArrayInput
-            label="Responsibilities"
-            items={currentExperience.responsibilities as string[]}
-            setItems={(items) =>
-              handleCurrentExperienceChange("responsibilities", items)
-            }
-          />
-        </div>
-        <div className="space-y-2">
-          <StringArrayInput
-            label="Accomplishments"
-            items={currentExperience.accomplishments as string[]}
-            setItems={(items) =>
-              handleCurrentExperienceChange("accomplishments", items)
-            }
-          />
-        </div>
-        <div className="space-y-2">
-          <StringArrayInput
-            label="Skills Used"
-            items={currentExperience.skillsUsed as string[]}
-            setItems={(items) =>
-              handleCurrentExperienceChange("skillsUsed", items)
-            }
-          />
-        </div>
+        <StringArrayInput
+          label="Responsibilities"
+          items={currentExperience.responsibilities}
+          setItems={(items) =>
+            handleCurrentExperienceChange("responsibilities", items)
+          }
+        />
+        <StringArrayInput
+          label="Accomplishments"
+          items={currentExperience.accomplishments}
+          setItems={(items) =>
+            handleCurrentExperienceChange("accomplishments", items)
+          }
+        />
+        <StringArrayInput
+          label="Skills Used"
+          items={currentExperience.skillsUsed}
+          setItems={(items) =>
+            handleCurrentExperienceChange("skillsUsed", items)
+          }
+        />
       </div>
-      <Button
-        onClick={handleAddExperience}
-        disabled={
-          !currentExperience.companyName ||
-          !currentExperience.jobTitle ||
-          !currentExperience.location.city ||
-          !currentExperience.location.state ||
-          !currentExperience.dates.start ||
-          !currentExperience.dates.end
-        }
-        className="mt-2"
-      >
+      <Button onClick={handleAddExperience} className="mt-2">
         Add Experience
       </Button>
-
       {formData.professionalExperience &&
-        formData.professionalExperience.length > 0 &&
-        formData.professionalExperience.some(
-          (exp) => exp.companyName && exp.jobTitle
-        ) && (
+        formData.professionalExperience.length > 0 && (
           <div className="space-y-4 mt-6">
-            {formData.professionalExperience.map(
-              (exp, index) =>
-                exp.companyName &&
-                exp.jobTitle && (
-                  <div
-                    key={`exp-${index}`}
-                    className="space-y-2 border p-4 rounded"
+            {formData.professionalExperience
+              .filter(
+                (experience) =>
+                  experience && experience.jobTitle && experience.companyName
+              )
+              .map((experience, index) => (
+                <div
+                  key={`experience-${index}`}
+                  className="space-y-2 border p-4 rounded"
+                >
+                  <p>
+                    <strong>Job Title:</strong> {experience.jobTitle}
+                  </p>
+                  <p>
+                    <strong>Company Name:</strong> {experience.companyName}
+                  </p>
+                  <p>
+                    <strong>City:</strong> {experience.location.city}
+                  </p>
+                  <p>
+                    <strong>State:</strong> {experience.location.state}
+                  </p>
+                  <p>
+                    <strong>Responsibilities:</strong>{" "}
+                    {experience.responsibilities.join(", ")}
+                  </p>
+                  <p>
+                    <strong>Accomplishments:</strong>{" "}
+                    {experience.accomplishments.join(", ")}
+                  </p>
+                  <p>
+                    <strong>Skills Used:</strong>{" "}
+                    {experience.skillsUsed.join(", ")}
+                  </p>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleRemoveExperience(index)}
                   >
-                    <p>
-                      <strong>Company:</strong> {exp.companyName}
-                    </p>
-                    <p>
-                      <strong>Job Title:</strong> {exp.jobTitle}
-                    </p>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleRemoveExperience(index)}
-                    >
-                      Remove Experience
-                    </Button>
-                  </div>
-                )
-            )}
+                    Remove Experience
+                  </Button>
+                </div>
+              ))}
           </div>
         )}
     </div>

@@ -1,51 +1,43 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
+import { CreateResumeInput } from "@/types/resume";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
-import { HobbiesAndInterests, CreateResumeInput } from "@/types/resume";
 
-export interface HobbiesAndInterestsProps {
+interface HobbiesAndInterestComponentProps {
   formData: CreateResumeInput;
-  setFormData: React.Dispatch<React.SetStateAction<CreateResumeInput>>;
+  setFormData: Dispatch<SetStateAction<CreateResumeInput>>;
 }
 
-const HobbiesAndInterestComponent: React.FC<HobbiesAndInterestsProps> = ({
-  formData,
-  setFormData,
-}) => {
-  const [localHobbies, setLocalHobbies] = useState<HobbiesAndInterests[]>(
-    formData.hobbiesAndInterests?.length
-      ? formData.hobbiesAndInterests
-      : [{ event: [] }]
+const HobbiesAndInterestComponent: React.FC<
+  HobbiesAndInterestComponentProps
+> = ({ formData, setFormData }) => {
+  const [localHobbies, setLocalHobbies] = useState<string[]>(
+    formData.hobbiesAndInterests?.length &&
+      formData.hobbiesAndInterests[0]?.event?.length
+      ? formData.hobbiesAndInterests[0].event
+      : []
   );
 
-  useEffect(() => {
-    if (formData.hobbiesAndInterests?.length) {
-      setLocalHobbies(formData.hobbiesAndInterests);
-    } else {
-      setLocalHobbies([{ event: [] }]);
-    }
-  }, [formData.hobbiesAndInterests]);
-
   const handleHobbiesChange = (items: string[]) => {
-    const updatedHobbies = [{ event: items }];
-    setLocalHobbies(updatedHobbies);
+    setLocalHobbies(items);
+  };
+
+  useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      hobbiesAndInterests: updatedHobbies,
+      hobbiesAndInterests: [{ event: localHobbies }], // Keep structure for consistency
     }));
-  };
+  }, [localHobbies, setFormData]);
 
   return (
     <div className="bg-background text-foreground space-y-4">
-      <h2 className="text-2xl font-bold">Hobbies and Interest</h2>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <StringArrayInput
-            label="Hobbies & Interests"
-            items={localHobbies[0]?.event || []}
-            setItems={handleHobbiesChange}
-          />
-        </div>
+      <h2 className="text-2xl font-bold">Hobbies & Interests</h2>
+      <div className="space-y-2">
+        <StringArrayInput
+          label="Hobbies/Interests"
+          items={localHobbies}
+          setItems={handleHobbiesChange}
+        />
       </div>
     </div>
   );

@@ -120,7 +120,8 @@ const ProjectsComponents: React.FC<ProjectsComponentsProps> = ({
       {formData.projects &&
         formData.projects.length > 0 &&
         formData.projects.some(
-          (project) => project.title && project.role && project.description
+          (project) =>
+            project && project.title && project.role && project.description
         ) && (
           <div className="space-y-4 mt-6">
             {formData.projects.map((project, index) => (

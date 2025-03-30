@@ -81,7 +81,7 @@ const LanguageComponent: React.FC<LanguageComponentProps> = ({
       {formData.languages &&
         formData.languages.length > 0 &&
         formData.languages.some(
-          (language) => language.language && language.proficiency
+          (language) => language && language.language && language.proficiency
         ) && (
           <div className="space-y-4 mt-6">
             {formData.languages.map((language, index) => (

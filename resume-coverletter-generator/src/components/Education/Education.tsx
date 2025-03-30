@@ -141,6 +141,7 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
         formData.education.length > 0 &&
         formData.education.some(
           (education) =>
+            education &&
             education.universityName &&
             education.fieldOfStudy &&
             education.degree

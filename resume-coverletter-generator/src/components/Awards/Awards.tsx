@@ -1,4 +1,3 @@
-"use client";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { Award, CreateResumeInput } from "@/types/resume";
 import { FormField } from "@/components/ui/FormField";
@@ -15,7 +14,7 @@ const AwardComponent: React.FC<AwardComponentProps> = ({
 }) => {
   const [currentAward, setCurrentAward] = useState<Award>({
     title: "",
-    year: undefined,
+    year: new Date(),
     description: "",
   });
 
@@ -26,11 +25,16 @@ const AwardComponent: React.FC<AwardComponentProps> = ({
   const handleAddAward = () => {
     if (currentAward.title && currentAward.description && currentAward.year) {
       const updatedAwards = [...(formData.awards || []), currentAward].sort(
-        (a, b) => (b.year || 0) - (a.year || 0)
+        (a, b) => {
+          // Convert to numbers for comparison
+          const yearA = a.year instanceof Date ? a.year.getFullYear() : 0;
+          const yearB = b.year instanceof Date ? b.year.getFullYear() : 0;
+          return yearB - yearA;
+        }
       );
 
       setFormData((prev) => ({ ...prev, awards: updatedAwards }));
-      setCurrentAward({ title: "", year: undefined, description: "" });
+      setCurrentAward({ title: "", year: new Date(), description: "" });
     }
   };
 
@@ -46,6 +50,26 @@ const AwardComponent: React.FC<AwardComponentProps> = ({
     if (e.key === "Enter") {
       e.preventDefault();
       handleAddAward();
+    }
+  };
+
+  // Convert Date to year number for the input
+  const getYearValue = (date: Date | undefined): number | undefined => {
+    if (!date) return undefined;
+    return date instanceof Date ? date.getFullYear() : undefined;
+  };
+
+  // Handle year input changes
+  const handleYearChange = (name: string, value: any) => {
+    // Convert the input year to a Date object
+    if (value) {
+      const yearNum = parseInt(value, 10);
+      if (!isNaN(yearNum)) {
+        const date = new Date(yearNum, 0);
+        setCurrentAward({ ...currentAward, year: date });
+      }
+    } else {
+      setCurrentAward({ ...currentAward, year: undefined });
     }
   };
 
@@ -76,8 +100,8 @@ const AwardComponent: React.FC<AwardComponentProps> = ({
           label="Year"
           name="year"
           type="number"
-          value={currentAward.year}
-          onChange={handleCurrentAwardChange}
+          value={getYearValue(currentAward.year)}
+          onChange={handleYearChange}
           onKeyDown={handleKeyPress}
           placeholder="Year received"
         />
@@ -95,42 +119,42 @@ const AwardComponent: React.FC<AwardComponentProps> = ({
       </Button>
 
       {/* Display awards only if there are any */}
-      {formData.awards &&
-        formData.awards.length > 0 &&
-        formData.awards.some(
-          (award) => award.title && award.description && award.year
-        ) && (
-          <div className="space-y-4 mt-6">
-            {formData.awards.map(
-              (award, index) =>
-                award.title &&
-                award.description &&
-                award.year && (
-                  <div
-                    key={`award-${index}`}
-                    className="space-y-2 border p-4 rounded"
-                  >
-                    <p>
-                      <strong>Title:</strong> {award.title}
-                    </p>
-                    <p>
-                      <strong>Description:</strong> {award.description}
-                    </p>
-                    <p>
-                      <strong>Year:</strong> {award.year}
-                    </p>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleRemoveAward(index)}
-                    >
-                      Remove Award
-                    </Button>
-                  </div>
-                )
-            )}
-          </div>
-        )}
+      {formData.awards && formData.awards.length > 0 && (
+        <div className="space-y-4 mt-6">
+          {formData.awards
+            .filter(
+              (award) => award && award.title && award.description && award.year
+            )
+            .map((award, index) => (
+              <div
+                key={`award-${index}`}
+                className="space-y-2 border p-4 rounded"
+              >
+                <p>
+                  <strong>Title:</strong> {award.title}
+                </p>
+                <p>
+                  <strong>Description:</strong> {award.description}
+                </p>
+                <p>
+                  <strong>Year:</strong>{" "}
+                  {award.year instanceof Date
+                    ? award.year.getFullYear()
+                    : award.year
+                    ? String(award.year)
+                    : ""}
+                </p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleRemoveAward(index)}
+                >
+                  Remove Award
+                </Button>
+              </div>
+            ))}
+        </div>
+      )}
     </div>
   );
 };

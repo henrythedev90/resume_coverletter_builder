@@ -63,6 +63,9 @@ export default function LoginSignUpPage() {
           });
 
           if (response.data.token) {
+            // Store the JWT token in localStorage
+            localStorage.setItem("authToken", response.data.token);
+
             signIn("credentials", {
               email: formData.email,
               password: formData.password,

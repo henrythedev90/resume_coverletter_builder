@@ -168,7 +168,10 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
         formData.volunteerExperience.length > 0 &&
         formData.volunteerExperience.some(
           (volunteer) =>
-            volunteer.organization && volunteer.role && volunteer.description
+            volunteer &&
+            volunteer.organization &&
+            volunteer.role &&
+            volunteer.description
         ) &&
         formData.volunteerExperience.map((volunteer, index) => (
           <div
