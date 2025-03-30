@@ -1,10 +1,8 @@
 "use client";
-
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import classes from "./Header.module.css";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 const Header = () => {

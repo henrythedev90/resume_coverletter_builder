@@ -1,31 +1,44 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/FormField";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
-import { User } from "@/types/user"; // Import your User interface
+import { User } from "@/types/user";
 
 export default function LoginSignUpPage() {
   const [isLogin, setIsLogin] = useState(true);
-  const [hasLoggedIn, setHasLoggedIn] = useState(false);
   const [formData, setFormData] = useState<Partial<User>>({
     firstName: "",
     lastName: "",
     email: "",
-    address: "",
+    address: { city: "", state: "" },
     password: "",
   });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const router = useRouter();
   const { data: session } = useSession();
+  const [hasLoggedIn, setHasLoggedIn] = useState(false);
 
   const handleChange = (name: string, value: string) => {
-    setFormData({ ...formData, [name]: value });
+    if (name === "city" || name === "state") {
+      setFormData({
+        ...formData,
+        address: {
+          ...formData.address!, // Use the non-null assertion operator
+          [name]: value,
+        },
+      });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleConfirmPassword = (name: string, value: string) => {
+    setConfirmPassword(value);
   };
 
   const validate = () => {
@@ -50,7 +63,6 @@ export default function LoginSignUpPage() {
           });
 
           if (response.data.token) {
-            console.log(response.data.token, "this token");
             signIn("credentials", {
               email: formData.email,
               password: formData.password,
@@ -63,7 +75,7 @@ export default function LoginSignUpPage() {
             password: formData.password,
             firstName: formData.firstName,
             lastName: formData.lastName,
-            address: formData.address || "temp",
+            address: formData.address,
           });
           setIsLogin(true);
           alert("Sign up successful, please login");
@@ -80,9 +92,8 @@ export default function LoginSignUpPage() {
 
   useEffect(() => {
     if (session && !hasLoggedIn) {
-      // Only redirect if logged in and not already redirected
       router.push("/dashboard");
-      setHasLoggedIn(true); // Prevent future redirects
+      setHasLoggedIn(true);
     }
   }, [session, router, hasLoggedIn]);
 
@@ -104,7 +115,7 @@ export default function LoginSignUpPage() {
                   label="First Name"
                   name="firstName"
                   value={formData.firstName || ""}
-                  onChange={(value) => handleChange("firstName", value)}
+                  onChange={handleChange}
                   placeholder="John"
                   type="text"
                 />
@@ -112,16 +123,24 @@ export default function LoginSignUpPage() {
                   label="Last Name"
                   name="lastName"
                   value={formData.lastName || ""}
-                  onChange={(value) => handleChange("lastName", value)}
+                  onChange={handleChange}
                   placeholder="Doe"
                   type="text"
                 />
                 <FormField
-                  label="Address"
-                  name="address"
-                  value={formData.address || ""}
-                  onChange={(value) => handleChange("address", value)}
-                  placeholder="123 Main St"
+                  label="City"
+                  name="city"
+                  value={formData.address?.city}
+                  onChange={handleChange}
+                  placeholder="City"
+                  type="text"
+                />
+                <FormField
+                  label="State"
+                  name="state"
+                  value={formData.address?.state}
+                  onChange={handleChange}
+                  placeholder="State"
                   type="text"
                 />
               </div>
@@ -150,7 +169,7 @@ export default function LoginSignUpPage() {
                 label="Confirm Password"
                 name="confirmPassword"
                 value={confirmPassword}
-                onChange={(value) => setConfirmPassword(value)}
+                onChange={handleConfirmPassword}
                 placeholder="******"
                 type="password"
               />
