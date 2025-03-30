@@ -1,6 +1,6 @@
 export const resumeTemplate = `
 [Candidate Name]
-[Email] | [Address]
+[Address] |[Email] 
 
 Career Objective:
 [Career Objective]

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -13,6 +13,7 @@ import VolunteerComponent from "../VolunteerExperience/VolunteerExperience";
 import WebsiteComponent from "../Website/Website";
 import JobPreferencesComponent from "../JobPreferences/JobPreferences";
 import HobbiesAndInterestComponent from "../Hobbies/Hobbies";
+import CareerObjectiveComponent from "../CareerObjective/CareerObjective";
 import { CreateResumeInput } from "@/types/resume";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -32,14 +33,14 @@ const pageTransition = {
 };
 
 const createInitialState = (): CreateResumeInput => ({
-  userId: "your-user-id" as any,
+  userId: "" as any,
   careerObjective: "",
   professionalExperience: [
     {
       jobTitle: "",
       companyName: "",
       location: { city: "", state: "" },
-      dates: { start: undefined, end: undefined },
+      dates: { start: new Date(), end: new Date() },
       responsibilities: [],
       accomplishments: [],
       skillsUsed: [],
@@ -50,7 +51,7 @@ const createInitialState = (): CreateResumeInput => ({
       degree: "",
       fieldOfStudy: "",
       universityName: "",
-      graduationYear: { start: undefined, end: undefined },
+      graduationYear: { start: new Date(), end: new Date() },
       certifications: [],
     },
   ],
@@ -58,13 +59,13 @@ const createInitialState = (): CreateResumeInput => ({
   projects: [
     { title: "", description: "", role: "", skillsUsed: [], portfolioLink: "" },
   ],
-  awards: [{ title: "", year: undefined, description: "" }],
+  awards: [{ title: "", year: new Date(), description: "" }],
   languages: [{ language: "", proficiency: "" }],
   volunteerExperience: [
     {
       organization: "",
       role: "",
-      dates: { start: undefined, end: undefined },
+      dates: { start: new Date(), end: new Date() },
       description: "",
     },
   ],
@@ -87,9 +88,18 @@ const ResumeGeneratorForm: React.FC = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  // Updated to pass formData and setFormData to all components
-  const steps = useCallback(
+  const steps = useMemo(
     () => [
+      {
+        name: "Career Objecttive",
+        component: (
+          <CareerObjectiveComponent
+            formData={formData}
+            setFormData={setFormData}
+          />
+        ),
+        validate: () => formData.careerObjective.trim() !== "",
+      },
       {
         name: "Professional Experience",
         component: (
@@ -98,48 +108,59 @@ const ResumeGeneratorForm: React.FC = () => {
             setFormData={setFormData}
           />
         ),
+        validate: () => formData.professionalExperience.length > 0,
       },
       {
         name: "Education",
         component: (
           <EducationComponent formData={formData} setFormData={setFormData} />
         ),
+        validate: () => formData.education.length > 0,
       },
       {
         name: "Skills",
         component: (
           <SkillsComponent formData={formData} setFormData={setFormData} />
         ),
+        validate: () =>
+          formData.skills.technical.length > 0 &&
+          formData.skills.soft.length > 0 &&
+          formData.skills.industrySpecific.length > 0,
       },
       {
         name: "Projects",
         component: (
           <ProjectsComponents formData={formData} setFormData={setFormData} />
         ),
+        validate: () => formData.projects.length > 1,
       },
       {
         name: "Awards",
         component: (
           <AwardComponent formData={formData} setFormData={setFormData} />
         ),
+        validate: () => formData.awards?.length > 1,
       },
       {
         name: "Languages",
         component: (
           <LanguageComponent formData={formData} setFormData={setFormData} />
         ),
+        validate: () => formData.languages?.length > 1,
       },
       {
         name: "Volunteer Experience",
         component: (
           <VolunteerComponent formData={formData} setFormData={setFormData} />
         ),
+        validate: () => formData.volunteerExperience.length > 1,
       },
       {
         name: "Websites",
         component: (
           <WebsiteComponent formData={formData} setFormData={setFormData} />
         ),
+        validate: () => formData.websites.length > 1,
       },
       {
         name: "Job Preferences",
@@ -149,6 +170,11 @@ const ResumeGeneratorForm: React.FC = () => {
             setFormData={setFormData}
           />
         ),
+        validate: () =>
+          formData.jobPreferences.desiredJobTitles.length > 0 ||
+          formData.jobPreferences.preferredIndustry.length > 0 ||
+          formData.jobPreferences.preferredLocation !== "" ||
+          formData.jobPreferences.employmentType !== "",
       },
       {
         name: "Hobbies & Interests",
@@ -158,13 +184,14 @@ const ResumeGeneratorForm: React.FC = () => {
             setFormData={setFormData}
           />
         ),
+        validate: () => formData.hobbiesAndInterests[0].event.length > 0,
       },
     ],
-    [formData, setFormData]
+    [formData]
   );
 
   const nextStep = useCallback(() => {
-    if (currentStep < steps().length - 1) {
+    if (currentStep < steps.length - 1 && steps[currentStep].validate()) {
       setCurrentStep(currentStep + 1);
     }
   }, [currentStep, steps]);
@@ -173,13 +200,12 @@ const ResumeGeneratorForm: React.FC = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
-  }, [currentStep]);
+  }, [currentStep, steps]);
 
   const renderCurrentStep = useCallback(() => {
-    const currentSteps = steps();
     return (
       <motion.div
-        key={currentSteps[currentStep].name}
+        key={steps[currentStep].name}
         initial="initial"
         animate="in"
         exit="out"
@@ -187,16 +213,13 @@ const ResumeGeneratorForm: React.FC = () => {
         transition={pageTransition}
         className="space-y-4 bg-background text-foreground"
       >
-        {currentSteps[currentStep].component}
+        {steps[currentStep].component}
       </motion.div>
     );
   }, [currentStep, steps]);
 
-  const currentSteps = steps();
-
   const handleGenerateResume = async () => {
     if (!session?.user?.id) {
-      //use id instead of accessToken
       console.error("User not authenticated");
       return;
     }
@@ -204,10 +227,9 @@ const ResumeGeneratorForm: React.FC = () => {
     try {
       const response = await axios.post("/api/resume/generate", formData, {
         headers: {
-          Authorization: `Bearer ${session.user.id}`, //use id instead of accessToken
+          Authorization: `Bearer ${session.user.id}`,
         },
       });
-
       console.log("Resume generated:", response.data);
       router.push("/dashboard");
     } catch (error) {
@@ -215,13 +237,18 @@ const ResumeGeneratorForm: React.FC = () => {
     }
   };
 
+  const isNextButtonDisabled = useMemo(
+    () => !steps[currentStep].validate(),
+    [currentStep, steps]
+  );
+
   return session ? (
     <div className="max-w-4xl mx-auto p-8 bg-background text-foreground">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-4">Resume Generator</h1>
         <div className="max-w-screen-md mx-auto">
           <div className="flex items-center justify-center space-x-2 sm:space-x-3 md:space-x-4">
-            {currentSteps.map((step, index) => (
+            {steps.map((step, index) => (
               <React.Fragment key={step.name}>
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
@@ -232,7 +259,7 @@ const ResumeGeneratorForm: React.FC = () => {
                 >
                   {index + 1}
                 </div>
-                {index < currentSteps.length - 1 && (
+                {index < steps.length - 1 && (
                   <Separator
                     orientation="horizontal"
                     className="w-4 sm:w-6 md:w-8 bg-gray-200"
@@ -257,15 +284,16 @@ const ResumeGeneratorForm: React.FC = () => {
             Previous
           </Button>
         )}
-        {currentStep < currentSteps.length - 1 && (
+        {currentStep < steps.length - 1 && (
           <Button
             className="bg-primary text-primary-foreground"
             onClick={nextStep}
+            disabled={isNextButtonDisabled}
           >
             Next
           </Button>
         )}
-        {currentStep === currentSteps.length - 1 && (
+        {currentStep === steps.length - 1 && (
           <Button
             variant="default"
             className="bg-accent text-accent-foreground"

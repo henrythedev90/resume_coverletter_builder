@@ -5,12 +5,12 @@ export interface ProfessionalExperience {
   companyName: string;
   location: { city: string; state: string };
   dates: {
-    start?: Date;
-    end?: Date;
+    start: Date;
+    end: Date;
   };
-  responsibilities?: string[];
-  accomplishments?: string[];
-  skillsUsed?: string[];
+  responsibilities: string[];
+  accomplishments: string[];
+  skillsUsed: string[];
 }
 
 export interface Education {
@@ -25,23 +25,23 @@ export interface Education {
 }
 
 export interface Skills {
-  technical?: string[];
-  soft?: string[];
-  industrySpecific?: string[];
+  technical: string[];
+  soft: string[];
+  industrySpecific: string[];
 }
 
 export interface Project {
-  title?: string;
-  description?: string;
-  role?: string;
-  skillsUsed?: string[];
+  title: string;
+  description: string;
+  role: string;
+  skillsUsed: string[];
   portfolioLink?: string;
 }
 
 export interface Award {
-  title?: string;
-  year?: number;
-  description?: string;
+  title: string;
+  year: Date;
+  description: string;
 }
 
 export interface Language {
@@ -50,13 +50,13 @@ export interface Language {
 }
 
 export interface VolunteerExperience {
-  organization?: string;
-  role?: string;
-  dates?: {
-    start?: Date;
-    end?: Date;
+  organization: string;
+  role: string;
+  dates: {
+    start: Date;
+    end: Date;
   };
-  description?: string;
+  description: string;
 }
 
 export interface Website {
@@ -65,10 +65,10 @@ export interface Website {
 }
 
 export interface JobPreferences {
-  desiredJobTitles?: string[];
-  preferredLocation?: string;
-  employmentType?: string;
-  preferredIndustry?: string[];
+  desiredJobTitles: string[];
+  preferredLocation: string;
+  employmentType: string;
+  preferredIndustry: string[];
 }
 
 export interface HobbiesAndInterests {
@@ -82,13 +82,13 @@ export interface ResumeType {
   professionalExperience: ProfessionalExperience[];
   education: Education[];
   skills: Skills;
-  projects?: Project[];
-  awards?: Award[];
-  languages?: Language[];
-  volunteerExperience?: VolunteerExperience[];
-  hobbiesAndInterests?: HobbiesAndInterests[];
-  websites?: Website[];
-  jobPreferences?: JobPreferences;
+  projects: Project[];
+  awards: Award[];
+  languages: Language[];
+  volunteerExperience: VolunteerExperience[];
+  hobbiesAndInterests: HobbiesAndInterests[];
+  websites: Website[];
+  jobPreferences: JobPreferences;
 }
 
 export type CreateResumeInput = Omit<ResumeType, "_id">;
