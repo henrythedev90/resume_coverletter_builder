@@ -1,62 +1,68 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import LinkedIn from "next-auth/providers/linkedin";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
+import User from "@/models/User";
+import connectDB from "@/utils/db";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: (process.env.GOOGLE_CLIENT_ID as string) || "",
-      clientSecret: (process.env.GOOGLE_CLIENT_SECRET as string) || "",
-    }),
-    LinkedIn({
-      clientId: (process.env.LINKEDIN_CLIENT_ID as string) || "",
-      clientSecret: (process.env.LINKEDIN_CLIENT_SECRET as string) || "",
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        await connectDB();
+
+        const user = await User.findOne({ email: credentials.email });
+
+        if (!user) {
+          return null;
+        }
+
+        const passwordMatch = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!passwordMatch) {
+          return null;
+        }
+
+        return {
+          id: user._id.toString(), // Use 'id' instead of '_id' and convert to string
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        };
+      },
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt" },
   callbacks: {
-    async jwt({ token, account, user }) {
-      console.log("JWT Callback:", { token, account, user });
-
-      if (account && user) {
+    async jwt({ token, user }) {
+      if (user) {
         return {
           ...token,
-          accessToken: account.access_token,
-          id: (user as any)._id, // Cast user to any to access _id
+          id: user.id,
         };
       }
       return token;
     },
     async session({ session, token }) {
-      console.log("Session Callback:", { session, token });
-
       if (session.user) {
-        (session.user as any)._id = (token.id as string) || ""; // Cast user to any to access _id
-        (session.user as any).accessToken = (token.accessToken as string) || ""; // Cast user to any to access accessToken
+        (session.user as any)._id = token.id as string;
       }
       return session;
     },
   },
+  pages: {
+    signIn: "/login",
+  },
 };
-
-export default NextAuth(authOptions);
-
-// Add these type declarations
-declare module "next-auth" {
-  interface Session {
-    user: {
-      _id: string;
-      accessToken: string;
-      name?: string;
-      email?: string;
-    };
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    id?: string;
-    accessToken?: string;
-  }
-}

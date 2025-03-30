@@ -14,6 +14,9 @@ import WebsiteComponent from "../Website/Website";
 import JobPreferencesComponent from "../JobPreferences/JobPreferences";
 import HobbiesAndInterestComponent from "../Hobbies/Hobbies";
 import { CreateResumeInput } from "@/types/resume";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 // Animation variants for smooth transitions
 const pageVariants = {
@@ -80,6 +83,9 @@ const ResumeGeneratorForm: React.FC = () => {
   const [formData, setFormData] = useState<CreateResumeInput>(
     createInitialState()
   );
+
+  const { data: session } = useSession();
+  const router = useRouter();
 
   // Updated to pass formData and setFormData to all components
   const steps = useCallback(
@@ -188,6 +194,27 @@ const ResumeGeneratorForm: React.FC = () => {
 
   const currentSteps = steps();
 
+  const handleGenerateResume = async () => {
+    if (!session?.user?.id) {
+      //use id instead of accessToken
+      console.error("User not authenticated");
+      return;
+    }
+
+    try {
+      const response = await axios.post("/api/resume/generate", formData, {
+        headers: {
+          Authorization: `Bearer ${session.user.id}`, //use id instead of accessToken
+        },
+      });
+
+      console.log("Resume generated:", response.data);
+      router.push("/dashboard/");
+    } catch (error) {
+      console.error("Error generating resume:", error);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-8 bg-background text-foreground">
       <div className="mb-8">
@@ -242,6 +269,7 @@ const ResumeGeneratorForm: React.FC = () => {
           <Button
             variant="default"
             className="bg-accent text-accent-foreground"
+            onClick={handleGenerateResume}
           >
             Generate Resume
           </Button>

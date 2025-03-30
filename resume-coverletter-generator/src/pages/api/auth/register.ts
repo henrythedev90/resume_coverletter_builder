@@ -17,7 +17,7 @@ export default async function handler(
   const { email, password, firstName, lastName, address } = req.body;
 
   try {
-    if (!email || !password || !firstName || !lastName || !address) {
+    if (!email || !password || !firstName || !lastName) {
       return res.status(400).json({
         success: false,
         message: "Please provide the required fields",
