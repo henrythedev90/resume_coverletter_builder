@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/FormField";
@@ -11,6 +11,7 @@ import { User } from "@/types/user"; // Import your User interface
 
 export default function LoginSignUpPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [hasLoggedIn, setHasLoggedIn] = useState(false);
   const [formData, setFormData] = useState<Partial<User>>({
     firstName: "",
     lastName: "",
@@ -77,8 +78,15 @@ export default function LoginSignUpPage() {
     }
   };
 
+  useEffect(() => {
+    if (session && !hasLoggedIn) {
+      // Only redirect if logged in and not already redirected
+      router.push("/dashboard");
+      setHasLoggedIn(true); // Prevent future redirects
+    }
+  }, [session, router, hasLoggedIn]);
+
   if (session) {
-    router.push("/dashboard");
     return null;
   }
 

@@ -1,0 +1,108 @@
+.header {
+  @apply w-full h-[84px] leading-[80px] bg-background border-b border-accent fixed top-0 left-0 z-50 transition-all;
+}
+
+.nav_wrapper {
+  @apply flex items-center justify-between;
+}
+
+.header_shrink {
+  @apply w-full h-[84px] leading-[80px] shadow-lg transition-all;
+}
+
+.logo h1 {
+  @apply text-2xl mb-0 cursor-pointer;
+}
+
+.logo h1 span {
+  @apply cursor-pointer text-accent;
+}
+
+.mobile_logo {
+  @apply hidden;
+}
+
+.nav_menu {
+  @apply flex items-center gap-x-8;
+}
+
+.nav_menu a,
+.nav_menu button {
+  /* Added button styling here */
+  @apply text-foreground font-medium text-base no-underline transition-colors cursor-pointer;
+}
+
+.nav_menu a:hover,
+.nav_menu button:hover {
+  @apply text-muted-foreground;
+}
+
+.mobile_menu {
+  @apply hidden;
+}
+
+.theme_buttons {
+  @apply grid grid-cols-1;
+}
+
+.theme_buttons div {
+  @apply flex justify-evenly items-center;
+}
+
+.theme_single_button {
+  @apply m-[0_4px] p-[4px_10px] bg-background text-foreground border border-foreground cursor-pointer transition-all;
+}
+
+.theme_single_button:hover {
+  @apply rounded-[8px_25px] border-accent text-accent;
+}
+
+@media (max-width: 992px) {
+  .logo h1 {
+    @apply text-xl;
+  }
+
+  .mobile_logo {
+    @apply block mb-8;
+  }
+
+  .mobile_logo_title {
+    @apply text-2xl mb-0 cursor-pointer;
+  }
+
+  .mobile_logo_title span {
+    @apply text-accent cursor-pointer;
+  }
+
+  .navigation {
+    @apply fixed top-0 left-0 w-full h-full bg-background z-[99999] hidden;
+  }
+
+  .nav_menu {
+    @apply absolute top-0 right-0 w-full h-full flex flex-col justify-center;
+  }
+
+  .mobile_menu {
+    @apply block;
+  }
+
+  .menu_active {
+    @apply block;
+  }
+
+  .menu_line {
+    @apply flex flex-col cursor-pointer;
+  }
+
+  .menu_line::before,
+  .menu_line::after,
+  .menu_line div {
+    @apply content-[''] w-[30px] h-[4px] bg-foreground m-[4px_0] transition-all;
+  }
+}
+
+@media (max-width: 767px) {
+  .theme_single_button {
+    @apply m-[0_2px];
+  }
+}

@@ -5,6 +5,7 @@ import Providers from "@/components/Providers";
 import "./global.css";
 import useLocalStorage from "use-local-storage";
 import Footer from "@/components/Footer/Footer";
+import Header from "@/components/Header/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,7 +53,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable}`}
         data-theme={theme}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
         <Footer
           theme={theme}
           setTheme={setTheme}
