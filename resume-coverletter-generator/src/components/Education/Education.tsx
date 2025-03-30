@@ -137,41 +137,61 @@ const EducationComponent: React.FC<EducationComponentProps> = ({
         Add Education
       </Button>
 
-      {formData.education &&
-        formData.education.length > 0 &&
-        formData.education.some(
-          (education) =>
-            education &&
-            education.universityName &&
-            education.fieldOfStudy &&
-            education.degree
-        ) && (
-          <div>
-            {formData.education.map((education, index) => (
-              <div
-                key={`education-${index}`}
-                className="space-y-2 border p-4 rounded"
-              >
-                <p>
-                  <strong>School Name:</strong> {education.universityName}
-                </p>
-                <p>
-                  <strong>Field of Study:</strong> {education.fieldOfStudy}
-                </p>
-                <p>
-                  <strong>Degree:</strong> {education.degree}
-                </p>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleRemoveEducation(index)}
-                >
-                  Remove Education
-                </Button>
-              </div>
-            ))}
-          </div>
-        )}
+      {formData.education && formData.education.length > 0 && (
+        <div className="space-y-4 mt-6">
+          {formData.education && formData.education.length > 0 && (
+            <div className="space-y-4 mt-6">
+              {formData.education
+                .filter(
+                  (education) =>
+                    education &&
+                    education.universityName &&
+                    education.fieldOfStudy &&
+                    education.degree
+                )
+                .map((education, index) => (
+                  <div
+                    key={`education-${index}`}
+                    className="space-y-2 border p-4 rounded"
+                  >
+                    <p>
+                      <strong>School Name:</strong> {education.universityName}
+                    </p>
+                    <p>
+                      <strong>Field of Study:</strong> {education.fieldOfStudy}
+                    </p>
+                    <p>
+                      <strong>Degree:</strong> {education.degree}
+                    </p>
+                    {education.graduationYear && (
+                      <p>
+                        <strong>Graduation Year:</strong>
+                        {education.graduationYear.start &&
+                          ` ${education.graduationYear.start.getFullYear()} -`}
+                        {education.graduationYear.end &&
+                          ` ${education.graduationYear.end.getFullYear()}`}
+                      </p>
+                    )}
+                    {education.certifications &&
+                      education.certifications.length > 0 && (
+                        <p>
+                          <strong>Certifications:</strong>{" "}
+                          {education.certifications.join(", ")}
+                        </p>
+                      )}
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleRemoveEducation(index)}
+                    >
+                      Remove Education
+                    </Button>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

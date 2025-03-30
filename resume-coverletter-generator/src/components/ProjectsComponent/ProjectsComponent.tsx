@@ -117,14 +117,14 @@ const ProjectsComponents: React.FC<ProjectsComponentsProps> = ({
       >
         Add Project
       </Button>
-      {formData.projects &&
-        formData.projects.length > 0 &&
-        formData.projects.some(
-          (project) =>
-            project && project.title && project.role && project.description
-        ) && (
-          <div className="space-y-4 mt-6">
-            {formData.projects.map((project, index) => (
+      {formData.projects && formData.projects.length > 0 && (
+        <div className="space-y-4 mt-6">
+          {formData.projects
+            .filter(
+              (project) =>
+                project && project.title && project.role && project.description
+            )
+            .map((project, index) => (
               <div
                 key={`project-${index}`}
                 className="space-y-2 border p-4 rounded"
@@ -135,6 +135,27 @@ const ProjectsComponents: React.FC<ProjectsComponentsProps> = ({
                 <p>
                   <strong>Role:</strong> {project.role}
                 </p>
+                <p>
+                  <strong>Description:</strong> {project.description}
+                </p>
+                {project.skillsUsed && project.skillsUsed.length > 0 && (
+                  <p>
+                    <strong>Skills Used:</strong>{" "}
+                    {project.skillsUsed.join(", ")}
+                  </p>
+                )}
+                {project.portfolioLink && (
+                  <p>
+                    <strong>Portfolio Link:</strong>{" "}
+                    <a
+                      href={project.portfolioLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {project.portfolioLink}
+                    </a>
+                  </p>
+                )}
                 <Button
                   variant="destructive"
                   size="sm"
@@ -144,8 +165,8 @@ const ProjectsComponents: React.FC<ProjectsComponentsProps> = ({
                 </Button>
               </div>
             ))}
-          </div>
-        )}
+        </div>
+      )}
     </div>
   );
 };

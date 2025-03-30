@@ -78,13 +78,14 @@ const LanguageComponent: React.FC<LanguageComponentProps> = ({
       >
         Add Language
       </Button>
-      {formData.languages &&
-        formData.languages.length > 0 &&
-        formData.languages.some(
-          (language) => language && language.language && language.proficiency
-        ) && (
-          <div className="space-y-4 mt-6">
-            {formData.languages.map((language, index) => (
+      {formData.languages && formData.languages.length > 0 && (
+        <div className="space-y-4 mt-6">
+          {formData.languages
+            .filter(
+              (language) =>
+                language && language.language && language.proficiency
+            )
+            .map((language, index) => (
               <div
                 key={`language-${index}`}
                 className="space-y-2 border p-4 rounded"
@@ -104,8 +105,8 @@ const LanguageComponent: React.FC<LanguageComponentProps> = ({
                 </Button>
               </div>
             ))}
-          </div>
-        )}
+        </div>
+      )}
     </div>
   );
 };

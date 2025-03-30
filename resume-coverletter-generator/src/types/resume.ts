@@ -40,7 +40,7 @@ export interface Project {
 
 export interface Award {
   title: string;
-  year: Date | undefined;
+  year: number | undefined;
   description: string;
 }
 

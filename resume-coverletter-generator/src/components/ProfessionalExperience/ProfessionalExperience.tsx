@@ -30,34 +30,21 @@ const ProfessionalExperienceComponent: React.FC<
     value: any
   ) => {
     setCurrentExperience((prev) => {
-      if (
-        key === "dates" &&
-        (value as { start: Date | undefined; end: Date | undefined }).start
-      ) {
+      if (key === "dates") {
         return {
           ...prev,
           dates: {
             ...prev.dates,
-            start: (value as { start: Date | undefined; end: Date | undefined })
-              .start as Date,
-          },
-        };
-      } else if (
-        key === "dates" &&
-        (value as { start: Date | undefined; end: Date | undefined }).end
-      ) {
-        return {
-          ...prev,
-          dates: {
-            ...prev.dates,
-            end: (value as { start: Date | undefined; end: Date | undefined })
-              .end as Date,
+            ...value, // Simply merge the date changes
           },
         };
       } else if (key === "location") {
         return {
           ...prev,
-          location: value,
+          location: {
+            ...prev.location,
+            ...value, // Merge location changes
+          },
         };
       } else {
         return {
@@ -116,14 +103,16 @@ const ProfessionalExperienceComponent: React.FC<
           name="jobTitle"
           placeholder="Job Title"
           value={currentExperience.jobTitle}
-          onChange={(value) => handleCurrentExperienceChange("jobTitle", value)}
+          onChange={(name, value) =>
+            handleCurrentExperienceChange("jobTitle", value)
+          }
         />
         <FormField
           label="Company Name"
           name="companyName"
           placeholder="Company Name"
           value={currentExperience.companyName}
-          onChange={(value) =>
+          onChange={(name, value) =>
             handleCurrentExperienceChange("companyName", value)
           }
         />
@@ -133,11 +122,8 @@ const ProfessionalExperienceComponent: React.FC<
             name="city"
             placeholder="City"
             value={currentExperience.location.city}
-            onChange={(value) =>
-              handleCurrentExperienceChange("location", {
-                ...currentExperience.location,
-                city: value,
-              })
+            onChange={(name, value) =>
+              handleCurrentExperienceChange("location", { city: value })
             }
           />
           <FormField
@@ -145,11 +131,8 @@ const ProfessionalExperienceComponent: React.FC<
             name="state"
             placeholder="State"
             value={currentExperience.location.state}
-            onChange={(value) =>
-              handleCurrentExperienceChange("location", {
-                ...currentExperience.location,
-                state: value,
-              })
+            onChange={(name, value) =>
+              handleCurrentExperienceChange("location", { state: value })
             }
           />
         </div>
@@ -198,7 +181,15 @@ const ProfessionalExperienceComponent: React.FC<
           }
         />
       </div>
-      <Button onClick={handleAddExperience} className="mt-2">
+      <Button
+        onClick={handleAddExperience}
+        disabled={
+          !currentExperience.jobTitle ||
+          !currentExperience.companyName ||
+          !currentExperience.location
+        }
+        className="mt-2"
+      >
         Add Experience
       </Button>
       {formData.professionalExperience &&

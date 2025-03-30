@@ -165,34 +165,48 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
         Add Volunteer Experience
       </Button>
       {formData.volunteerExperience &&
-        formData.volunteerExperience.length > 0 &&
-        formData.volunteerExperience.some(
-          (volunteer) =>
-            volunteer &&
-            volunteer.organization &&
-            volunteer.role &&
-            volunteer.description
-        ) &&
-        formData.volunteerExperience.map((volunteer, index) => (
-          <div
-            key={`volunteer-${index}`}
-            className="space-y-2 border p-4 rounded mt-6"
-          >
-            <p>
-              <strong>Organization:</strong> {volunteer.organization}
-            </p>
-            <p>
-              <strong>Role:</strong> {volunteer.role}
-            </p>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => handleRemoveVolunteer(index)}
-            >
-              Remove Volunteer Experience
-            </Button>
+        formData.volunteerExperience.length > 0 && (
+          <div className="space-y-4 mt-6">
+            {formData.volunteerExperience
+              .filter(
+                (volunteer) =>
+                  volunteer &&
+                  volunteer.organization &&
+                  volunteer.role &&
+                  volunteer.description
+              )
+              .map((volunteer, index) => (
+                <div
+                  key={`volunteer-${index}`}
+                  className="space-y-2 border p-4 rounded"
+                >
+                  <p>
+                    <strong>Organization:</strong> {volunteer.organization}
+                  </p>
+                  <p>
+                    <strong>Role:</strong> {volunteer.role}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {volunteer.description}
+                  </p>
+                  {volunteer.dates && (
+                    <p>
+                      <strong>Dates:</strong>{" "}
+                      {volunteer.dates.start.toLocaleDateString()} -{" "}
+                      {volunteer.dates.end.toLocaleDateString()}
+                    </p>
+                  )}
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleRemoveVolunteer(index)}
+                  >
+                    Remove Volunteer Experience
+                  </Button>
+                </div>
+              ))}
           </div>
-        ))}
+        )}
     </div>
   );
 };

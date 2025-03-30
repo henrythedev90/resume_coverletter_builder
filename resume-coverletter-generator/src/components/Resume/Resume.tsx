@@ -59,7 +59,7 @@ const createInitialState = (): CreateResumeInput => ({
   projects: [
     { title: "", description: "", role: "", skillsUsed: [], portfolioLink: "" },
   ],
-  awards: [{ title: "", year: new Date(), description: "" }],
+  awards: [{ title: "", year: undefined, description: "" }],
   languages: [{ language: "", proficiency: "" }],
   volunteerExperience: [
     {
