@@ -132,35 +132,35 @@ const ResumeGeneratorForm: React.FC = () => {
         component: (
           <ProjectsComponents formData={formData} setFormData={setFormData} />
         ),
-        validate: () => formData.projects.length > 1,
+        validate: () => formData.projects.length > 0,
       },
       {
         name: "Awards",
         component: (
           <AwardComponent formData={formData} setFormData={setFormData} />
         ),
-        validate: () => formData.awards?.length > 1,
+        validate: () => formData.awards?.length > 0,
       },
       {
         name: "Languages",
         component: (
           <LanguageComponent formData={formData} setFormData={setFormData} />
         ),
-        validate: () => formData.languages?.length > 1,
+        validate: () => formData.languages?.length > 0,
       },
       {
         name: "Volunteer Experience",
         component: (
           <VolunteerComponent formData={formData} setFormData={setFormData} />
         ),
-        validate: () => formData.volunteerExperience.length > 1,
+        validate: () => formData.volunteerExperience.length > 0,
       },
       {
         name: "Websites",
         component: (
           <WebsiteComponent formData={formData} setFormData={setFormData} />
         ),
-        validate: () => formData.websites.length > 1,
+        validate: () => formData.websites.length > 0,
       },
       {
         name: "Job Preferences",
