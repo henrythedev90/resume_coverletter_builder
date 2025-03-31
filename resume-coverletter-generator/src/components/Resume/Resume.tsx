@@ -236,8 +236,8 @@ const ResumeGeneratorForm: React.FC = () => {
         }
       );
 
-      console.log("Resume generated:", response.data);
-      router.push("/dashboard");
+      const resumeId = response.data._id;
+      router.push(`/job-fit?_id=${resumeId}`);
     } catch (error) {
       console.error("Error generating resume:", error);
       alert("Failed to generate resume. Please try again.");
