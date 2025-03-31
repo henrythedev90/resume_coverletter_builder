@@ -107,6 +107,8 @@ const JobFitPage = () => {
 
       if (response.data.success) {
         setAnalysisResult(response.data.body);
+        const analysisId = response.data.analysisId;
+        router.push(`/job-fit/${analysisId}`);
       } else {
         setError(response.data.error || "Failed to analyze job fit.");
       }

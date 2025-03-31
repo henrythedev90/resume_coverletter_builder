@@ -92,7 +92,13 @@ export default async function handler(
       });
 
       await newJobFitAnalysis.save();
-      return res.status(200).json({ body: result, success: true });
+
+      // Return the ID of the newly created JobFitAnalysis document
+      return res.status(200).json({
+        body: result,
+        success: true,
+        analysisId: newJobFitAnalysis._id.toString(), // Add analysisId to the response
+      });
     } catch (error) {
       console.error("Job Fit Analysis API Error:", error);
       res.status(500).json({
