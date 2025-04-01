@@ -25,7 +25,6 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
     "jobDescription",
     "companyMission",
     "reasonForApplying",
-    "keySkills",
   ];
 
   requiredFields.forEach((field) => {
@@ -204,7 +203,7 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
   ${coverLetterData.reasonForApplying}
   
   Key Skills to Highlight:
-  ${coverLetterData.keySkills.join(", ")}
+  ${coverLetterData.keySkills?.join(", ")}
   
   Saw job posting at ${coverLetterData.jobPostingPlatform}
   

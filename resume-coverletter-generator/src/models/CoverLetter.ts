@@ -44,7 +44,7 @@ const CoverLetterSchema = new mongoose.Schema(
     },
     keySkills: {
       type: [String], // A list of key skills that the user wants to highlight
-      required: true,
+      required: false,
     },
     personalTraits: {
       type: [String], // Personal attributes the user wants to mention

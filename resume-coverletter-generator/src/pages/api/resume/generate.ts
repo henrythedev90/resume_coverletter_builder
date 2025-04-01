@@ -32,7 +32,13 @@ export default async function handler(
       websites,
     } = req.body;
 
-    if (!careerObjective || !professionalExperience || !education || !skills) {
+    if (
+      !careerObjective ||
+      !professionalExperience ||
+      !education ||
+      !skills ||
+      !projects
+    ) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -65,7 +71,7 @@ export default async function handler(
       professionalExperience,
       education,
       skills,
-      ...(projects && { projects }),
+      projects,
       ...(awards && { awards }),
       ...(languages && { languages }),
       ...(volunteerExperience && { volunteerExperience }),

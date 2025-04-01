@@ -82,6 +82,7 @@ export default async function handler(
         jobTitle,
         jobDescription,
         companyMission,
+        companyName,
       };
 
       const newJobFitAnalysis = new JobFitAnalysis({

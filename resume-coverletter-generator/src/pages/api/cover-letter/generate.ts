@@ -41,7 +41,6 @@ export default async function handler(
       !jobDescription ||
       !companyMission ||
       !reasonForApplying ||
-      !keySkills ||
       !jobPostingPlatform
     ) {
       return res.status(400).json({
@@ -88,7 +87,6 @@ export default async function handler(
       jobDescription,
       companyMission,
       reasonForApplying,
-      keySkills,
       jobPostingPlatform,
       userId: new mongoose.Types.ObjectId(userId),
       resumeId: new mongoose.Types.ObjectId(resume._id as string),
@@ -97,6 +95,7 @@ export default async function handler(
       ...(relevantSkills && { relevantSkills }),
       ...(careerGoals && { careerGoals }),
       ...(avaliability && { avaliability }),
+      ...(keySkills && { keySkills }),
     };
 
     const generatedCoverLetter = await generateCoverLetter(coverLetterData);

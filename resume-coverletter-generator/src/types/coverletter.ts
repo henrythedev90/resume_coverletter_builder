@@ -8,7 +8,7 @@ export interface CoverLetterInput {
   jobDescription: string;
   companyMission: string;
   reasonForApplying: string;
-  keySkills: string[];
+  keySkills?: string[];
   jobPostingPlatform: string;
   personalTrait?: string;
   achievements?: string;
