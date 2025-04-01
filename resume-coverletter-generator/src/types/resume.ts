@@ -5,8 +5,8 @@ export interface ProfessionalExperience {
   companyName: string;
   location: { city: string; state: string };
   dates: {
-    start: Date;
-    end: Date;
+    start: { month: string; year: number | undefined };
+    end?: { month: string; year: number | undefined };
   };
   responsibilities: string[];
   accomplishments: string[];
@@ -50,8 +50,8 @@ export interface VolunteerExperience {
   organization: string;
   role: string;
   dates: {
-    start: Date;
-    end: Date;
+    start: { month: string; year: number | undefined };
+    end: { month: string; year: number | undefined };
   };
   description: string;
 }

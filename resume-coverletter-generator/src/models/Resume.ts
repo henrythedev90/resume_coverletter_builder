@@ -18,8 +18,8 @@ const ResumeSchema = new mongoose.Schema({
         state: { type: String },
       },
       dates: {
-        start: { type: Date },
-        end: { type: Date },
+        start: { month: { type: String }, year: { type: Number } },
+        end: { month: { type: String }, year: { type: Number } },
       },
       responsibilities: { type: [String] }, // List of responsibilities or tasks
       accomplishments: { type: [String] }, // Key achievements with quantifiable results
@@ -73,8 +73,8 @@ const ResumeSchema = new mongoose.Schema({
       organization: { type: String },
       role: { type: String },
       dates: {
-        start: { type: Date },
-        end: { type: Date },
+        start: { month: { type: String }, year: { type: Number } },
+        end: { month: { type: String }, year: { type: Number } },
       },
       description: { type: String },
     },

@@ -4,6 +4,14 @@ import { VolunteerExperience, CreateResumeInput } from "@/types/resume";
 import { FormField } from "@/components/ui/FormField";
 import DatePicker from "../ui/DatePicker/DatePicker";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Months } from "@/types/months";
 
 interface VolunteerComponentProps {
   formData: CreateResumeInput;
@@ -19,7 +27,10 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
       organization: "",
       role: "",
       description: "",
-      dates: { start: new Date(), end: new Date() },
+      dates: {
+        start: { month: "", year: undefined },
+        end: { month: "", year: undefined },
+      },
     }
   );
 
@@ -27,38 +38,10 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
     key: keyof VolunteerExperience,
     value: any
   ) => {
-    setCurrentVolunteer((prev) => {
-      if (
-        key === "dates" &&
-        (value as { start: Date | undefined; end: Date | undefined }).start
-      ) {
-        return {
-          ...prev,
-          dates: {
-            ...prev.dates,
-            start: (value as { start: Date | undefined; end: Date | undefined })
-              .start as Date,
-          },
-        };
-      } else if (
-        key === "dates" &&
-        (value as { start: Date | undefined; end: Date | undefined }).end
-      ) {
-        return {
-          ...prev,
-          dates: {
-            ...prev.dates,
-            end: (value as { start: Date | undefined; end: Date | undefined })
-              .end as Date,
-          },
-        };
-      } else {
-        return {
-          ...prev,
-          [key]: value,
-        };
-      }
-    });
+    setCurrentVolunteer((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
   };
 
   const handleAddVolunteer = () => {
@@ -66,8 +49,10 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
       currentVolunteer.organization &&
       currentVolunteer.role &&
       currentVolunteer.description &&
-      currentVolunteer.dates.start &&
-      currentVolunteer.dates.end
+      currentVolunteer.dates.start.month &&
+      currentVolunteer.dates.start.year &&
+      currentVolunteer.dates.end.month &&
+      currentVolunteer.dates.end.year
     ) {
       const updatedVolunteers = [
         ...(formData.volunteerExperience || []),
@@ -81,7 +66,10 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
         organization: "",
         role: "",
         description: "",
-        dates: { start: new Date(), end: new Date() },
+        dates: {
+          start: { month: "", year: undefined },
+          end: { month: "", year: undefined },
+        },
       });
     }
   };
@@ -129,26 +117,76 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
         />
         <div className="space-y-2">
           <label>Date Range</label>
-          <DatePicker
-            date={currentVolunteer.dates?.start}
-            setDate={(date) =>
-              handleCurrentVolunteerChange("dates", {
-                ...currentVolunteer.dates,
-                start: date,
-              })
-            }
-            placeholder="Start Date"
-          />
-          <DatePicker
-            date={currentVolunteer.dates?.end}
-            setDate={(date) =>
-              handleCurrentVolunteerChange("dates", {
-                ...currentVolunteer.dates,
-                end: date,
-              })
-            }
-            placeholder="End Date"
-          />
+          <div className="flex gap-2">
+            <Select
+              value={currentVolunteer.dates.start.month}
+              onValueChange={(value) =>
+                handleCurrentVolunteerChange("dates", {
+                  ...currentVolunteer.dates,
+                  start: { ...currentVolunteer.dates.start, month: value },
+                })
+              }
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Start Month" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(Months).map((month) => (
+                  <SelectItem key={month} value={month}>
+                    {month}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormField
+              label="Start Year"
+              name="startYear"
+              placeholder="Year"
+              type="number"
+              value={currentVolunteer.dates.start.year}
+              onChange={(name, value) =>
+                handleCurrentVolunteerChange("dates", {
+                  ...currentVolunteer.dates,
+                  start: { ...currentVolunteer.dates.start, year: value },
+                })
+              }
+            />
+          </div>
+          <div className="flex gap-2">
+            <Select
+              value={currentVolunteer.dates.end.month}
+              onValueChange={(value) =>
+                handleCurrentVolunteerChange("dates", {
+                  ...currentVolunteer.dates,
+                  end: { ...currentVolunteer.dates.end, month: value },
+                })
+              }
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="End Month" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(Months).map((month) => (
+                  <SelectItem key={month} value={month}>
+                    {month}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormField
+              label="End Year"
+              name="endYear"
+              placeholder="Year"
+              type="number"
+              value={currentVolunteer.dates.end.year}
+              onChange={(name, value) =>
+                handleCurrentVolunteerChange("dates", {
+                  ...currentVolunteer.dates,
+                  end: { ...currentVolunteer.dates.end, year: value },
+                })
+              }
+            />
+          </div>
         </div>
       </div>
       <Button
@@ -157,8 +195,10 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
           !currentVolunteer.organization ||
           !currentVolunteer.role ||
           !currentVolunteer.description ||
-          !currentVolunteer.dates.start ||
-          !currentVolunteer.dates.end
+          !currentVolunteer.dates.start.month ||
+          !currentVolunteer.dates.start.year ||
+          !currentVolunteer.dates.end.month ||
+          !currentVolunteer.dates.end.year
         }
         className="mt-2"
       >
@@ -191,9 +231,9 @@ const VolunteerComponent: React.FC<VolunteerComponentProps> = ({
                   </p>
                   {volunteer.dates && (
                     <p>
-                      <strong>Dates:</strong>{" "}
-                      {volunteer.dates.start.toLocaleDateString()} -{" "}
-                      {volunteer.dates.end.toLocaleDateString()}
+                      <strong>Dates:</strong> {volunteer.dates.start.month}{" "}
+                      {volunteer.dates.start.year} - {volunteer.dates.end.month}{" "}
+                      {volunteer.dates.end.year}
                     </p>
                   )}
                   <Button

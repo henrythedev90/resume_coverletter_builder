@@ -5,6 +5,14 @@ import { FormField } from "@/components/ui/FormField";
 import DatePicker from "../ui/DatePicker/DatePicker";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Months } from "@/types/months";
 
 interface ProfessionalExperienceComponentProps {
   formData: CreateResumeInput;
@@ -19,7 +27,10 @@ const ProfessionalExperienceComponent: React.FC<
       jobTitle: "",
       companyName: "",
       location: { city: "", state: "" },
-      dates: { start: new Date(), end: new Date() },
+      dates: {
+        start: { month: "", year: undefined },
+        end: { month: "", year: undefined },
+      },
       responsibilities: [],
       accomplishments: [],
       skillsUsed: [],
@@ -78,7 +89,10 @@ const ProfessionalExperienceComponent: React.FC<
         jobTitle: "",
         companyName: "",
         location: { city: "", state: "" },
-        dates: { start: new Date(), end: new Date() },
+        dates: {
+          start: { month: "", year: undefined },
+          end: { month: "", year: undefined },
+        },
         responsibilities: [],
         accomplishments: [],
         skillsUsed: [],
@@ -141,26 +155,76 @@ const ProfessionalExperienceComponent: React.FC<
         </div>
         <div className="space-y-2">
           <label>Date Range</label>
-          <DatePicker
-            date={currentExperience.dates?.start}
-            setDate={(date) =>
-              handleCurrentExperienceChange("dates", {
-                ...currentExperience.dates,
-                start: date,
-              })
-            }
-            placeholder="Start Date"
-          />
-          <DatePicker
-            date={currentExperience.dates?.end}
-            setDate={(date) =>
-              handleCurrentExperienceChange("dates", {
-                ...currentExperience.dates,
-                end: date,
-              })
-            }
-            placeholder="End Date"
-          />
+          <div className="flex gap-2">
+            <Select
+              value={currentExperience.dates.start.month}
+              onValueChange={(value) =>
+                handleCurrentExperienceChange("dates", {
+                  ...currentExperience.dates,
+                  start: { ...currentExperience.dates.start, month: value },
+                })
+              }
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Start Month" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(Months).map((month) => (
+                  <SelectItem key={month} value={month}>
+                    {month}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormField
+              label="Start Year"
+              name="startYear"
+              placeholder="Year"
+              type="number"
+              value={currentExperience.dates.start.year}
+              onChange={(name, value) =>
+                handleCurrentExperienceChange("dates", {
+                  ...currentExperience.dates,
+                  start: { ...currentExperience.dates.start, year: value },
+                })
+              }
+            />
+          </div>
+          <div className="flex gap-2">
+            <Select
+              value={currentExperience.dates.end?.month}
+              onValueChange={(value) =>
+                handleCurrentExperienceChange("dates", {
+                  ...currentExperience.dates,
+                  end: { ...currentExperience.dates.end, month: value },
+                })
+              }
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="End Month" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(Months).map((month) => (
+                  <SelectItem key={month} value={month}>
+                    {month}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormField
+              label="End Year"
+              name="endYear"
+              placeholder="Year"
+              type="number"
+              value={currentExperience.dates.end?.year}
+              onChange={(name, value) =>
+                handleCurrentExperienceChange("dates", {
+                  ...currentExperience.dates,
+                  end: { ...currentExperience.dates.end, year: value },
+                })
+              }
+            />
+          </div>
         </div>
         <StringArrayInput
           label="Responsibilities"

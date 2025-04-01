@@ -3,6 +3,14 @@ import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { JobPreferences, CreateResumeInput } from "@/types/resume";
 import { FormField } from "@/components/ui/FormField";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
+import { EmploymentTypes } from "@/types/employmentTypes";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface JobPreferencesComponentProps {
   formData: CreateResumeInput;
@@ -61,15 +69,26 @@ const JobPreferencesComponent: React.FC<JobPreferencesComponentProps> = ({
             handleJobPreferenceChange("preferredLocation", value)
           }
         />
-        <FormField
-          label="Employment Type"
-          name="employmentType"
-          placeholder="Employment Type"
-          value={currentJobPreference.employmentType}
-          onChange={(_, value) =>
-            handleJobPreferenceChange("employmentType", value)
-          }
-        />
+        <div className="space-y-2">
+          <label>Employment Type</label>
+          <Select
+            value={currentJobPreference?.employmentType}
+            onValueChange={(value) =>
+              handleJobPreferenceChange("employmentType", value)
+            }
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Employment Type" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.values(EmploymentTypes).map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <div className="space-y-2">
           <StringArrayInput
             label="Desired Job Titles"

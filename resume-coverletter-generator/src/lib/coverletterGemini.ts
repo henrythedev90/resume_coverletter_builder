@@ -56,24 +56,25 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
   const resumeSummary = {
     careerObjective: resume.careerObjective || "",
     professionalExperience: (resume.professionalExperience || [])
-      .map(
-        (exp: ProfessionalExperience) =>
-          `${exp.jobTitle || "N/A"} at ${exp.companyName || "N/A"} (${
-            exp.dates?.start
-              ? new Date(exp.dates.start).toLocaleDateString()
-              : "Start Date N/A"
-          } - ${
-            exp.dates?.end
-              ? new Date(exp.dates.end).toLocaleDateString()
-              : "Present"
-          }): 
-       Responsibilities: ${
-         (exp.responsibilities || []).join(", ") || "No responsibilities listed"
-       }
-       Accomplishments: ${
-         (exp.accomplishments || []).join(", ") || "No accomplishments listed"
-       }`
-      )
+      .map((exp: ProfessionalExperience) => {
+        const startDate = exp.dates?.start
+          ? `${exp.dates.start.month} - ${exp.dates.start.year}`
+          : "Start Date N/A";
+        const endDate = exp.dates?.end
+          ? `${exp.dates.end.month} - ${exp.dates.end.year}`
+          : "Present";
+
+        return `${exp.jobTitle || "N/A"} at ${
+          exp.companyName || "N/A"
+        } (${startDate} - ${endDate}): 
+     Responsibilities: ${
+       (exp.responsibilities || []).join(", ") || "No responsibilities listed"
+     }
+     Accomplishments: ${
+       (exp.accomplishments || []).join(", ") || "No accomplishments listed"
+     }`;
+      })
+
       .join("\n\n"),
     education: (resume.education || [])
       .map(
@@ -113,20 +114,18 @@ export async function generateCoverLetter(coverLetterData: CoverLetterInput) {
       )
       .join("\n"),
     volunteerExperience: (resume.volunteerExperience || [])
-      .map(
-        (vol: VolunteerExperience) =>
-          `${vol.role || "Volunteer Role"} at ${
-            vol.organization || "Organization N/A"
-          } (${
-            vol.dates?.start
-              ? new Date(vol.dates.start).toLocaleDateString()
-              : "Start Date N/A"
-          } - ${
-            vol.dates?.end
-              ? new Date(vol.dates.end).toLocaleDateString()
-              : "Present"
-          })`
-      )
+      .map((vol: VolunteerExperience) => {
+        const startDate = vol.dates?.start
+          ? `${vol.dates.start.month} - ${vol.dates.start.year}`
+          : "Start Date N/A";
+        const endDate = vol.dates?.end
+          ? `${vol.dates.end.month} - ${vol.dates.end.year}`
+          : "Present";
+
+        return `${vol.role || "Volunteer Role"} at ${
+          vol.organization || "Organization N/A"
+        } (${startDate} - ${endDate})`;
+      })
       .join("\n"),
     languages: (resume.languages || [])
       .map(

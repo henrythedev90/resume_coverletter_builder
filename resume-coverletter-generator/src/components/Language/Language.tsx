@@ -3,6 +3,14 @@ import React, { useState, Dispatch, SetStateAction } from "react";
 import { Language, CreateResumeInput } from "@/types/resume";
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/button";
+import { ProficiencyLevels } from "@/types/profeciency";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface LanguageComponentProps {
   formData: CreateResumeInput;
@@ -61,15 +69,23 @@ const LanguageComponent: React.FC<LanguageComponentProps> = ({
             handleCurrentLanguageChange("language", value)
           }
         />
-        <FormField
-          label="Proficiency"
-          name="proficiency"
-          placeholder="Proficiency"
+        <Select
           value={currentLanguage.proficiency}
-          onChange={(name, value) =>
+          onValueChange={(value) =>
             handleCurrentLanguageChange("proficiency", value)
           }
-        />
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Start Month" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.values(ProficiencyLevels).map((level) => (
+              <SelectItem key={level} value={level}>
+                {level}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <Button
         onClick={handleAddLanguage}
