@@ -2,9 +2,10 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
 import { ProfessionalExperience, CreateResumeInput } from "@/types/resume";
 import { FormField } from "@/components/ui/FormField";
-import DatePicker from "../ui/DatePicker/DatePicker";
 import StringArrayInput from "../ui/StringArrayInput/StringArrayInput";
 import { Button } from "@/components/ui/button";
+import { USStates } from "@/types/states";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -46,7 +47,7 @@ const ProfessionalExperienceComponent: React.FC<
           ...prev,
           dates: {
             ...prev.dates,
-            ...value, // Simply merge the date changes
+            ...value,
           },
         };
       } else if (key === "location") {
@@ -54,7 +55,7 @@ const ProfessionalExperienceComponent: React.FC<
           ...prev,
           location: {
             ...prev.location,
-            ...value, // Merge location changes
+            ...value,
           },
         };
       } else {
@@ -72,8 +73,8 @@ const ProfessionalExperienceComponent: React.FC<
       currentExperience.companyName.trim() &&
       currentExperience.location.city.trim() &&
       currentExperience.location.state.trim() &&
-      currentExperience.dates.start &&
-      currentExperience.dates.end &&
+      currentExperience.dates.start.month &&
+      currentExperience.dates.start.year &&
       currentExperience.responsibilities.length > 0 &&
       currentExperience.accomplishments.length > 0
     ) {
@@ -98,7 +99,9 @@ const ProfessionalExperienceComponent: React.FC<
         skillsUsed: [],
       });
     } else {
-      alert("Job Title, Company Name, and Location are required.");
+      alert(
+        "Job Title, Company Name, City, State, and Start Date are required."
+      );
     }
   };
 
@@ -143,15 +146,26 @@ const ProfessionalExperienceComponent: React.FC<
               handleCurrentExperienceChange("location", { city: value })
             }
           />
-          <FormField
-            label="State"
-            name="state"
-            placeholder="State"
-            value={currentExperience.location.state}
-            onChange={(name, value) =>
-              handleCurrentExperienceChange("location", { state: value })
-            }
-          />
+          <div className="space-y-2">
+            <Label htmlFor="state">State</Label>
+            <Select
+              value={currentExperience.location.state || ""}
+              onValueChange={(value) =>
+                handleCurrentExperienceChange("location", { state: value })
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a state" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(USStates).map(([code, name]) => (
+                  <SelectItem key={code} value={code}>
+                    {name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div className="space-y-2">
           <label>Date Range</label>
@@ -160,7 +174,6 @@ const ProfessionalExperienceComponent: React.FC<
               value={currentExperience.dates.start.month}
               onValueChange={(value) =>
                 handleCurrentExperienceChange("dates", {
-                  ...currentExperience.dates,
                   start: { ...currentExperience.dates.start, month: value },
                 })
               }
@@ -184,7 +197,6 @@ const ProfessionalExperienceComponent: React.FC<
               value={currentExperience.dates.start.year}
               onChange={(name, value) =>
                 handleCurrentExperienceChange("dates", {
-                  ...currentExperience.dates,
                   start: { ...currentExperience.dates.start, year: value },
                 })
               }
@@ -195,7 +207,6 @@ const ProfessionalExperienceComponent: React.FC<
               value={currentExperience.dates.end?.month}
               onValueChange={(value) =>
                 handleCurrentExperienceChange("dates", {
-                  ...currentExperience.dates,
                   end: { ...currentExperience.dates.end, month: value },
                 })
               }
@@ -219,7 +230,6 @@ const ProfessionalExperienceComponent: React.FC<
               value={currentExperience.dates.end?.year}
               onChange={(name, value) =>
                 handleCurrentExperienceChange("dates", {
-                  ...currentExperience.dates,
                   end: { ...currentExperience.dates.end, year: value },
                 })
               }
@@ -253,7 +263,8 @@ const ProfessionalExperienceComponent: React.FC<
         disabled={
           !currentExperience.jobTitle ||
           !currentExperience.companyName ||
-          !currentExperience.location
+          !currentExperience.location.city ||
+          !currentExperience.location.state
         }
         className="mt-2"
       >

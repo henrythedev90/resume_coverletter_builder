@@ -71,7 +71,7 @@ export default async function handler(
       professionalExperience,
       education,
       skills,
-      projects,
+      ...(projects && { projects }),
       ...(awards && { awards }),
       ...(languages && { languages }),
       ...(volunteerExperience && { volunteerExperience }),

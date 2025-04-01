@@ -61,7 +61,7 @@ const ResumeGeneratorForm: React.FC = () => {
 
   const { data: session } = useSession();
   const router = useRouter();
-
+  console.log(session, "this is session");
   const steps = useMemo(
     () => [
       {
@@ -106,40 +106,35 @@ const ResumeGeneratorForm: React.FC = () => {
         component: (
           <ProjectsComponents formData={formData} setFormData={setFormData} />
         ),
-        validate: () => formData.projects.length > 0,
+        validate: () => true,
       },
       {
         name: "Awards",
         component: (
           <AwardComponent formData={formData} setFormData={setFormData} />
         ),
-        validate: () =>
-          formData.awards !== undefined && formData.awards?.length > 0,
+        validate: () => true,
       },
       {
         name: "Languages",
         component: (
           <LanguageComponent formData={formData} setFormData={setFormData} />
         ),
-        validate: () =>
-          formData.languages !== undefined && formData.languages?.length > 0,
+        validate: () => true,
       },
       {
         name: "Volunteer Experience",
         component: (
           <VolunteerComponent formData={formData} setFormData={setFormData} />
         ),
-        validate: () =>
-          formData.volunteerExperience !== undefined &&
-          formData.volunteerExperience.length > 0,
+        validate: () => true,
       },
       {
         name: "Websites",
         component: (
           <WebsiteComponent formData={formData} setFormData={setFormData} />
         ),
-        validate: () =>
-          formData.websites !== undefined && formData.websites.length > 0,
+        validate: () => true,
       },
       {
         name: "Job Preferences",
@@ -149,17 +144,7 @@ const ResumeGeneratorForm: React.FC = () => {
             setFormData={setFormData}
           />
         ),
-        validate: () => {
-          if (!formData.jobPreferences) {
-            return false;
-          }
-          return (
-            formData.jobPreferences.desiredJobTitles.length > 0 ||
-            formData.jobPreferences.preferredIndustry.length > 0 ||
-            formData.jobPreferences.preferredLocation !== "" ||
-            formData.jobPreferences.employmentType !== ""
-          );
-        },
+        validate: () => true,
       },
       {
         name: "Hobbies & Interests",
@@ -169,7 +154,7 @@ const ResumeGeneratorForm: React.FC = () => {
             setFormData={setFormData}
           />
         ),
-        validate: () => (formData.hobbiesAndInterests?.length ?? 0) > 0,
+        validate: () => true,
       },
     ],
     [formData]
@@ -233,7 +218,6 @@ const ResumeGeneratorForm: React.FC = () => {
         websites: formData.websites?.filter((website) => website.url),
       };
 
-      console.log(filteredFormData.websites);
       debugger;
       const response = await axios.post(
         "/api/resume/generate",
@@ -257,6 +241,15 @@ const ResumeGeneratorForm: React.FC = () => {
     () => !steps[currentStep].validate(),
     [currentStep, steps]
   );
+
+  const allRequiredFormsValid = useMemo(
+    () => steps.every((step) => step.validate()),
+    [steps]
+  );
+
+  const skipToLastStep = useCallback(() => {
+    setCurrentStep(steps.length - 1);
+  }, [steps]);
 
   return session ? (
     <div className="max-w-4xl mx-auto p-8 bg-background text-foreground">
@@ -298,6 +291,15 @@ const ResumeGeneratorForm: React.FC = () => {
             onClick={prevStep}
           >
             Previous
+          </Button>
+        )}
+        {allRequiredFormsValid && currentStep < steps.length - 1 && (
+          <Button
+            variant="outline"
+            className="bg-gray-500 text-white"
+            onClick={skipToLastStep}
+          >
+            Skip
           </Button>
         )}
         {currentStep < steps.length - 1 && (

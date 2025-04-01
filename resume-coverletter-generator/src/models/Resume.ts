@@ -7,12 +7,12 @@ const ResumeSchema = new mongoose.Schema({
     required: true,
   },
 
-  careerObjective: { type: String }, // Career goals, key strengths
+  careerObjective: { type: String, required: true }, // Career goals, key strengths
 
   professionalExperience: [
     {
-      jobTitle: { type: String, required: true },
-      companyName: { type: String, required: true },
+      jobTitle: { type: String },
+      companyName: { type: String },
       location: {
         city: { type: String },
         state: { type: String },
@@ -29,9 +29,9 @@ const ResumeSchema = new mongoose.Schema({
 
   education: [
     {
-      degree: { type: String, required: true }, // e.g., "Bachelors", "Masters"
-      fieldOfStudy: { type: String, required: true },
-      universityName: { type: String, required: true },
+      degree: { type: String }, // e.g., "Bachelors", "Masters"
+      fieldOfStudy: { type: String },
+      universityName: { type: String },
       graduationYear: { type: Date },
       certifications: { type: [String] }, // Optional: List of certifications
     },

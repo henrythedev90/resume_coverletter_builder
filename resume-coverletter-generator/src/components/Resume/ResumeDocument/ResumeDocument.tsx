@@ -1,7 +1,7 @@
-// ResumeDocument.js
 import React from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
-import { CreateResumeInput } from "@/types/resume";
+import { CreateResumeInput } from "@/types/resume"; // Adjust the import path as needed
+import { User } from "@/types/user";
 
 const styles = StyleSheet.create({
   page: {
@@ -28,17 +28,41 @@ const styles = StyleSheet.create({
   listItem: {
     marginBottom: 5,
   },
+  profile: {
+    fontSize: 12,
+    marginBottom: 10,
+  },
+  contactInfo: {
+    fontSize: 10,
+    marginBottom: 5,
+  },
 });
 
-const ResumeDocument = ({ resumeData }: { resumeData: CreateResumeInput }) => (
+const ResumeDocument = ({
+  resumeData,
+  user,
+}: {
+  resumeData: CreateResumeInput;
+  user: User;
+}) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.section}>
-        <Text style={styles.title}>{resumeData.careerObjective}</Text>
+        <Text style={styles.title}>
+          {user.firstName} {user.lastName}
+        </Text>
+        <Text style={styles.contactInfo}>
+          {user.email} | {user.address?.city}, {user.address?.state}
+        </Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.title}>Professional Experience</Text>
+        <Text style={styles.title}>Career Objective</Text>
+        <Text style={styles.profile}>{resumeData.careerObjective}</Text>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.title}>Work Experience</Text>
         {resumeData.professionalExperience &&
           resumeData.professionalExperience.map((exp, index) => (
             <View key={index}>
@@ -70,16 +94,6 @@ const ResumeDocument = ({ resumeData }: { resumeData: CreateResumeInput }) => (
                   ))}
                 </View>
               )}
-              {exp.skillsUsed && (
-                <View style={styles.list}>
-                  <Text style={styles.subtitle}>Skills Used:</Text>
-                  {exp.skillsUsed.map((skill, skillIndex) => (
-                    <Text key={skillIndex} style={styles.listItem}>
-                      {skill}
-                    </Text>
-                  ))}
-                </View>
-              )}
             </View>
           ))}
       </View>
@@ -93,70 +107,8 @@ const ResumeDocument = ({ resumeData }: { resumeData: CreateResumeInput }) => (
                 {edu.degree}, {edu.fieldOfStudy}, {edu.universityName}
               </Text>
               {edu.graduationYear && (
-                <Text style={styles.text}>
-                  Graduation Year: {edu.graduationYear}
-                </Text>
+                <Text style={styles.text}>{edu.graduationYear}</Text>
               )}
-              {edu.certifications && (
-                <View style={styles.list}>
-                  <Text style={styles.subtitle}>Certifications:</Text>
-                  {edu.certifications.map((cert, certIndex) => (
-                    <Text key={certIndex} style={styles.listItem}>
-                      {cert}
-                    </Text>
-                  ))}
-                </View>
-              )}
-            </View>
-          ))}
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.title}>Skills</Text>
-        <View style={styles.list}>
-          {resumeData.skills?.technical && (
-            <View style={styles.listItem}>
-              <Text style={styles.subtitle}>
-                Technical: {resumeData.skills.technical.join(", ")}
-              </Text>
-            </View>
-          )}
-          {resumeData.skills?.soft && (
-            <View style={styles.listItem}>
-              <Text style={styles.subtitle}>
-                Soft: {resumeData.skills.soft.join(", ")}
-              </Text>
-            </View>
-          )}
-          {resumeData.skills?.industrySpecific && (
-            <View style={styles.listItem}>
-              <Text style={styles.subtitle}>
-                Industry Specific:{" "}
-                {resumeData.skills.industrySpecific.join(", ")}
-              </Text>
-            </View>
-          )}
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.title}>Projects</Text>
-        {resumeData.projects &&
-          resumeData.projects.map((project, index) => (
-            <View key={index}>
-              <Text style={styles.subtitle}>{project.title}</Text>
-              <Text style={styles.text}>{project.description}</Text>
-            </View>
-          ))}
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.title}>Awards</Text>
-        {resumeData.awards &&
-          resumeData.awards.map((award, index) => (
-            <View key={index}>
-              <Text style={styles.subtitle}>{award.title}</Text>
-              <Text style={styles.text}>{award.description}</Text>
             </View>
           ))}
       </View>
@@ -172,52 +124,17 @@ const ResumeDocument = ({ resumeData }: { resumeData: CreateResumeInput }) => (
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.title}>Volunteer Experience</Text>
-        {resumeData.volunteerExperience &&
-          resumeData.volunteerExperience.map((volunteer, index) => (
-            <View key={index}>
-              <Text style={styles.subtitle}>{volunteer.organization}</Text>
-              <Text style={styles.text}>{volunteer.description}</Text>
-            </View>
-          ))}
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.title}>Websites</Text>
-        {resumeData.websites &&
-          resumeData.websites.map((website, index) => (
-            <View key={index}>
-              <Text style={styles.text}>{website.url}</Text>
-            </View>
-          ))}
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.title}>Job Preferences</Text>
-        <Text style={styles.text}>
-          Desired Job Titles:{" "}
-          {resumeData.jobPreferences?.desiredJobTitles?.join(", ")}
-        </Text>
-        <Text style={styles.text}>
-          Preferred Industry:{" "}
-          {resumeData.jobPreferences?.preferredIndustry?.join(", ")}
-        </Text>
-        <Text style={styles.text}>
-          Preferred Location: {resumeData.jobPreferences?.preferredLocation}
-        </Text>
-        <Text style={styles.text}>
-          Employment Type: {resumeData.jobPreferences?.employmentType}
-        </Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.title}>Hobbies and Interests</Text>
-        {resumeData.hobbiesAndInterests &&
-          resumeData.hobbiesAndInterests.map((hobby, index) => (
-            <View key={index}>
-              <Text style={styles.text}>{hobby}</Text>
-            </View>
-          ))}
+        <Text style={styles.title}>Skills</Text>
+        <View style={styles.list}>
+          {resumeData.skills &&
+            Object.values(resumeData.skills).map(
+              (skill: string, index: any) => (
+                <Text key={index} style={styles.listItem}>
+                  {skill}
+                </Text>
+              )
+            )}
+        </View>
       </View>
     </Page>
   </Document>

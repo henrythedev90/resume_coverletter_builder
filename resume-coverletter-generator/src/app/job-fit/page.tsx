@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CreateResumeInput } from "@/types/resume";
 import { FormField } from "@/components/ui/FormField";
+import { User } from "@/types/user";
 
 interface AnalysisResult {
   recommendationScore: number;
@@ -107,8 +108,7 @@ const JobFitPage = () => {
 
       if (response.data.success) {
         setAnalysisResult(response.data.body);
-        const analysisId = response.data.analysisId;
-        router.push(`/job-fit/${analysisId}`);
+        router.push(`/job-fit/`);
       } else {
         setError(response.data.error || "Failed to analyze job fit.");
       }
@@ -163,7 +163,10 @@ const JobFitPage = () => {
       <div className="flex justify-center space-x-4">
         <PDFDownloadLink
           document={
-            <ResumeDocument resumeData={resumeData || defaultResumeData} />
+            <ResumeDocument
+              resumeData={resumeData || defaultResumeData}
+              user={token}
+            />
           }
           fileName="resume.pdf"
         >

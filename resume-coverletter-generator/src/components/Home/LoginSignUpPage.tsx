@@ -1,12 +1,23 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSession, signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/FormField";
-import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useSession, signIn } from "next-auth/react";
 import { User } from "@/types/user";
+import { USStates } from "@/types/states";
+import axios from "axios";
+
+// Import shadcn Select components
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 export default function LoginSignUpPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -19,16 +30,16 @@ export default function LoginSignUpPage() {
   });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [hasLoggedIn, setHasLoggedIn] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
-  const [hasLoggedIn, setHasLoggedIn] = useState(false);
 
   const handleChange = (name: string, value: string) => {
     if (name === "city" || name === "state") {
       setFormData({
         ...formData,
         address: {
-          ...formData.address!, // Use the non-null assertion operator
+          ...formData.address!,
           [name]: value,
         },
       });
@@ -138,14 +149,26 @@ export default function LoginSignUpPage() {
                   placeholder="City"
                   type="text"
                 />
-                <FormField
-                  label="State"
-                  name="state"
-                  value={formData.address?.state}
-                  onChange={handleChange}
-                  placeholder="State"
-                  type="text"
-                />
+
+                {/* Replace the state text field with Select */}
+                <div className="space-y-2">
+                  <Label htmlFor="state">State</Label>
+                  <Select
+                    value={formData.address?.state || ""}
+                    onValueChange={(value) => handleChange("state", value)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a state" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(USStates).map(([code, name]) => (
+                        <SelectItem key={code} value={code}>
+                          {name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             )}
             <FormField
