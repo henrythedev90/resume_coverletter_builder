@@ -69,19 +69,19 @@ export interface JobPreferences {
 }
 
 export interface ResumeType {
-  _id?: string;
+  _id: string;
   userId: Types.ObjectId;
   careerObjective: string;
+  skills: Skills;
   professionalExperience: ProfessionalExperience[];
   education: Education[];
-  skills: Skills;
   projects: Project[];
-  awards: Award[];
-  languages: Language[];
-  volunteerExperience: VolunteerExperience[];
-  hobbiesAndInterests: string[];
-  websites: Website[];
-  jobPreferences: JobPreferences;
+  awards?: Award[];
+  languages?: Language[];
+  volunteerExperience?: VolunteerExperience[];
+  hobbiesAndInterests?: string[];
+  websites?: Website[];
+  jobPreferences?: JobPreferences;
 }
 
 export type CreateResumeInput = Omit<ResumeType, "_id">;

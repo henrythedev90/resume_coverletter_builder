@@ -75,6 +75,16 @@ const ResumeGeneratorForm: React.FC = () => {
         validate: () => formData.careerObjective.trim() !== "",
       },
       {
+        name: "Skills",
+        component: (
+          <SkillsComponent formData={formData} setFormData={setFormData} />
+        ),
+        validate: () =>
+          formData.skills.technical.length > 0 &&
+          formData.skills.soft.length > 0 &&
+          formData.skills.industrySpecific.length > 0,
+      },
+      {
         name: "Professional Experience",
         component: (
           <ProfessionalExperienceComponent
@@ -92,16 +102,6 @@ const ResumeGeneratorForm: React.FC = () => {
         validate: () => formData.education.length > 0,
       },
       {
-        name: "Skills",
-        component: (
-          <SkillsComponent formData={formData} setFormData={setFormData} />
-        ),
-        validate: () =>
-          formData.skills.technical.length > 0 &&
-          formData.skills.soft.length > 0 &&
-          formData.skills.industrySpecific.length > 0,
-      },
-      {
         name: "Projects",
         component: (
           <ProjectsComponents formData={formData} setFormData={setFormData} />
@@ -113,28 +113,33 @@ const ResumeGeneratorForm: React.FC = () => {
         component: (
           <AwardComponent formData={formData} setFormData={setFormData} />
         ),
-        validate: () => formData.awards?.length > 0,
+        validate: () =>
+          formData.awards !== undefined && formData.awards?.length > 0,
       },
       {
         name: "Languages",
         component: (
           <LanguageComponent formData={formData} setFormData={setFormData} />
         ),
-        validate: () => formData.languages?.length > 0,
+        validate: () =>
+          formData.languages !== undefined && formData.languages?.length > 0,
       },
       {
         name: "Volunteer Experience",
         component: (
           <VolunteerComponent formData={formData} setFormData={setFormData} />
         ),
-        validate: () => formData.volunteerExperience.length > 0,
+        validate: () =>
+          formData.volunteerExperience !== undefined &&
+          formData.volunteerExperience.length > 0,
       },
       {
         name: "Websites",
         component: (
           <WebsiteComponent formData={formData} setFormData={setFormData} />
         ),
-        validate: () => formData.websites.length > 0,
+        validate: () =>
+          formData.websites !== undefined && formData.websites.length > 0,
       },
       {
         name: "Job Preferences",
@@ -144,11 +149,17 @@ const ResumeGeneratorForm: React.FC = () => {
             setFormData={setFormData}
           />
         ),
-        validate: () =>
-          formData.jobPreferences.desiredJobTitles.length > 0 ||
-          formData.jobPreferences.preferredIndustry.length > 0 ||
-          formData.jobPreferences.preferredLocation !== "" ||
-          formData.jobPreferences.employmentType !== "",
+        validate: () => {
+          if (!formData.jobPreferences) {
+            return false;
+          }
+          return (
+            formData.jobPreferences.desiredJobTitles.length > 0 ||
+            formData.jobPreferences.preferredIndustry.length > 0 ||
+            formData.jobPreferences.preferredLocation !== "" ||
+            formData.jobPreferences.employmentType !== ""
+          );
+        },
       },
       {
         name: "Hobbies & Interests",
@@ -158,9 +169,7 @@ const ResumeGeneratorForm: React.FC = () => {
             setFormData={setFormData}
           />
         ),
-        validate: () =>
-          formData.hobbiesAndInterests.length > 0 &&
-          formData.hobbiesAndInterests[0].length > 0,
+        validate: () => (formData.hobbiesAndInterests?.length ?? 0) > 0,
       },
     ],
     [formData]
@@ -215,13 +224,13 @@ const ResumeGeneratorForm: React.FC = () => {
         education: formData.education.filter(
           (edu) => edu.degree && edu.fieldOfStudy && edu.universityName
         ),
-        awards: formData.awards.filter((award) => award.title),
-        languages: formData.languages.filter((lang) => lang.language),
+        awards: formData.awards?.filter((award) => award.title),
+        languages: formData.languages?.filter((lang) => lang.language),
         projects: formData.projects.filter((project) => project.title),
-        volunteerExperience: formData.volunteerExperience.filter(
+        volunteerExperience: formData.volunteerExperience?.filter(
           (volunteer) => volunteer.organization
         ),
-        websites: formData.websites.filter((website) => website.url),
+        websites: formData.websites?.filter((website) => website.url),
       };
 
       console.log(filteredFormData.websites);
