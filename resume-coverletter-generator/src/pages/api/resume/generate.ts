@@ -84,6 +84,9 @@ export default async function handler(
       userId: new mongoose.Types.ObjectId(userId),
       ...resumeData,
     });
+
+    // const resumeId = new mongoose.Types.ObjectId();
+
     const resume = new Resume({
       userId: new mongoose.Types.ObjectId(userId),
       resume: result.resume,

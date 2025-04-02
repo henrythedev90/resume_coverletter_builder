@@ -230,7 +230,7 @@ const ResumeGeneratorForm: React.FC = () => {
 
       const resumeId = response.data._id;
       debugger;
-      router.push(`/job-fit?_id=${resumeId}`);
+      router.push(`/job-fit`);
     } catch (error) {
       console.error("Error generating resume:", error);
       alert("Failed to generate resume. Please try again.");

@@ -69,7 +69,7 @@ export interface JobPreferences {
 }
 
 export interface ResumeType {
-  _id: string;
+  _id: Types.ObjectId;
   userId: Types.ObjectId;
   careerObjective: string;
   skills: Skills;

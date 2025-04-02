@@ -70,7 +70,7 @@ const JobFitPage = () => {
             response.data.body.userId.toString() !== session.user._id
           ) {
             setError("You don't have permission to access this resume.");
-            router.push("/resumes");
+            router.push("/dashboard");
           }
         } else {
           setError("Failed to fetch resume data.");
