@@ -40,11 +40,9 @@ const CoverLetterSchema = new mongoose.Schema(
     },
     reasonForApplying: {
       type: String, // Why the user wants the role or company
-      required: true,
     },
     keySkills: {
-      type: [String], // A list of key skills that the user wants to highlight
-      required: false,
+      type: [String], // A list of key skills that the user wants to highligh
     },
     personalTraits: {
       type: [String], // Personal attributes the user wants to mention

@@ -61,7 +61,6 @@ const ResumeGeneratorForm: React.FC = () => {
 
   const { data: session } = useSession();
   const router = useRouter();
-  console.log(session, "this is session");
   const steps = useMemo(
     () => [
       {
@@ -230,6 +229,7 @@ const ResumeGeneratorForm: React.FC = () => {
       );
 
       const resumeId = response.data._id;
+      debugger;
       router.push(`/job-fit?_id=${resumeId}`);
     } catch (error) {
       console.error("Error generating resume:", error);
