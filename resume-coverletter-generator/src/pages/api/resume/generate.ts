@@ -85,20 +85,25 @@ export default async function handler(
       ...resumeData,
     });
 
-    // const resumeId = new mongoose.Types.ObjectId();
-
     const resume = new Resume({
       userId: new mongoose.Types.ObjectId(userId),
       resume: result.resume,
       ...resumeData,
     });
 
-    await resume.save();
+    const savedResume = await resume.save();
+    console.log("Resume saved:", savedResume);
 
     if (result.success) {
-      return res.status(200).json(result);
+      return res.status(200).json({
+        success: true,
+        body: savedResume, // Return the saved resume object
+      });
     } else {
-      return res.status(500).json(result);
+      return res.status(500).json({
+        success: false,
+        error: "Failed to generate resume",
+      });
     }
   } catch (error) {
     console.error("Resume generation error:", error);

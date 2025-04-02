@@ -189,7 +189,6 @@ const ResumeGeneratorForm: React.FC = () => {
 
   const handleGenerateResume = async () => {
     try {
-      // Get the stored JWT token from localStorage
       const token = localStorage.getItem("authToken");
 
       if (!token) {
@@ -217,7 +216,6 @@ const ResumeGeneratorForm: React.FC = () => {
         websites: formData.websites?.filter((website) => website.url),
       };
 
-      debugger;
       const response = await axios.post(
         "/api/resume/generate",
         filteredFormData,
@@ -228,9 +226,12 @@ const ResumeGeneratorForm: React.FC = () => {
         }
       );
 
-      const resumeId = response.data._id;
-      debugger;
-      router.push(`/job-fit`);
+      if (response.data.success) {
+        const newResume = response.data.body;
+        router.push(`/job-fit?resumeId=${newResume._id}`);
+      } else {
+        alert("Failed to generate resume. Please try again.");
+      }
     } catch (error) {
       console.error("Error generating resume:", error);
       alert("Failed to generate resume. Please try again.");

@@ -30,12 +30,17 @@ export default async function handler(
   if (!userId) {
     return res.status(400).json({ error: "Missing required fields" });
   }
+
   try {
     await connectDB();
+
+    console.log("User ID:", userId); // Debugging log
 
     const resumes = await Resume.find({
       userId: new mongoose.Types.ObjectId(userId),
     });
+
+    console.log("Resumes found:", resumes); // Debugging log
 
     if (!resumes || resumes.length === 0) {
       return res.status(404).json({

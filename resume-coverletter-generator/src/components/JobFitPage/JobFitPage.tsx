@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Types } from "mongoose";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -16,10 +15,17 @@ interface AnalysisResult {
   analysis: string;
 }
 
+interface Resume {
+  _id: string;
+  title: string;
+  createdAt: string;
+}
+
 const JobFitPage = () => {
   const router = useRouter();
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
-  const { data: session, status } = useSession();
+  const resumeIdFromQuery = searchParams?.get("resumeId") ?? null;
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(
     null
   );
@@ -30,22 +36,17 @@ const JobFitPage = () => {
   const [companyName, setCompanyName] = useState("");
   const [companyMission, setCompanyMission] = useState("");
   const [resumeData, setResumeData] = useState<CreateResumeInput | null>(null);
+  const [userData, setUserData] = useState<User | null>(null);
+  const [resumes, setResumes] = useState<Resume[]>([]);
+  const [generatingResume, setGeneratingResume] = useState(false);
+  const [selectedResumeId, setSelectedResumeId] = useState<string | null>(
+    resumeIdFromQuery
+  );
 
-  const resumeId = searchParams ? searchParams.get("resumeId") : null;
-
-  console.log(session, "this is session");
-  // Check authentication status
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
-  }, [status, router]);
+    if (!session?.user?._id) return;
 
-  // Fetch resume data when component mounts
-  useEffect(() => {
-    const fetchResumeData = async () => {
-      if (!resumeId || !session) return;
-
+    const fetchResumesAndUserData = async () => {
       setLoading(true);
       try {
         const token = localStorage.getItem("authToken");
@@ -55,29 +56,37 @@ const JobFitPage = () => {
           return;
         }
 
-        const response = await axios.get(`/api/resumes/${resumeId}`, {
+        const resumesResponse = await axios.get(
+          `/api/resume/${session.user._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (resumesResponse.data.success) {
+          const resumesData = resumesResponse.data.resumes || [];
+          setResumes(resumesData);
+        } else {
+          setError("Failed to fetch user resumes.");
+        }
+
+        const userDataResponse = await axios.get(`/api/user/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        if (response.data.success) {
-          setResumeData(response.data.body);
-
-          // Verify that the resume belongs to the current user
-          if (
-            session.user &&
-            response.data.body.userId.toString() !== session.user._id
-          ) {
-            setError("You don't have permission to access this resume.");
-            router.push("/dashboard");
-          }
+        if (userDataResponse.data.success) {
+          debugger;
+          setUserData(userDataResponse.data.data);
         } else {
-          setError("Failed to fetch resume data.");
+          console.error("Failed to fetch user data");
         }
       } catch (err: unknown) {
         if (err instanceof Error) {
-          setError(err.message || "Failed to fetch resume data.");
+          setError(err.message || "Failed to fetch resumes or user data.");
         } else {
           setError("An unknown error occurred.");
         }
@@ -86,8 +95,48 @@ const JobFitPage = () => {
       }
     };
 
-    fetchResumeData();
-  }, [resumeId, router, session]);
+    fetchResumesAndUserData();
+  }, [session, router]);
+
+  useEffect(() => {
+    if (selectedResumeId) {
+      debugger;
+      const fetchSelectedResumeData = async () => {
+        setLoading(true);
+        try {
+          const token = localStorage.getItem("authToken");
+          if (!token) {
+            console.error("Authentication token not found");
+            router.push("/login");
+            return;
+          }
+
+          const response = await axios.get(`/api/resumes/${selectedResumeId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.data.success) {
+            debugger;
+            setResumeData(response.data.body);
+          } else {
+            setError("Failed to fetch selected resume data.");
+          }
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            setError(err.message || "Failed to fetch selected resume data.");
+          } else {
+            setError("An unknown error occurred.");
+          }
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchSelectedResumeData();
+    }
+  }, [selectedResumeId, router]);
 
   const handlePrint = () => {
     window.print();
@@ -118,6 +167,11 @@ const JobFitPage = () => {
       return;
     }
 
+    if (!selectedResumeId) {
+      setError("Please select a resume first.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
@@ -132,7 +186,7 @@ const JobFitPage = () => {
       const response = await axios.post(
         "/api/job-fit/analyze",
         {
-          resumeId,
+          resumeId: selectedResumeId,
           jobTitle,
           jobDescription,
           companyName,
@@ -147,6 +201,7 @@ const JobFitPage = () => {
 
       if (response.data.success) {
         setAnalysisResult(response.data.body);
+        debugger;
       } else {
         setError(response.data.error || "Failed to analyze job fit.");
       }
@@ -179,11 +234,19 @@ const JobFitPage = () => {
                     ? "bg-yellow-500"
                     : "bg-red-500"
                 }`}
-                style={{ width: `${analysisResult.recommendationScore}%` }}
+                style={{
+                  width: `${
+                    analysisResult.recommendationScore === 3
+                      ? "100%"
+                      : analysisResult.recommendationScore === 2
+                      ? "66.66%"
+                      : "33.33%"
+                  }`,
+                }}
               ></div>
             </div>
             <span className="ml-4 font-bold">
-              {analysisResult.recommendationScore}%
+              {analysisResult.recommendationScore} / 3
             </span>
           </div>
         </div>
@@ -197,9 +260,67 @@ const JobFitPage = () => {
     );
   };
 
+  console.log("resumeIdFromQuery:", resumeIdFromQuery);
+  console.log("resumeData:", resumeData);
+  console.log("userData:", userData);
+
   return (
     <div className="max-w-4xl mx-auto p-8 bg-background text-foreground">
       <h1 className="text-3xl font-bold mb-6">Job Fit Analysis</h1>
+
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4">
+          {resumeIdFromQuery ? "Generated Resume" : "Select Resume"}
+        </h2>
+
+        {resumeIdFromQuery && resumeData && userData ? (
+          <div className="flex flex-wrap gap-3">
+            <PDFDownloadLink
+              document={
+                <ResumeDocument resumeData={resumeData} user={userData} />
+              }
+              fileName={`${userData.firstName || "resume"}_${
+                userData.lastName || ""
+              }_resume.pdf`}
+              className="no-underline"
+            >
+              {({ blob, url, loading, error }) => (
+                <Button disabled={loading} variant="outline">
+                  {loading ? "Preparing PDF..." : "Download Resume"}
+                </Button>
+              )}
+            </PDFDownloadLink>
+
+            <Button onClick={handlePrint} variant="outline">
+              Print Resume
+            </Button>
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-3">
+            {Array.isArray(resumes) && resumes.length > 0 ? (
+              resumes.map((resume) => (
+                <Button
+                  key={resume._id}
+                  onClick={() => setSelectedResumeId(resume._id)}
+                  variant={
+                    selectedResumeId === resume._id ? "default" : "outline"
+                  }
+                  className="flex-grow sm:flex-grow-0"
+                >
+                  {resume.title ||
+                    `Resume (${new Date(
+                      resume.createdAt
+                    ).toLocaleDateString()})`}
+                </Button>
+              ))
+            ) : (
+              <p className="text-gray-600">
+                No resumes found. Generate one below.
+              </p>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -233,6 +354,12 @@ const JobFitPage = () => {
           type="textarea"
         />
 
+        {loading && (
+          <div className="flex justify-center py-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        )}
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
             {error}
@@ -241,39 +368,14 @@ const JobFitPage = () => {
 
         {renderAnalysisResult()}
 
-        <div className="flex flex-wrap justify-center gap-4 mt-8">
+        <div className="flex justify-center mt-8">
           <Button
             onClick={handleJobFitAnalysis}
-            disabled={loading || !resumeId}
+            disabled={loading || !selectedResumeId}
             className="bg-primary hover:bg-primary-dark"
           >
             {loading ? "Analyzing..." : "Analyze Job Fit"}
           </Button>
-
-          {resumeData && session?.user && (
-            <>
-              <PDFDownloadLink
-                document={
-                  <ResumeDocument
-                    resumeData={resumeData}
-                    user={session.user as unknown as User}
-                  />
-                }
-                fileName={`${session.user.name || "resume"}.pdf`}
-                className="no-underline"
-              >
-                {({ blob, url, loading, error }) => (
-                  <Button disabled={loading} variant="outline">
-                    {loading ? "Preparing PDF..." : "Download Resume"}
-                  </Button>
-                )}
-              </PDFDownloadLink>
-
-              <Button onClick={handlePrint} variant="outline">
-                Print Resume
-              </Button>
-            </>
-          )}
         </div>
       </div>
     </div>
