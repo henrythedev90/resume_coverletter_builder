@@ -79,7 +79,6 @@ const JobFitPage = () => {
         });
 
         if (userDataResponse.data.success) {
-          debugger;
           setUserData(userDataResponse.data.data);
         } else {
           console.error("Failed to fetch user data");
@@ -109,7 +108,7 @@ const JobFitPage = () => {
             router.push("/login");
             return;
           }
-          debugger;
+
           const response = await axios.get(`/api/resume/${selectedResumeId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -117,7 +116,6 @@ const JobFitPage = () => {
           });
 
           if (response.data.success) {
-            debugger;
             setResumeData(response.data.resume);
           } else {
             setError("Failed to fetch selected resume data.");
@@ -211,6 +209,10 @@ const JobFitPage = () => {
       }
     } finally {
       setLoading(false);
+      setCompanyMission("");
+      setJobDescription("");
+      setCompanyName("");
+      setJobTitle("");
     }
   };
 
