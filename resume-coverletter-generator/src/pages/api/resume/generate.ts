@@ -56,7 +56,7 @@ export default async function handler(
     if (!jwtSecret) {
       throw new Error("JWT secret is not defined");
     }
-
+    debugger;
     const decoded = jwt.verify(token, jwtSecret) as DecodedToken;
     const userId = decoded.userId;
 
@@ -90,6 +90,8 @@ export default async function handler(
       resume: result.resume,
       ...resumeData,
     });
+
+    console.log(resume, "this is resume");
 
     const savedResume = await resume.save();
     console.log("Resume saved:", savedResume);

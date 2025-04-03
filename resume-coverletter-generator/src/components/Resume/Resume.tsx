@@ -225,16 +225,23 @@ const ResumeGeneratorForm: React.FC = () => {
           },
         }
       );
-
       if (response.data.success) {
         const newResume = response.data.body;
         router.push(`/job-fit?resumeId=${newResume._id}`);
       } else {
-        alert("Failed to generate resume. Please try again.");
+        alert("Failed to generate resume: " + response.data.error);
       }
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.status === 500) {
+          alert("Server error. Please try again later.");
+        } else {
+          alert("Network error: " + error.message);
+        }
+      } else {
+        alert("An unexpected error occurred.");
+      }
       console.error("Error generating resume:", error);
-      alert("Failed to generate resume. Please try again.");
     }
   };
 

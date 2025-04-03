@@ -57,7 +57,7 @@ const JobFitPage = () => {
         }
 
         const resumesResponse = await axios.get(
-          `/api/resume/${session.user._id}`,
+          `/api/resume/user/${session.user._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -100,7 +100,6 @@ const JobFitPage = () => {
 
   useEffect(() => {
     if (selectedResumeId) {
-      debugger;
       const fetchSelectedResumeData = async () => {
         setLoading(true);
         try {
@@ -110,8 +109,8 @@ const JobFitPage = () => {
             router.push("/login");
             return;
           }
-
-          const response = await axios.get(`/api/resumes/${selectedResumeId}`, {
+          debugger;
+          const response = await axios.get(`/api/resume/${selectedResumeId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -119,7 +118,7 @@ const JobFitPage = () => {
 
           if (response.data.success) {
             debugger;
-            setResumeData(response.data.body);
+            setResumeData(response.data.resume);
           } else {
             setError("Failed to fetch selected resume data.");
           }
@@ -201,7 +200,6 @@ const JobFitPage = () => {
 
       if (response.data.success) {
         setAnalysisResult(response.data.body);
-        debugger;
       } else {
         setError(response.data.error || "Failed to analyze job fit.");
       }
