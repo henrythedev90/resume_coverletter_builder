@@ -62,7 +62,6 @@ const Resume = () => (
         <Text>
           Major: Exercise Science B.S. (Program: Pre- Physical Therapy)
         </Text>
-        <Text style={styles.date}>May 2018</Text>
         <Text style={styles.subHeading}>
           Bronx Community College, Bronx, NY
         </Text>

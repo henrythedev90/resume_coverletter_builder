@@ -79,7 +79,8 @@ const ResumeDocument = ({
               </Text>
               {exp.dates.start && exp.dates.end && (
                 <Text style={styles.date}>
-                  {exp.dates.start.toString()} - {exp.dates.end.toString()}
+                  {exp.dates.start.month} {exp.dates.start.year} -{" "}
+                  {exp.dates.start.month} {exp.dates.end.year}
                 </Text>
               )}
               {exp.responsibilities && (
