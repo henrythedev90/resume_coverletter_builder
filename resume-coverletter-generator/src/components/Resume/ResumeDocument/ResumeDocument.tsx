@@ -84,7 +84,7 @@ const ResumeDocument = ({
                 </Text>
               )}
               {exp.responsibilities && (
-                <View style={styles.section}>
+                <View>
                   <Text style={styles.heading}>Responsibilities:</Text>
                   {exp.responsibilities.map((resp, respIndex) => (
                     <View style={styles.bulletPoint}>
@@ -94,7 +94,7 @@ const ResumeDocument = ({
                 </View>
               )}
               {exp.accomplishments && (
-                <View style={styles.section}>
+                <View>
                   <Text style={styles.heading}>Accomplishments:</Text>
                   {exp.accomplishments.map((acc, accIndex) => (
                     <View style={styles.bulletPoint}>
@@ -127,7 +127,7 @@ const ResumeDocument = ({
         <Text style={styles.heading}>Languages</Text>
         {resumeData.languages &&
           resumeData.languages.map((language, index) => (
-            <View style={styles.bulletPoint}>
+            <View style={styles.bulletPoint} key={index}>
               <Text>{language.language},</Text>
               <Text>{language.proficiency}</Text>
             </View>
