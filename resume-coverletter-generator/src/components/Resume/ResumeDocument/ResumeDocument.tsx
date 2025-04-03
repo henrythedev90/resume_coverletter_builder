@@ -5,36 +5,42 @@ import { User } from "@/types/user";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 30,
+    fontFamily: "Helvetica",
+    fontSize: 10,
+    padding: 20,
   },
   section: {
     marginBottom: 10,
   },
-  title: {
-    fontSize: 18,
+  name: {
+    fontSize: 16,
     fontWeight: "bold",
-  },
-  subtitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    marginTop: 5,
-  },
-  text: {
-    fontSize: 12,
-  },
-  list: {
-    marginLeft: 20,
-  },
-  listItem: {
+    textAlign: "center",
     marginBottom: 5,
-  },
-  profile: {
-    fontSize: 12,
-    marginBottom: 10,
   },
   contactInfo: {
-    fontSize: 10,
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  heading: {
+    fontSize: 12,
+    fontWeight: "bold",
     marginBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    paddingBottom: 2,
+  },
+  subHeading: {
+    fontSize: 11,
+    fontWeight: "bold",
+    marginBottom: 3,
+  },
+  bulletPoint: {
+    marginVertical: 2,
+  },
+  date: {
+    fontSize: 10,
+    float: "right",
   },
 });
 
@@ -48,7 +54,7 @@ const ResumeDocument = ({
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.section}>
-        <Text style={styles.title}>
+        <Text style={styles.name}>
           {user.firstName} {user.lastName}
         </Text>
         <Text style={styles.contactInfo}>
@@ -57,40 +63,42 @@ const ResumeDocument = ({
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.title}>Career Objective</Text>
-        <Text style={styles.profile}>{resumeData.careerObjective}</Text>
+        <Text style={styles.heading}>Career Objective</Text>
+        <View style={styles.bulletPoint}>
+          <Text>{resumeData.careerObjective}</Text>
+        </View>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.title}>Work Experience</Text>
+        <Text style={styles.heading}>Work Experience</Text>
         {resumeData.professionalExperience &&
           resumeData.professionalExperience.map((exp, index) => (
-            <View key={index}>
-              <Text style={styles.subtitle}>
+            <View style={styles.subHeading} key={index}>
+              <Text>
                 {exp.jobTitle}, {exp.companyName}
               </Text>
               {exp.dates.start && exp.dates.end && (
-                <Text style={styles.text}>
+                <Text style={styles.date}>
                   {exp.dates.start.toString()} - {exp.dates.end.toString()}
                 </Text>
               )}
               {exp.responsibilities && (
-                <View style={styles.list}>
-                  <Text style={styles.subtitle}>Responsibilities:</Text>
+                <View style={styles.section}>
+                  <Text style={styles.heading}>Responsibilities:</Text>
                   {exp.responsibilities.map((resp, respIndex) => (
-                    <Text key={respIndex} style={styles.listItem}>
-                      {resp}
-                    </Text>
+                    <View style={styles.bulletPoint}>
+                      <Text key={respIndex}>{resp}</Text>
+                    </View>
                   ))}
                 </View>
               )}
               {exp.accomplishments && (
-                <View style={styles.list}>
-                  <Text style={styles.subtitle}>Accomplishments:</Text>
+                <View style={styles.section}>
+                  <Text style={styles.heading}>Accomplishments:</Text>
                   {exp.accomplishments.map((acc, accIndex) => (
-                    <Text key={accIndex} style={styles.listItem}>
-                      {acc}
-                    </Text>
+                    <View style={styles.bulletPoint}>
+                      <Text key={accIndex}>{acc}</Text>
+                    </View>
                   ))}
                 </View>
               )}
@@ -99,40 +107,38 @@ const ResumeDocument = ({
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.title}>Education</Text>
+        <Text style={styles.heading}>Education</Text>
         {resumeData.education &&
           resumeData.education.map((edu, index) => (
             <View key={index}>
-              <Text style={styles.subtitle}>
-                {edu.degree}, {edu.fieldOfStudy}, {edu.universityName}
+              <Text style={styles.subHeading}>
+                {edu.universityName}, {edu.degree}
               </Text>
+              <Text>{edu.fieldOfStudy}</Text>
               {edu.graduationYear && (
-                <Text style={styles.text}>{edu.graduationYear}</Text>
+                <Text style={styles.date}>{edu.graduationYear}</Text>
               )}
             </View>
           ))}
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.title}>Languages</Text>
+        <Text style={styles.heading}>Languages</Text>
         {resumeData.languages &&
           resumeData.languages.map((language, index) => (
-            <View key={index}>
-              <Text style={styles.text}>{language.language}</Text>
+            <View style={styles.bulletPoint}>
+              <Text>{language.language},</Text>
+              <Text>{language.proficiency}</Text>
             </View>
           ))}
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.title}>Skills</Text>
-        <View style={styles.list}>
+        <Text style={styles.heading}>Skills</Text>
+        <View style={styles.bulletPoint}>
           {resumeData.skills &&
             Object.values(resumeData.skills).map(
-              (skill: string, index: any) => (
-                <Text key={index} style={styles.listItem}>
-                  {skill}
-                </Text>
-              )
+              (skill: string, index: any) => <Text key={index}>{skill}</Text>
             )}
         </View>
       </View>
